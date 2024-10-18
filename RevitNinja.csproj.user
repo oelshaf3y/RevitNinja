@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="Views\AlignView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\FindRFT.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\InfoView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\RotateElementsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SelectByView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\AlignView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\FindRFT.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\InfoView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\RotateElementsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SelectByView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

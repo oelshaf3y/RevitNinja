@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = Revit_Ninja
+build_property.ProjectDir = C:\Users\oelsh\source\repos\Revit-Ninja\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
