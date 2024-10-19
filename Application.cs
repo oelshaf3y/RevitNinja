@@ -188,8 +188,8 @@ namespace RevitNinja
             }
             catch (System.Exception ex)
             {
-                TaskDialog.Show("exception", ex.StackTrace);
-                TaskDialog.Show("exception", ex.Message);
+                TaskDialog.Show("exception", ex.ToString());
+                //TaskDialog.Show("exception", ex.Message);
 
             }
             return Result.Succeeded;
