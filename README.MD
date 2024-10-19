@@ -52,4 +52,4 @@ Contributions, issues, and feature requests are welcome! Feel free to check out 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE.MD) file for details.
-Credit to [icons8.com](https://icons8.com) for the Revit Add-in Manager icons.
+Credit to [icons8.com](https://icons8.com) for the icons.
