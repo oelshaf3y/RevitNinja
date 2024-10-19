@@ -118,12 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="capture" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\capture.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="captures" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\captures.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="ninja-pic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ninja-pic.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -141,5 +135,95 @@
   </data>
   <data name="icons8-swords-67" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons8-swords-67.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ninjaIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ninjaIcon.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ninja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ninja.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="capture" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\capture.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="captures" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\captures.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="hideUnhosted" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hideUnhosted.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="hideUnhostedS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hideUnhostedS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HostL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\HostL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HostS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\HostS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NOS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NOS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NOSsmall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NOSsmall.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Rebl" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Rebl.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Rebs" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Rebs.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="resetSheets" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\resetSheets.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ResetView" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ResetView.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ResetSheetsS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ResetSheetsS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="resetViewS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\resetViewS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="selectbyl" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\selectbyl.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="selectbys" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\selectbys.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MidBet2ptsL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MidBet2ptsL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="midBet2ptsS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\midBet2ptsS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="alignElemsL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\alignElemsL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="alignElemsS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\alignElemsS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="alignTagsS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\alignTagsS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="alignTagsL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\alignTagsL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="deleteCADL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\deleteCADL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="deleteCADS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\deleteCADS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rotateLocallyS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\rotateLocallyS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rotateLocallyL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\rotateLocallyL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="byParamS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\byParamS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="byParamL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\byParamL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

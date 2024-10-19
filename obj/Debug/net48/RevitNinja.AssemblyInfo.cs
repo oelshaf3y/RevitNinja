@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RevitNinja")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3187b900c12771a1ff34dc4306f30b68f837075")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+36f555e8c8b3318a0e9a190c80a41a9ec9a7fb74")]
 [assembly: System.Reflection.AssemblyProductAttribute("RevitNinja")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RevitNinja")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

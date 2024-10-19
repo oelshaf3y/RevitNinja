@@ -13,26 +13,80 @@
 		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="Resources\alignElemsL.ico" />
+	  <None Remove="Resources\alignElemsS.ico" />
+	  <None Remove="Resources\alignTagsL.ico" />
+	  <None Remove="Resources\alignTagsS.ico" />
+	  <None Remove="Resources\byParamL.ico" />
+	  <None Remove="Resources\byParamS.ico" />
 	  <None Remove="Resources\capture.ico" />
 	  <None Remove="Resources\captures.ico" />
+	  <None Remove="Resources\deleteCADL.ico" />
+	  <None Remove="Resources\deleteCADS.ico" />
 	  <None Remove="Resources\github.png" />
+	  <None Remove="Resources\hideUnhosted.ico" />
+	  <None Remove="Resources\hideUnhostedS.ico" />
+	  <None Remove="Resources\HostL.ico" />
+	  <None Remove="Resources\HostS.ico" />
 	  <None Remove="Resources\icons8-swords-67.png" />
 	  <None Remove="Resources\info.png" />
 	  <None Remove="Resources\linkedin.png" />
-	  <None Remove="Resources\New Project.png" />
+	  <None Remove="Resources\MidBet2ptsL.ico" />
+	  <None Remove="Resources\midBet2ptsS.ico" />
 	  <None Remove="Resources\ninja-pic.png" />
+	  <None Remove="Resources\ninja.ico" />
+	  <None Remove="Resources\ninjaIcon.png" />
+	  <None Remove="Resources\NOS.ico" />
+	  <None Remove="Resources\NOSsmall.ico" />
+	  <None Remove="Resources\Rebl.ico" />
+	  <None Remove="Resources\Rebs.ico" />
+	  <None Remove="Resources\resetSheets.ico" />
+	  <None Remove="Resources\ResetSheetsS.ico" />
+	  <None Remove="Resources\ResetView.ico" />
+	  <None Remove="Resources\resetViewS.ico" />
 	  <None Remove="Resources\revitninjatext.png" />
+	  <None Remove="Resources\rotateLocallyL.ico" />
+	  <None Remove="Resources\rotateLocallyS.ico" />
+	  <None Remove="Resources\selectbyl.ico" />
+	  <None Remove="Resources\selectbys.ico" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Resource Include="Resources\alignElemsL.ico" />
+	  <Resource Include="Resources\alignElemsS.ico" />
+	  <Resource Include="Resources\alignTagsL.ico" />
+	  <Resource Include="Resources\alignTagsS.ico" />
+	  <Resource Include="Resources\byParamL.ico" />
+	  <Resource Include="Resources\byParamS.ico" />
 	  <Resource Include="Resources\capture.ico" />
 	  <Resource Include="Resources\captures.ico" />
+	  <Resource Include="Resources\deleteCADL.ico" />
+	  <Resource Include="Resources\deleteCADS.ico" />
 	  <Resource Include="Resources\github.png" />
+	  <Resource Include="Resources\hideUnhosted.ico" />
+	  <Resource Include="Resources\hideUnhostedS.ico" />
+	  <Resource Include="Resources\HostL.ico" />
+	  <Resource Include="Resources\HostS.ico" />
 	  <Resource Include="Resources\icons8-swords-67.png" />
 	  <Resource Include="Resources\info.png" />
 	  <Resource Include="Resources\linkedin.png" />
-	  <Resource Include="Resources\New Project.png" />
+	  <Resource Include="Resources\MidBet2ptsL.ico" />
+	  <Resource Include="Resources\midBet2ptsS.ico" />
 	  <Resource Include="Resources\ninja-pic.png" />
+	  <Resource Include="Resources\ninja.ico" />
+	  <Resource Include="Resources\ninjaIcon.png" />
+	  <Resource Include="Resources\NOS.ico" />
+	  <Resource Include="Resources\NOSsmall.ico" />
+	  <Resource Include="Resources\Rebl.ico" />
+	  <Resource Include="Resources\Rebs.ico" />
+	  <Resource Include="Resources\resetSheets.ico" />
+	  <Resource Include="Resources\ResetSheetsS.ico" />
+	  <Resource Include="Resources\ResetView.ico" />
+	  <Resource Include="Resources\resetViewS.ico" />
 	  <Resource Include="Resources\revitninjatext.png" />
+	  <Resource Include="Resources\rotateLocallyL.ico" />
+	  <Resource Include="Resources\rotateLocallyS.ico" />
+	  <Resource Include="Resources\selectbyl.ico" />
+	  <Resource Include="Resources\selectbys.ico" />
 	</ItemGroup>
 
   <ItemGroup>

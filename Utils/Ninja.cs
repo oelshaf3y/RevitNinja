@@ -23,8 +23,11 @@ namespace RevitNinja.Utils
         //public static string ToString(this XYZ point) => $"{point.X},{point.Y},{point.Z}";
         public static XYZ getCG(this Element element) => element.Location is LocationPoint ? getPointLocation(element) : getLineLocation(element);
         public static XYZ getPointLocation(Element element) => ((LocationPoint)element.Location).Point;
-        public static XYZ getLineLocation(Element element) => ((Line)((LocationCurve)element.Location).Curve).Evaluate(.5,true);
-        public static void print(this Document doc, object mes) => MessageBox.Show(mes.ToString());
+        public static XYZ getLineLocation(Element element) => ((Line)((LocationCurve)element.Location).Curve).Evaluate(.5, true);
+        public static void print(this Document doc, object mes)
+        {
+            MessageBox.Show(mes.ToString());
+        }
 
         public static TaskDialogResult YesNoMessage(this Document doc, object mes)
         {

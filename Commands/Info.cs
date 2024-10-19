@@ -6,6 +6,8 @@ using RevitNinja.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +20,12 @@ namespace RevitNinja.Commands
         {
             try
             {
+                System.Reflection.Assembly a = System.Reflection.Assembly.GetExecutingAssembly();
+                string assemblyName = Assembly.GetExecutingAssembly().Location;
+
+                ////System.IO.Stream s = a.GetManifestResourceStream();
+                //SoundPlayer player = new SoundPlayer(PathToFIle);
+                //player.Play();
 
                 InfoView infoView = new InfoView();
                 infoView.Show();

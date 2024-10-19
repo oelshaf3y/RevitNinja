@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="RevitNinja.Views.InfoView"
         mc:Ignorable="d"
         Background="#1b1f23"
-        Title="Info" Height="260" Width="680" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" WindowStyle="None">
+        Title="Info" Height="260" Width="680" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid>
         <!-- Ninja Image -->
         <Image Width="309" Height="260" HorizontalAlignment="Right" VerticalAlignment="Top"
