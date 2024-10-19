@@ -3,5 +3,7 @@
 ################################################################################
 *./bin
 *./obj
+/obj/Debug/net48
+/bin/Debug/net48
 /bin/Debug/net48/Revit-Ninja.dll
 /.vs/RevitNinja

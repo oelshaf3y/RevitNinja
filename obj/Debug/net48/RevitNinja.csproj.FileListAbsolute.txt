@@ -23,6 +23,7 @@ C:\Users\oelsh\source\repos\RevitNinja\obj\Debug\net48\RevitNinja.GeneratedMSBui
 C:\Users\oelsh\source\repos\RevitNinja\obj\Debug\net48\RevitNinja.AssemblyInfoInputs.cache
 C:\Users\oelsh\source\repos\RevitNinja\obj\Debug\net48\RevitNinja.AssemblyInfo.cs
 C:\Users\oelsh\source\repos\RevitNinja\obj\Debug\net48\RevitNinja.csproj.CoreCompileInputs.cache
+C:\Users\oelsh\source\repos\RevitNinja\obj\Debug\net48\RevitNinja.sourcelink.json
 C:\Users\oelsh\source\repos\RevitNinja\obj\Debug\net48\RevitNinja.csproj.Up2Date
 C:\Users\oelsh\source\repos\RevitNinja\obj\Debug\net48\RevitNinja.dll
 C:\Users\oelsh\source\repos\RevitNinja\obj\Debug\net48\RevitNinja.pdb

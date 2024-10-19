@@ -11,38 +11,37 @@
     <Grid>
         <!-- Ninja Image -->
         <Image Width="309" Height="260" HorizontalAlignment="Right" VerticalAlignment="Top"
-               Source="pack://application:,,,/Revit-Ninja;component/Resources/ninja-pic.png" Stretch="Uniform"
+               Source="pack://application:,,,/RevitNinja;component/Resources/ninja-pic.png" Stretch="Uniform"
 />
 
         <!-- GitHub Image -->
         <Button Click="gitHub" Margin="68,124,0,0" HorizontalAlignment="Left" Width="63" Height="49" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}">
             <Image  HorizontalAlignment="Left" Width="46" Height="41" VerticalAlignment="Center"
-        Source="pack://application:,,,/Revit-Ninja;component/Resources/github.png" Stretch="Uniform"
+        Source="pack://application:,,,/RevitNinja;component/Resources/github.png" Stretch="Uniform"
         />
         </Button>
         <!-- LinkedIn Image -->
         <Button Click="linkedin" Margin ="142,124,0,0"  HorizontalAlignment="Left" Width="59" Height="49" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}">
             <Image   HorizontalAlignment="Left" Width="51" Height="41" VerticalAlignment="Center"
-Source="pack://application:,,,/Revit-Ninja;component/Resources/linkedin.png" Stretch="Uniform"
+Source="pack://application:,,,/RevitNinja;component/Resources/linkedin.png" Stretch="Uniform"
                />
         </Button>
 
 
         <!-- Revit Ninja Text -->
         <Image Margin="55,16,450,151" 
-               Source="pack://application:,,,/Revit-Ninja;component/Resources/revitninjatext.png"/>
+               Source="pack://application:,,,/RevitNinja;component/Resources/revitninjatext.png"/>
 
 
         <!-- Info Image -->
         <Image Margin="80,0,0,4"  Height="56" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="119"
-               Source="pack://application:,,,/Revit-Ninja;component/Resources/info.png"/>
+               Source="pack://application:,,,/RevitNinja;component/Resources/info.png"/>
 
         <!-- Close Image -->
         <Button Click="Button_Click" Height="28" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="42" Background="{x:Null}" BorderBrush="{x:Null}">
             <Image ToolTip="Close" RenderTransformOrigin="0.5,0.5"  Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="30"
-       Source="pack://application:,,,/Revit-Ninja;component/Resources/icons8-swords-67.png"/>
+       Source="pack://application:,,,/RevitNinja;component/Resources/icons8-swords-67.png"/>
         </Button>
-
 
     </Grid>
 </Window>

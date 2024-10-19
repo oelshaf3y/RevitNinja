@@ -30,11 +30,11 @@ namespace RevitNinja.Views
         }
         private void linkedin(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.facebook.com");
+            System.Diagnostics.Process.Start("https://www.linkedin.com/in/oelshaf3y/");
         }
         private void gitHub(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.facebook.com");
+            System.Diagnostics.Process.Start("https://github.com/oelshaf3y/RevitNinja");
         }
     }
 }

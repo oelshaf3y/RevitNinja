@@ -72,7 +72,7 @@ namespace RevitNinja.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/RevitNinja;V1.0.0.0;component/views/rotateelementsview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/RevitNinja;component/views/rotateelementsview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\RotateElementsView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

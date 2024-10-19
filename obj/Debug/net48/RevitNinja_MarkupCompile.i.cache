@@ -16,5 +16,5 @@ TRACE;DEBUG;NETFRAMEWORK;NET48;
 26584325597
 Views\AlignView.xaml;Views\FindRFT.xaml;Views\InfoView.xaml;Views\RotateElementsView.xaml;Views\SelectByView.xaml;
 
-True
+False
 
