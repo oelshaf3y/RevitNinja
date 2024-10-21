@@ -43,9 +43,12 @@ namespace RevitNinja.Commands
                                     {
                                         try
                                         {
+                                            if (document.GetElement(view.Id) != null)
+                                            {
 
-                                            document.Delete(view.Id);
-                                            count++;
+                                                document.Delete(view.Id);
+                                                count++;
+                                            }
                                         }
                                         catch (Exception ex)
                                         {

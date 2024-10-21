@@ -19,45 +19,16 @@ namespace RevitNinja.Views
         UIDocument uidoc;
         Document doc;
         public Brush background;
+        UIFramework.ApplicationTheme theme;
         public FindRFT(UIFramework.ApplicationTheme theme, UIDocument uidoc)
         {
             InitializeComponent();
+
+
+            this.theme = theme;
             this.uidoc = uidoc;
             doc = uidoc.Document;
-            Brush border = theme.RibbonTheme.Ribbon.MainTab.PanelSeparatorBrush;
-            Brush background = theme.RibbonTheme.Ribbon.MainTab.PanelContentBackground;
-            Brush text = theme.RibbonTheme.Ribbon.MainTab.TabHeaderForeground;
-            stack.Background = background;
-            this.Foreground = text;
-            VisualUtils.FindVisualChildren<Border>(stack).ForEach(x =>
-            {
-                x.Background = border;
-
-            });
-            VisualUtils.FindVisualChildren<TextBox>(stack).ForEach(x =>
-            {
-                x.Background = background;
-                x.BorderBrush = border;
-                x.Foreground = text;
-            });
-            VisualUtils.FindVisualChildren<ComboBox>(stack).ForEach(x =>
-            {
-                x.Background = background;
-                x.BorderBrush = border;
-                x.Foreground = text;
-            });
-            VisualUtils.FindVisualChildren<Button>(stack).ForEach(x =>
-            {
-                x.Background = background;
-                x.BorderBrush = border;
-                x.Foreground = text;
-            });
-            VisualUtils.FindVisualChildren<CheckBox>(stack).ForEach(x =>
-            {
-                x.Background = background;
-                x.BorderBrush = border;
-                x.Foreground = text;
-            });
+            this.Colorize(this.theme);
         }
 
         public void click(object sender, RoutedEventArgs e)

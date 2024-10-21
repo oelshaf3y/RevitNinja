@@ -30,12 +30,12 @@ namespace RevitNinja.Utils
             });
             VisualUtils.FindVisualChildren<ComboBox>(stack).ForEach(x =>
             {
-                x.SelectionChanged += SelectionChanged;
-                double width = 0;
+                //x.SelectionChanged += SelectionChanged;
+                double width = 100;
                 foreach (ComboBoxItem item in x.Items)
                 {
-                    item.Background = background;
-                    item.Foreground = text;
+                    //item.Background = background;
+                    //item.Foreground = text;
                     item.BorderThickness = new System.Windows.Thickness(0, 0, 0, 0);
                     if (item.Content.ToString().Length * 7 > width) width = item.Content.ToString().Length * 7;
                 }
@@ -57,23 +57,23 @@ namespace RevitNinja.Utils
                 x.Foreground = text;
             });
         }
-        private static void SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Get the selected item
-            ComboBoxItem selectedItem = (ComboBoxItem)(sender as ComboBox).SelectedItem;
-            foreach (ComboBoxItem item in (sender as ComboBox).Items)
-            {
-                item.Background = background;
-                item.Foreground = text;
-                item.BorderThickness = new System.Windows.Thickness(0, 0, 0, 0);
-            }
-            if (selectedItem != null)
-            {
-                // Set the background and foreground for the selected item
-                selectedItem.Background =text;
-                selectedItem.Foreground = background;
-            }
-        }
+        //private static void SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    // Get the selected item
+        //    ComboBoxItem selectedItem = (ComboBoxItem)(sender as ComboBox).SelectedItem;
+        //    foreach (ComboBoxItem item in (sender as ComboBox).Items)
+        //    {
+        //        item.Background = background;
+        //        item.Foreground = text;
+        //        item.BorderThickness = new System.Windows.Thickness(0, 0, 0, 0);
+        //    }
+        //    if (selectedItem != null)
+        //    {
+        //        // Set the background and foreground for the selected item
+        //        selectedItem.Background =text;
+        //        selectedItem.Foreground = background;
+        //    }
+        //}
         private static void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             Button btn = sender as Button;

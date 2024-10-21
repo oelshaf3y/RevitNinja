@@ -46,7 +46,6 @@ namespace RevitNinja
             {
                 INFO = new PushButtonData("About me", "About Me", assemblyName, typeof(Info).FullName)
                 {
-                    //Image = ,
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/ninja.ico")),
                     ToolTip = "About the developer!"
                 };
@@ -54,85 +53,86 @@ namespace RevitNinja
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/captures.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/capture.ico")),
-                    ToolTip = "Save all elements that are visible in the view to be restored later."
+                    ToolTip = "Save the visibility state of all elements in the current view for future restoration."
                 };
                 RESETSTATE = new PushButtonData("Reset State", "Reset View", assemblyName, typeof(ResetState).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/ResetViewS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/ResetView.ico")),
-                    ToolTip = "Show only elements that were saved for the view."
+                    ToolTip = "Show only the elements previously saved in the view's state."
                 };
                 RESETSHEET = new PushButtonData("Reset Sheet State", "Reset Sheet", assemblyName, typeof(ResetSheet).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/resetSheetsS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/resetSheets.ico")),
-                    ToolTip = "Show only elements that were saved for every view on active sheet."
+                    ToolTip = "Restore the saved visibility states for all views on the active sheet or across all sheets."
                 };
                 ALIGN2PTS = new PushButtonData("Align Between 2 points", "Mid 2 Pts", assemblyName, typeof(AlignBetween2Pts).FullName)
                 {
-                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/MidBet2ptS.ico")),
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/midBet2ptsS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/MidBet2ptsL.ico")),
-                    ToolTip = "Align Element in the middle of two points in current view."
+                    ToolTip = "Align an element between two other elements in the current view."
                 };
                 ALIGNELEMENTS = new PushButtonData("Align Elements", "Element Align", assemblyName, typeof(AlignElements).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/alignElemsS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/alignElemsL.ico")),
-                    ToolTip = "Align Elements vertically/horizontally by element or to a point."
+                    ToolTip = "Align elements vertically or horizontally relative to another element or a point."
                 };
                 ALIGNTAGS = new PushButtonData("Align Tags", "Tags Align", assemblyName, typeof(AlignTags).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/alignTagsS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/alignTagsL.ico")),
-                    ToolTip = "Align Tags vertically/horizontally by Tag or to a point."
+                    ToolTip = " Align tags vertically or horizontally based on another tag or to a specific point."
+
                 };
                 DELETECAD = new PushButtonData("Delete CAD", "Delete DWG", assemblyName, typeof(DeleteCAD).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/deleteCADS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/deleteCADL.ico")),
-                    ToolTip = "Delete all DWG files imports or links."
+                    ToolTip = "Remove all imported or linked DWG files from the project."
                 };
                 HIDEUNHOSTED = new PushButtonData("Hide Unhosted rebar", "Hide Unhosted", assemblyName, typeof(HideUnhosted).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/hideUnhostedS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/hideUnhosted.ico")),
-                    ToolTip = "Hide all rebar elements which their host is permenantly hidden in view."
+                    ToolTip = "Automatically hide all rebar elements whose hosts are permanently hidden in the view."
                 };
                 NOS = new PushButtonData("Delete Not on sheets", "Delete unused Views", assemblyName, typeof(NotOnSheets).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOSsmall.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOS.ico")),
-                    ToolTip = "Delete all views which are not placed on sheets."
+                    ToolTip = "Delete views that are not currently placed on any sheets."
                 };
                 REBARHOST = new PushButtonData("Rebar By Host", "Hosted rebar", assemblyName, typeof(RebarByHost).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/HostS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/HostL.ico")),
-                    ToolTip = "Select all rebar elements hosted by selected element."
+                    ToolTip = "Select all rebar elements hosted by the chosen element."
                 };
                 ROTATELOCALLY = new PushButtonData("Rotate in place", "Rotate Locally", assemblyName, typeof(RotateElementsLocally).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/rotateLocallyS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/rotateLocallyL.ico")),
-                    ToolTip = "Rotate all elements locally around their center point."
+                    ToolTip = "Rotate selected elements around their individual center points."
                 };
                 SELECTBY = new PushButtonData("Select By Parameter", "Find By Param", assemblyName, typeof(SelectBy).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/byParamS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/byParamL.ico")),
-                    ToolTip = "Select All element by parameter and value."
+                    ToolTip = "Select elements based on a specified parameter and its value."
                 };
                 FINDREBAR = new PushButtonData("Rebar Search", "Find Rebar", assemblyName, typeof(ShowFindRebar).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/selectbys.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/selectbyl.ico")),
-                    ToolTip = "Find rebar by partition and rebar number."
+                    ToolTip = "Locate rebar by its partition and number."
                 };
                 TOGGLEREBAR = new PushButtonData("Toggle Rebar", "Rebar On/Off", assemblyName, typeof(ToggleRebar).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/Rebs.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/Rebl.ico")),
-                    ToolTip = "Find rebar by partition and rebar number."
+                    ToolTip = "Toggle the visibility of the rebar category in the current view."
                 };
 
             }
@@ -146,14 +146,17 @@ namespace RevitNinja
 
             try
             {
-                infoPanel.AddItem(INFO);
+                if (!(INFO is null)) infoPanel.AddItem(INFO);
+                else TaskDialog.Show("Error", "INFO");
 
-
-                viewsPanel.AddItem(SAVESTATE);
-                viewsPanel.AddItem(RESETSTATE);
-                viewsPanel.AddItem(RESETSHEET);
-                viewsPanel.AddItem(NOS);
-
+                if (!(SAVESTATE is null)) viewsPanel.AddItem(SAVESTATE);
+                else TaskDialog.Show("Error", "SAVESTATE");
+                if (!(RESETSTATE is null)) viewsPanel.AddItem(RESETSTATE);
+                else TaskDialog.Show("Error", "RESETSTATE");
+                if (!(RESETSHEET is null)) viewsPanel.AddItem(RESETSHEET);
+                else TaskDialog.Show("Error", "RESETSHEET");
+                if (!(NOS is null)) viewsPanel.AddItem(NOS);
+                else TaskDialog.Show("Error", "NOS");
 
                 if (!(HIDEUNHOSTED is null)) rebarPanel.AddItem(HIDEUNHOSTED);
                 else TaskDialog.Show("Error", "HIDEUNHOSTED");
@@ -163,8 +166,6 @@ namespace RevitNinja
                 else TaskDialog.Show("Error", "REBARHOST");
                 if (!(FINDREBAR is null)) rebarPanel.AddItem(FINDREBAR);
                 else TaskDialog.Show("Error", "FINDREBAR");
-
-
 
                 if (!(DELETECAD is null)) generalToolsPanel.AddItem(DELETECAD);
                 else TaskDialog.Show("Error", "DELETECAD");
@@ -180,11 +181,6 @@ namespace RevitNinja
                     TaskDialog.Show("Error", "ALIGNTAGS");
                 if (!(ALIGNELEMENTS is null && ALIGN2PTS is null && ALIGNTAGS is null))
                     generalToolsPanel.AddStackedItems(ALIGN2PTS, ALIGNELEMENTS, ALIGNTAGS);
-
-
-
-
-
             }
             catch (System.Exception ex)
             {
