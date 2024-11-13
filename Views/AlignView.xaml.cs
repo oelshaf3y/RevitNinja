@@ -18,6 +18,7 @@ namespace RevitNinja.Views
         public AlignView(UIFramework.ApplicationTheme theme, UIDocument uidoc)
         {
             InitializeComponent();
+
             ComboBoxItem item1 = new ComboBoxItem();
             item1.Content = "Horizontally";
             ComboBoxItem item2 = new ComboBoxItem();

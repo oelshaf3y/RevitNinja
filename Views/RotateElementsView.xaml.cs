@@ -26,6 +26,8 @@ namespace RevitNinja.Views
         public RotateElementsView(UIFramework.ApplicationTheme theme, UIDocument uidoc)
         {
             InitializeComponent();
+
+
             this.Colorize(theme);
         }
     }

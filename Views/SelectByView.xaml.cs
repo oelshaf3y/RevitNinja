@@ -22,6 +22,7 @@ namespace RevitNinja.Views
         public SelectByView(UIFramework.ApplicationTheme theme, UIDocument uidoc)
         {
             InitializeComponent();
+
             this.theme = theme;
             this.uidoc = uidoc;
             doc = uidoc.Document;
