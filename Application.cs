@@ -146,13 +146,22 @@ namespace RevitNinja
 
             try
             {
-                infoPanel.AddItem(INFO);
+                if (!(INFO is null)) infoPanel.AddItem(INFO);
+                else TaskDialog.Show("Error", "INFO");
 
 
-                viewsPanel.AddItem(SAVESTATE);
-                viewsPanel.AddItem(RESETSTATE);
-                viewsPanel.AddItem(RESETSHEET);
-                viewsPanel.AddItem(NOS);
+                if (!(SAVESTATE is null)) viewsPanel.AddItem(SAVESTATE);
+                else TaskDialog.Show("Error", "SAVESTATE");
+
+                if (!(RESETSTATE is null)) viewsPanel.AddItem(RESETSTATE);
+                else TaskDialog.Show("Error", "RESETSTATE");
+
+                if (!(RESETSHEET is null)) viewsPanel.AddItem(RESETSHEET);
+                else TaskDialog.Show("Error", "RESETSHEET");
+
+                if (!(NOS is null)) viewsPanel.AddItem(NOS);
+                else TaskDialog.Show("Error", "NOS");
+
 
 
                 if (!(HIDEUNHOSTED is null)) rebarPanel.AddItem(HIDEUNHOSTED);
