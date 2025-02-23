@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "JXdJVoP6kWY=",
+  "dgSpecHash": "J8rVV+cRiHk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Omar.Elshafey\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
+  "projectFilePath": "C:\\Users\\Mohamed.Aboukela\\Source\\Repos\\RevitNinja\\RevitNinja.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\nice3point.revit.api.uiframework\\2024.2.0\\nice3point.revit.api.uiframework.2024.2.0.nupkg.sha512"
+    "C:\\Users\\Mohamed.Aboukela\\.nuget\\packages\\nice3point.revit.api.uiframework\\2024.2.0\\nice3point.revit.api.uiframework.2024.2.0.nupkg.sha512"
   ],
   "logs": []
 }
