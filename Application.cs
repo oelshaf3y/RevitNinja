@@ -1,4 +1,5 @@
 ﻿using Autodesk.Revit.UI;
+using Revit_Ninja.Commands;
 using RevitNinja.Commands;
 using RevitNinja.Commands.ViewState;
 using RevitNinja.Utils;
@@ -20,7 +21,7 @@ namespace RevitNinja
         {
             string assemblyName = Assembly.GetExecutingAssembly().Location;
             string asPath = System.IO.Path.GetDirectoryName(assemblyName);
-            string TabName = "RevitNinja";
+            string TabName = "RSCC";
             try
             {
                 application.CreateRibbonTab(TabName);
@@ -32,16 +33,16 @@ namespace RevitNinja
                 return Result.Cancelled;
             }
             RibbonPanel infoPanel;
-            infoPanel = application.CreateRibbonPanel(TabName, "About The Developer");
+            //infoPanel = application.CreateRibbonPanel(TabName, "About The Developer");
             RibbonPanel viewsPanel;
             viewsPanel = application.CreateRibbonPanel(TabName, "Views");
             RibbonPanel rebarPanel;
-            rebarPanel = application.CreateRibbonPanel(TabName, "Rebar");
+            //rebarPanel = application.CreateRibbonPanel(TabName, "Rebar");
             RibbonPanel generalToolsPanel;
             generalToolsPanel = application.CreateRibbonPanel(TabName, "General Tools");
             PushButtonData INFO = null, SAVESTATE = null, RESETSTATE = null, RESETSHEET = null, ALIGN2PTS = null, ALIGNELEMENTS = null;
             PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null; ;
-            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null;
+            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB=null;
             try
             {
                 INFO = new PushButtonData("About me", "About Me", assemblyName, typeof(Info).FullName)
@@ -104,6 +105,12 @@ namespace RevitNinja
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOS.ico")),
                     ToolTip = "Delete views that are not currently placed on any sheets."
                 };
+                BIMSUB = new PushButtonData("BIM Submittion", "Submit BIM Model", assemblyName, typeof(BIMSubmittal).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOSsmall.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOS.ico")),
+                    ToolTip = "Delete views that are not currently placed on any sheets."
+                };
                 REBARHOST = new PushButtonData("Rebar By Host", "Hosted rebar", assemblyName, typeof(RebarByHost).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/HostS.ico")),
@@ -146,8 +153,8 @@ namespace RevitNinja
 
             try
             {
-                if (!(INFO is null)) infoPanel.AddItem(INFO);
-                else TaskDialog.Show("Error", "INFO");
+                //if (!(INFO is null)) infoPanel.AddItem(INFO);
+                //else TaskDialog.Show("Error", "INFO");
 
                 if (!(SAVESTATE is null)) viewsPanel.AddItem(SAVESTATE);
                 else TaskDialog.Show("Error", "SAVESTATE");
@@ -155,32 +162,36 @@ namespace RevitNinja
                 else TaskDialog.Show("Error", "RESETSTATE");
                 if (!(RESETSHEET is null)) viewsPanel.AddItem(RESETSHEET);
                 else TaskDialog.Show("Error", "RESETSHEET");
-                if (!(NOS is null)) viewsPanel.AddItem(NOS);
+                //if (!(NOS is null)) viewsPanel.AddItem(NOS);
+                //else TaskDialog.Show("Error", "NOS");
+
+                if (!(BIMSUB is null)) viewsPanel.AddItem(BIMSUB);
                 else TaskDialog.Show("Error", "NOS");
 
-                if (!(HIDEUNHOSTED is null)) rebarPanel.AddItem(HIDEUNHOSTED);
-                else TaskDialog.Show("Error", "HIDEUNHOSTED");
-                if (!(TOGGLEREBAR is null)) rebarPanel.AddItem(TOGGLEREBAR);
-                else TaskDialog.Show("Error", "TOGGLEREBAR");
-                if (!(REBARHOST is null)) rebarPanel.AddItem(REBARHOST);
-                else TaskDialog.Show("Error", "REBARHOST");
-                if (!(FINDREBAR is null)) rebarPanel.AddItem(FINDREBAR);
-                else TaskDialog.Show("Error", "FINDREBAR");
+
+                //if (!(HIDEUNHOSTED is null)) rebarPanel.AddItem(HIDEUNHOSTED);
+                //else TaskDialog.Show("Error", "HIDEUNHOSTED");
+                //if (!(TOGGLEREBAR is null)) rebarPanel.AddItem(TOGGLEREBAR);
+                //else TaskDialog.Show("Error", "TOGGLEREBAR");
+                //if (!(REBARHOST is null)) rebarPanel.AddItem(REBARHOST);
+                //else TaskDialog.Show("Error", "REBARHOST");
+                //if (!(FINDREBAR is null)) rebarPanel.AddItem(FINDREBAR);
+                //else TaskDialog.Show("Error", "FINDREBAR");
 
                 if (!(DELETECAD is null)) generalToolsPanel.AddItem(DELETECAD);
                 else TaskDialog.Show("Error", "DELETECAD");
-                if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
-                else TaskDialog.Show("Error", "SELECTBY");
-                if (!(ROTATELOCALLY is null)) generalToolsPanel.AddItem(ROTATELOCALLY);
-                else TaskDialog.Show("Error", "ROTATELOCALLY");
-                if (ALIGN2PTS is null)
-                    TaskDialog.Show("Error", "ALIGN2PTS");
-                if (ALIGNELEMENTS is null)
-                    TaskDialog.Show("Error", "ALIGNELEMENTS");
-                if (ALIGNTAGS is null)
-                    TaskDialog.Show("Error", "ALIGNTAGS");
-                if (!(ALIGNELEMENTS is null && ALIGN2PTS is null && ALIGNTAGS is null))
-                    generalToolsPanel.AddStackedItems(ALIGN2PTS, ALIGNELEMENTS, ALIGNTAGS);
+                //if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
+                //else TaskDialog.Show("Error", "SELECTBY");
+                //if (!(ROTATELOCALLY is null)) generalToolsPanel.AddItem(ROTATELOCALLY);
+                //else TaskDialog.Show("Error", "ROTATELOCALLY");
+                //if (ALIGN2PTS is null)
+                //    TaskDialog.Show("Error", "ALIGN2PTS");
+                //if (ALIGNELEMENTS is null)
+                //    TaskDialog.Show("Error", "ALIGNELEMENTS");
+                //if (ALIGNTAGS is null)
+                //    TaskDialog.Show("Error", "ALIGNTAGS");
+                //if (!(ALIGNELEMENTS is null && ALIGN2PTS is null && ALIGNTAGS is null))
+                //    generalToolsPanel.AddStackedItems(ALIGN2PTS, ALIGNELEMENTS, ALIGNTAGS);
             }
             catch (System.Exception ex)
             {

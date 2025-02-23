@@ -28,7 +28,9 @@ namespace RevitNinja.Commands
                 {
                     if (view == null) continue;
                     if (view.GetType() != typeof(ViewSheet) && view.GetType() != typeof(ViewSchedule)
-                        && view.ViewType != ViewType.ProjectBrowser && view.ViewType != ViewType.SystemBrowser)
+                        && view.ViewType != ViewType.ProjectBrowser && view.ViewType != ViewType.SystemBrowser
+                        && view.ViewType != ViewType.DraftingView && view.ViewType != ViewType.Legend
+                        )
                     {
                         sheetNumber = view.LookupParameter("Sheet Name");
                         if (sheetNumber == null || sheetNumber.AsValueString() == "---")
