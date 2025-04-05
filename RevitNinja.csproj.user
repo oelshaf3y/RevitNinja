@@ -5,6 +5,9 @@
     <Compile Update="Views\AlignView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\CopyFiltersView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\FindRFT.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -20,6 +23,9 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\AlignView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\CopyFiltersView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\FindRFT.xaml">

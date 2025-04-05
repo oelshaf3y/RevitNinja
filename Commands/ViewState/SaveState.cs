@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.ExtensibleStorage;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
 using System.Text;
@@ -13,9 +14,9 @@ namespace RevitNinja.Commands.ViewState
         Document doc;
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            //DataStorage storage =;
             View activeView = doc.ActiveView;
             StringBuilder sb = new StringBuilder();
             List<Element> onlyVisible = new List<Element>();
