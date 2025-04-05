@@ -5,17 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revit_Ninja.Views"
         mc:Ignorable="d"
-        Title="CopyFiltersView" Height="221" Width="385">
+        Title="CopyFiltersView" Height="489" Width="385">
     <Grid>
 
         <Label Content="Copy From:" HorizontalAlignment="Left" Margin="31,30,0,0" VerticalAlignment="Top" Height="26" Width="71"/>
         <ComboBox x:Name="copyFromCombo" Margin="43,61,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="187" Height="22"/>
         <Label Content="Copy To:" HorizontalAlignment="Left" Margin="31,88,0,0" VerticalAlignment="Top" Height="26" Width="55"/>
-        <ComboBox x:Name="copyToCombo" Margin="43,119,0,0" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="187"/>
         <CheckBox x:Name="currentViewCB" Content="Current View" HorizontalAlignment="Left" Margin="247,64,0,0" VerticalAlignment="Top" IsChecked="False" Checked="currentViewCB_Checked" Unchecked="currentViewCB_Unchecked"/>
-        <CheckBox x:Name="allViewsCB" Content="All Views" HorizontalAlignment="Left" Margin="247,122,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="allViewsCB" Content="All Views" HorizontalAlignment="Left" Margin="91,94,0,0" VerticalAlignment="Top" Checked="allViewsCB_Checked" Unchecked="allViewsCB_Unchecked"/>
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="58,0,0,11" VerticalAlignment="Bottom" Click="Button_Click"/>
-        <Button Content="Ok" HorizontalAlignment="Left" Margin="217,0,0,11" VerticalAlignment="Bottom" Width="64" Click="Button_Click_1"/>
+        <Button Content="Ok" HorizontalAlignment="Left" Margin="217,0,0,11" VerticalAlignment="Bottom" Width="64" Click="ok_button_clicked"/>
+        <ListBox x:Name="listBox" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="31,114,26,45"/>
+        <CheckBox x:Name="removeCurrent" Content="Remove Existing Filters" HorizontalAlignment="Left" Margin="168,94,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

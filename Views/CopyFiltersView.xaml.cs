@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
+using RevitNinja.Views;
 
 namespace Revit_Ninja.Views
 {
@@ -34,10 +35,14 @@ namespace Revit_Ninja.Views
             InitializeComponent();
             allViews = new FilteredElementCollector(this.doc).OfCategory(BuiltInCategory.OST_Views)
                .WhereElementIsNotElementType().Cast<View>().ToList();
-            View currentView = doc.ActiveView;
-            filters = currentView.GetFilters().ToList();
-            allViews.ForEach(view => copyFromCombo.Items.Add(view.Name+" - "+doc.GetElement(view.GetTypeId()).Name));
-            allViews.ForEach(view => copyToCombo.Items.Add(view.Name+" - " + doc.GetElement(view.GetTypeId()).Name));
+            currentView = doc.ActiveView;
+            allViews.ForEach(view => copyFromCombo.Items.Add(view.Name + " - " + doc.GetElement(view.GetTypeId()).Name));
+            foreach (View v in allViews)
+            {
+                CheckBox cb = new CheckBox();
+                cb.Content = v.Name + " - " + doc.GetElement(v.GetTypeId()).Name;
+                listBox.Items.Add(cb);
+            }
 
         }
 
@@ -46,33 +51,29 @@ namespace Revit_Ninja.Views
             this.Close();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void ok_button_clicked(object sender, RoutedEventArgs e)
         {
             using (Transaction tr = new Transaction(doc, "Add View Filter"))
             {
                 tr.Start();
-                foreach (View view in allViews)
+                View sourceView = allViews[copyFromCombo.SelectedIndex];
+                filters = sourceView.GetFilters().ToList();
+                for (int i = 0; i < listBox.Items.Count; i++)
                 {
-                    if (view.Id != currentView.Id)
+                    View selectedView = allViews[i];
+                    if (sourceView.Id == selectedView.Id) continue;
+                    if (removeCurrent.IsChecked == true)
                     {
-                        foreach (ElementId filter in filters)
-                        {
-                            if (!view.GetFilters().Contains(filter))
-                            {
-                                try
-                                {
-                                    view.AddFilter(filter);
-                                    view.SetFilterVisibility(filter, true);
-                                    OverrideGraphicSettings over = currentView.GetFilterOverrides(filter);
-                                    view.SetFilterOverrides(filter, over);
-                                }
-                                catch
-                                {
-
-                                }
-                            }
-                        }
+                        List<ElementId> viewFilters = selectedView.GetFilters().ToList();
+                        viewFilters.ForEach(id => selectedView.RemoveFilter(id));
                     }
+                    filters.ForEach(filter =>
+                    {
+                        selectedView.AddFilter(filter);
+                        selectedView.SetFilterVisibility(filter, true);
+                        OverrideGraphicSettings over = sourceView.GetFilterOverrides(filter);
+                        selectedView.SetFilterOverrides(filter, over);
+                    });
                 }
                 tr.Commit();
             }
@@ -80,15 +81,39 @@ namespace Revit_Ninja.Views
 
         private void currentViewCB_Checked(object sender, RoutedEventArgs e)
         {
-            doc.print(allViews.Where(v => v.Id == currentView.Id).First().Name);
-            //int index = allViews.IndexOf();
-            //copyFromCombo.SelectedIndex = index;
+            //doc.print();
+            int index = allViews.IndexOf(allViews.Where(v => v.Id == currentView.Id).First());
+            copyFromCombo.SelectedIndex = index;
             copyFromCombo.IsEnabled = false;
         }
 
         private void currentViewCB_Unchecked(object sender, RoutedEventArgs e)
         {
             copyFromCombo.IsEnabled = true;
+        }
+
+        private void allViewsCB_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in listBox.Items)
+            {
+                CheckBox cb = item as CheckBox;
+                if (cb != null)
+                {
+                    cb.IsChecked = true;
+                }
+            }
+        }
+
+        private void allViewsCB_Unchecked(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in listBox.Items)
+            {
+                CheckBox cb = item as CheckBox;
+                if (cb != null)
+                {
+                    cb.IsChecked = false;
+                }
+            }
         }
     }
 }

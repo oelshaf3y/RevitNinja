@@ -20,7 +20,7 @@ namespace Revit_Ninja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
             CopyFiltersView cpf = new CopyFiltersView(uidoc);
-            cpf.Show();
+            cpf.ShowDialog();
             return Result.Succeeded;
         }
     }
