@@ -99,12 +99,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2024\RevitAPI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2022\RevitAPI.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2024\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2022\RevitAPIUI.dll</HintPath>
     </Reference>
   </ItemGroup>
 

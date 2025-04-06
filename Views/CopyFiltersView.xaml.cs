@@ -34,13 +34,19 @@ namespace Revit_Ninja.Views
             this.doc = uidoc.Document;
             InitializeComponent();
             allViews = new FilteredElementCollector(this.doc).OfCategory(BuiltInCategory.OST_Views)
-               .WhereElementIsNotElementType().Cast<View>().ToList();
-            currentView = doc.ActiveView;
-            allViews.ForEach(view => copyFromCombo.Items.Add(view.Name + " - " + doc.GetElement(view.GetTypeId()).Name));
-            foreach (View v in allViews)
+               .WhereElementIsNotElementType().Cast<View>().Where(v => v !=null).Where(x => doc.GetElement(x.GetTypeId()) != null).ToList();
+            if (doc.ActiveView == null)
             {
+                doc.print("shit");
+                return;
+            }
+            currentView = doc.ActiveView;
+            allViews.ForEach(view => copyFromCombo.Items.Add(view.Name + " - " + doc.GetElement(view.GetTypeId())?.Name));
+            foreach (View v in allViews.Where(x=> doc.GetElement(x.GetTypeId()) != null))
+            {
+                if (v == null) continue;
                 CheckBox cb = new CheckBox();
-                cb.Content = v.Name + " - " + doc.GetElement(v.GetTypeId()).Name;
+                cb.Content = v.Name + " - " + doc.GetElement(v.GetTypeId())?.Name;
                 listBox.Items.Add(cb);
             }
 
@@ -60,20 +66,28 @@ namespace Revit_Ninja.Views
                 filters = sourceView.GetFilters().ToList();
                 for (int i = 0; i < listBox.Items.Count; i++)
                 {
-                    View selectedView = allViews[i];
-                    if (sourceView.Id == selectedView.Id) continue;
-                    if (removeCurrent.IsChecked == true)
+                    try
                     {
-                        List<ElementId> viewFilters = selectedView.GetFilters().ToList();
-                        viewFilters.ForEach(id => selectedView.RemoveFilter(id));
+                        View selectedView = allViews[i];
+                        if (sourceView.Id == selectedView.Id) continue;
+                        if (removeCurrent.IsChecked == true)
+                        {
+                            List<ElementId> viewFilters = selectedView.GetFilters().ToList();
+                            viewFilters.ForEach(id => selectedView.RemoveFilter(id));
+                        }
+                        filters.ForEach(filter =>
+                        {
+                            selectedView.AddFilter(filter);
+                            selectedView.SetFilterVisibility(filter, true);
+                            OverrideGraphicSettings over = sourceView.GetFilterOverrides(filter);
+                            selectedView.SetFilterOverrides(filter, over);
+                        });
                     }
-                    filters.ForEach(filter =>
+                    catch (Exception ee)
                     {
-                        selectedView.AddFilter(filter);
-                        selectedView.SetFilterVisibility(filter, true);
-                        OverrideGraphicSettings over = sourceView.GetFilterOverrides(filter);
-                        selectedView.SetFilterOverrides(filter, over);
-                    });
+
+                        doc.print(ee.Message);
+                    }
                 }
                 tr.Commit();
             }
