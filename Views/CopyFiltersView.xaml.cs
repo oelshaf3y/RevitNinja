@@ -26,15 +26,16 @@ namespace Revit_Ninja.Views
         UIDocument uidoc;
         Document doc;
         List<View> allViews = new List<View>();
+        List<ElementId> allFilters = new List<ElementId>();
         List<ElementId> filters = new List<ElementId>();
-        View currentView;
+        View currentView, sourceView;
         public CopyFiltersView(UIDocument uidoc)
         {
             this.uidoc = uidoc;
             this.doc = uidoc.Document;
             InitializeComponent();
             allViews = new FilteredElementCollector(this.doc).OfCategory(BuiltInCategory.OST_Views)
-               .WhereElementIsNotElementType().Cast<View>().Where(v => v !=null).Where(x => doc.GetElement(x.GetTypeId()) != null).ToList();
+               .WhereElementIsNotElementType().Cast<View>().Where(v => v != null).Where(x => doc.GetElement(x.GetTypeId()) != null).ToList();
             if (doc.ActiveView == null)
             {
                 doc.print("shit");
@@ -42,7 +43,7 @@ namespace Revit_Ninja.Views
             }
             currentView = doc.ActiveView;
             allViews.ForEach(view => copyFromCombo.Items.Add(view.Name + " - " + doc.GetElement(view.GetTypeId())?.Name));
-            foreach (View v in allViews.Where(x=> doc.GetElement(x.GetTypeId()) != null))
+            foreach (View v in allViews.Where(x => doc.GetElement(x.GetTypeId()) != null))
             {
                 if (v == null) continue;
                 CheckBox cb = new CheckBox();
@@ -59,13 +60,38 @@ namespace Revit_Ninja.Views
 
         private void ok_button_clicked(object sender, RoutedEventArgs e)
         {
+            filters.Clear();
+            if (copyFromCombo.SelectedIndex == -1)
+            {
+                TaskDialog.Show("Revit Ninja", "Please select a view to copy from.");
+                return;
+            }
+            if (filtersBox.Items.Cast<CheckBox>().All(x => x.IsChecked == false))
+            {
+                TaskDialog.Show("Revit Ninja", "Please select at least one filter.");
+                return;
+            }
+            if (listBox.Items.Cast<CheckBox>().All(x => x.IsChecked == false))
+            {
+                TaskDialog.Show("Revit Ninja", "Please select at least one view to copy to.");
+                return;
+            }
+            for (int i = 0; i < filtersBox.Items.Count; i++)
+            {
+                CheckBox cb = filtersBox.Items[i] as CheckBox;
+                if (cb == null) continue;
+                if (cb.IsChecked == true)
+                {
+                    filters.Add(allFilters[i]);
+                }
+            }
             using (Transaction tr = new Transaction(doc, "Add View Filter"))
             {
                 tr.Start();
-                View sourceView = allViews[copyFromCombo.SelectedIndex];
-                filters = sourceView.GetFilters().ToList();
                 for (int i = 0; i < listBox.Items.Count; i++)
                 {
+                    CheckBox cb = listBox.Items[i] as CheckBox;
+                    if (cb == null || cb.IsChecked == false) continue;
                     try
                     {
                         View selectedView = allViews[i];
@@ -128,6 +154,18 @@ namespace Revit_Ninja.Views
                     cb.IsChecked = false;
                 }
             }
+        }
+
+        private void copyFromCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            sourceView = allViews[copyFromCombo.SelectedIndex];
+            allFilters = sourceView.GetFilters().ToList();
+            allFilters.ForEach(x =>
+            {
+                CheckBox cb = new CheckBox();
+                cb.Content = doc.GetElement(x).Name;
+                filtersBox.Items.Add(cb);
+            });
         }
     }
 }
