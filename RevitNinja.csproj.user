@@ -2,6 +2,12 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="Commands\Penetration\PenetrationForm.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Commands\Penetration\WorksetsForm.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\AlignView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -22,6 +28,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Commands\Penetration\PenetrationForm.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Commands\Penetration\WorksetsForm.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\AlignView.xaml">
       <SubType>Designer</SubType>
     </Page>

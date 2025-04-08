@@ -122,9 +122,16 @@ namespace Revit_Ninja.Views
         private void currentViewCB_Checked(object sender, RoutedEventArgs e)
         {
             //doc.print();
-            int index = allViews.IndexOf(allViews.Where(v => v.Id == currentView.Id).First());
-            copyFromCombo.SelectedIndex = index;
-            copyFromCombo.IsEnabled = false;
+            try
+            {
+                int index = allViews.IndexOf(allViews.Where(v => v.Id == currentView.Id).First());
+                copyFromCombo.SelectedIndex = index;
+                copyFromCombo.IsEnabled = false;
+            }
+            catch (Exception ex)
+            {
+                doc.print(ex.Message);
+            }
         }
 
         private void currentViewCB_Unchecked(object sender, RoutedEventArgs e)

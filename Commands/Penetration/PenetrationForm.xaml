@@ -1,0 +1,39 @@
+﻿<Window x:Class="Revit_Ninja.Commands.Penetration.PenetrationForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Revit_Ninja.Commands.Penetration"
+        mc:Ignorable="d"
+        Title="PenetrationForm" Height="512" Width="800">
+    <Grid>
+        <ListBox x:Name="checkedListBox1" d:ItemsSource="{d:SampleData ItemCount=5}" Height="232" VerticalAlignment="Top"/>
+        <Label x:Name="label1" Content="Family Name ( Sleeve Family )" HorizontalAlignment="Left" Margin="10,232,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="10,263,0,0" VerticalAlignment="Top" Width="246" SelectionChanged="comboBox1_SelectionChanged"/>
+        <Label x:Name="label2" Content="Type Name ( Sleeve Family )" HorizontalAlignment="Left" Margin="10,292,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox2" HorizontalAlignment="Left" Margin="10,323,0,0" VerticalAlignment="Top" Width="246"/>
+        <Label x:Name="label3" Content="Element Type" HorizontalAlignment="Left" Margin="10,347,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox3" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="246"/>
+        <Button x:Name="button2" Content="Cancel" HorizontalAlignment="Left" Margin="20,424,0,0" VerticalAlignment="Top" Click="cancelBut_click" Width="53" RenderTransformOrigin="0.5,0.5" Height="26">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleX="0.696"/>
+                    <RotateTransform/>
+                    <TranslateTransform X="0.121"/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <Button x:Name="button1" Content="OK" HorizontalAlignment="Left" Margin="110,424,0,0" VerticalAlignment="Top" Click="okBut_click" Width="39" Height="25"/>
+        <CheckBox x:Name="checkBox1" Content="Select Elements" HorizontalAlignment="Left" Margin="185,429,0,0" VerticalAlignment="Top"/>
+        <StackPanel Width="200" Margin="565,245,35,162">
+            <RadioButton x:Name="radioButton1" Content="By Workset"/>
+            <RadioButton x:Name="radioButton2" Content="By Element Type" Checked="radioButton2_Checked" Unchecked="radioButton2_Checked" IsChecked="True"/>
+        </StackPanel>
+        <StackPanel Width="200" Margin="565,366,35,41">
+            <CheckBox x:Name="checkBox2" Content="Native Structural"/>
+            <CheckBox x:Name="checkBox3" Content="Native Mechanical"/>
+        </StackPanel>
+
+    </Grid>
+</Window>
