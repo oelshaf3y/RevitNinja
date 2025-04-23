@@ -50,6 +50,10 @@
         "net48": {
           "targetAlias": "net48",
           "dependencies": {
+            "FireSharp": {
+              "target": "Package",
+              "version": "[2.0.4, )"
+            },
             "Nice3point.Revit.Api.UIFramework": {
               "target": "Package",
               "version": "[2024.2.0, )"
