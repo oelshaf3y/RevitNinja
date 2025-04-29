@@ -22,7 +22,11 @@ namespace Revit_Ninja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-
+            if (!doc.getAccess())
+            {
+                doc.print("Please contact the developer");
+                return Result.Failed;
+            }
 
             using (TransactionGroup TG = new TransactionGroup(doc, "BIM Submittal"))
             {

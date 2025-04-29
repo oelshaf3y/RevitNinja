@@ -16,6 +16,11 @@ namespace RevitNinja.Commands.ViewState
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess())
+            {
+                doc.print("Please contact the developer");
+                return Result.Failed;
+            }
             sb = new StringBuilder();
             View activeView = doc.ActiveView;
             List<ViewSheet> sheets = new FilteredElementCollector(doc)

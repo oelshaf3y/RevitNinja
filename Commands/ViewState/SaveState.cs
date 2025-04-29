@@ -16,6 +16,11 @@ namespace RevitNinja.Commands.ViewState
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess())
+            {
+                doc.print("Please contact the developer");
+                return Result.Failed;
+            }
             //DataStorage storage =;
             View activeView = doc.ActiveView;
             StringBuilder sb = new StringBuilder();

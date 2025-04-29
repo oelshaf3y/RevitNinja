@@ -13,6 +13,9 @@ using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using FireSharp.Config;
+using FireSharp;
+using FireSharp.Interfaces;
 
 namespace RevitNinja.Utils
 {
@@ -254,6 +257,26 @@ namespace RevitNinja.Utils
             {
                 //log
                 MessageBox.Show(ex.ToString());
+            }
+        }
+
+        public static bool getAccess(this Document doc)
+        {
+            IFirebaseConfig config = new FirebaseConfig
+            {
+                AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
+                BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
+            };
+            try
+            {
+
+                IFirebaseClient client = new FirebaseClient(config);
+                return client.Get("Access\\status").ResultAs<bool>();
+            }
+            catch (Exception ex)
+            {
+                doc.print(ex.Message);
+                return false;
             }
         }
 

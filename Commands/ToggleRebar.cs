@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using RevitNinja.Utils;
 
 namespace RevitNinja.Commands
 {
@@ -14,6 +15,11 @@ namespace RevitNinja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess())
+            {
+                doc.print("Please contact the developer");
+                return Result.Failed;
+            }
             View activeView = uidoc.ActiveView;
             using (Transaction tr = new Transaction(doc, "Toggle Rebar"))
             {

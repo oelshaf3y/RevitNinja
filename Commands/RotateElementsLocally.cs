@@ -23,6 +23,11 @@ namespace RevitNinja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess())
+            {
+                doc.print("Please contact the developer");
+                return Result.Failed;
+            }
             angle = 0;
             var theme = UIFramework.ApplicationTheme.CurrentTheme;
             List<Element> selected = new List<Element>();

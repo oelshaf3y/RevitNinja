@@ -17,6 +17,11 @@ namespace Revit_Ninja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess())
+            {
+                doc.print("Please contact the developer");
+                return Result.Failed;
+            }
             Reference selection;
             XYZ pointOfSelection;
             if (!(doc.ActiveView is View3D view3D)) { TaskDialog.Show("Error", "Active View must be 3D!"); return Result.Failed; }

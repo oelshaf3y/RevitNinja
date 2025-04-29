@@ -12,15 +12,20 @@ namespace RevitNinja.Commands
         {
 
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document document = uidoc.Document;
+            Document doc = uidoc.Document;
+            if (!doc.getAccess())
+            {
+                doc.print("Please contact the developer");
+                return Result.Failed;
+            }
             int count = 0;
-            List<View> views = new FilteredElementCollector(document)
+            List<View> views = new FilteredElementCollector(doc)
                 .OfCategory(BuiltInCategory.OST_Views)
                 .WhereElementIsViewIndependent()
                 .Where(v => v.LookupParameter("View Template") != null)
                 .Cast<View>().Distinct().ToList();
             Parameter sheetNumber;
-            using (TransactionGroup tg = new TransactionGroup(document, "Delete unused views"))
+            using (TransactionGroup tg = new TransactionGroup(doc, "Delete unused views"))
             {
 
                 tg.Start();
@@ -37,24 +42,24 @@ namespace RevitNinja.Commands
                         {
                             if (view.LookupParameter("Dependency") != null && view.LookupParameter("Dependency").AsString() != "Primary")
                             {
-                                using (Transaction tx = new Transaction(document, "Delete sheet"))
+                                using (Transaction tx = new Transaction(doc, "Delete sheet"))
                                 {
 
                                     tx.Start();
-                                    if (view.Id.IntegerValue != document.ActiveView.Id.IntegerValue)
+                                    if (view.Id.IntegerValue != doc.ActiveView.Id.IntegerValue)
                                     {
                                         try
                                         {
-                                            if (document.GetElement(view.Id) != null)
+                                            if (doc.GetElement(view.Id) != null)
                                             {
 
-                                                document.Delete(view.Id);
+                                                doc.Delete(view.Id);
                                                 count++;
                                             }
                                         }
                                         catch (Exception ex)
                                         {
-                                            document.print(ex.StackTrace);
+                                            doc.print(ex.StackTrace);
                                         }
 
                                     }
@@ -70,11 +75,11 @@ namespace RevitNinja.Commands
             if (count > 0)
             {
 
-                document.print("Total of: " + count + " views have been deleted.");
+                doc.print("Total of: " + count + " views have been deleted.");
             }
             else
             {
-                document.print("No views to delete.");
+                doc.print("No views to delete.");
             }
             return Result.Succeeded;
 

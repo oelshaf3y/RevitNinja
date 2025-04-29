@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RevitNinja.Utils;
 
 namespace RevitNinja.Commands
 {
@@ -24,6 +25,11 @@ namespace RevitNinja.Commands
             sb = new StringBuilder();
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess())
+            {
+                doc.print("Please contact the developer");
+                return Result.Failed;
+            }
             options = new Options();
             options.ComputeReferences = true;
             if (doc.ActiveView is View3D)

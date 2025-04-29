@@ -16,6 +16,11 @@ namespace RevitNinja.Commands
             List<ElementId> ids = new List<ElementId>();
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess())
+            {
+                doc.print("Please contact the developer");
+                return Result.Failed;
+            }
             FilteredElementCollector AllElements = new FilteredElementCollector(doc, doc.ActiveView.Id).WhereElementIsNotElementType();
             //FilteredElementCollector allElements = new FilteredElementCollector(doc, doc.ActiveView.Id).WhereElementIsNotElementType();
             var theme = UIFramework.ApplicationTheme.CurrentTheme;
