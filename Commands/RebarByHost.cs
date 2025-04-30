@@ -16,7 +16,6 @@ namespace RevitNinja.Commands
             doc = uidoc.Document;
             if (!doc.getAccess())
             {
-                doc.print("Please contact the developer");
                 return Result.Failed;
             }
             List<ElementId> ids = new List<ElementId>();

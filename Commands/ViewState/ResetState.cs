@@ -16,7 +16,6 @@ namespace RevitNinja.Commands.ViewState
             doc = uidoc.Document;
             if (!doc.getAccess())
             {
-                doc.print("Please contact the developer");
                 return Result.Failed;
             }
             List<ElementId> ids = new List<ElementId>();

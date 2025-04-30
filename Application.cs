@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.UI;
 using Revit_Ninja.Commands;
+using Revit_Ninja.Commands.Penetration;
 using RevitNinja.Commands;
 using RevitNinja.Commands.ViewState;
 using RevitNinja.Utils;
@@ -22,6 +23,10 @@ namespace RevitNinja
             string assemblyName = Assembly.GetExecutingAssembly().Location;
             string asPath = System.IO.Path.GetDirectoryName(assemblyName);
             string TabName = "RSCC";
+            //if (!Ninja.getAccess(null))
+            //{
+            //    return Result.Failed;
+            //}
             try
             {
                 application.CreateRibbonTab(TabName);
@@ -33,7 +38,7 @@ namespace RevitNinja
                 return Result.Cancelled;
             }
             RibbonPanel infoPanel;
-            //infoPanel = application.CreateRibbonPanel(TabName, "About The Developer");
+            infoPanel = application.CreateRibbonPanel(TabName, "About The Developer");
             RibbonPanel viewsPanel;
             viewsPanel = application.CreateRibbonPanel(TabName, "Views");
             RibbonPanel rebarPanel;
@@ -42,7 +47,7 @@ namespace RevitNinja
             generalToolsPanel = application.CreateRibbonPanel(TabName, "General Tools");
             PushButtonData INFO = null, SAVESTATE = null, RESETSTATE = null, RESETSHEET = null, ALIGN2PTS = null, ALIGNELEMENTS = null;
             PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null; ;
-            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB=null;
+            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null;
             try
             {
                 INFO = new PushButtonData("About me", "About Me", assemblyName, typeof(Info).FullName)
@@ -141,6 +146,12 @@ namespace RevitNinja
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/Rebl.ico")),
                     ToolTip = "Toggle the visibility of the rebar category in the current view."
                 };
+                PENETRATION = new PushButtonData("Penetration", "Builder Work", assemblyName, typeof(Penetration).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/builderWorks.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/builderWork.ico")),
+                    ToolTip = "Creates Builder Work on local project or linked projects."
+                };
 
             }
             catch { }
@@ -153,8 +164,8 @@ namespace RevitNinja
 
             try
             {
-                //if (!(INFO is null)) infoPanel.AddItem(INFO);
-                //else TaskDialog.Show("Error", "INFO");
+                if (!(INFO is null)) infoPanel.AddItem(INFO);
+                else TaskDialog.Show("Error", "INFO");
 
                 if (!(SAVESTATE is null)) viewsPanel.AddItem(SAVESTATE);
                 else TaskDialog.Show("Error", "SAVESTATE");
@@ -180,6 +191,8 @@ namespace RevitNinja
 
                 if (!(DELETECAD is null)) generalToolsPanel.AddItem(DELETECAD);
                 else TaskDialog.Show("Error", "DELETECAD");
+                if (!(PENETRATION is null)) generalToolsPanel.AddItem(PENETRATION);
+                else TaskDialog.Show("Error", "PENETRATION");
                 //if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
                 //else TaskDialog.Show("Error", "SELECTBY");
                 //if (!(ROTATELOCALLY is null)) generalToolsPanel.AddItem(ROTATELOCALLY);

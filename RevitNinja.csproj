@@ -17,6 +17,10 @@
 	  <None Remove="Resources\alignElemsS.ico" />
 	  <None Remove="Resources\alignTagsL.ico" />
 	  <None Remove="Resources\alignTagsS.ico" />
+	  <None Remove="Resources\builderWork.ico" />
+	  <None Remove="Resources\builderWorkS.ico" />
+	  <None Remove="Resources\BW.ico" />
+	  <None Remove="Resources\BWs.ico" />
 	  <None Remove="Resources\byParamL.ico" />
 	  <None Remove="Resources\byParamS.ico" />
 	  <None Remove="Resources\capture.ico" />
@@ -55,6 +59,8 @@
 	  <Resource Include="Resources\alignElemsS.ico" />
 	  <Resource Include="Resources\alignTagsL.ico" />
 	  <Resource Include="Resources\alignTagsS.ico" />
+	  <Resource Include="Resources\builderWork.ico" />
+	  <Resource Include="Resources\builderWorkS.ico" />
 	  <Resource Include="Resources\byParamL.ico" />
 	  <Resource Include="Resources\byParamS.ico" />
 	  <Resource Include="Resources\capture.ico" />

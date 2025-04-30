@@ -24,7 +24,6 @@ namespace Revit_Ninja.Commands
             doc = uidoc.Document;
             if (!doc.getAccess())
             {
-                doc.print("Please contact the developer");
                 return Result.Failed;
             }
 

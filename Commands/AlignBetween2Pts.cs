@@ -17,9 +17,9 @@ namespace RevitNinja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+
             if (!doc.getAccess())
             {
-                doc.print("Please contact the developer");
                 return Result.Failed;
             }
             options = new Options();

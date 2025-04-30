@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using FireSharp.Config;
 using FireSharp;
 using FireSharp.Interfaces;
+using FireSharp.Response;
 
 namespace RevitNinja.Utils
 {
@@ -260,25 +261,78 @@ namespace RevitNinja.Utils
             }
         }
 
-        public static bool getAccess(this Document doc)
+        public static async Task<bool> GetAccessAsync(this Document doc)
         {
             IFirebaseConfig config = new FirebaseConfig
             {
                 AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
                 BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
             };
+
             try
             {
-
                 IFirebaseClient client = new FirebaseClient(config);
-                return client.Get("Access\\status").ResultAs<bool>();
+
+                FirebaseResponse response = await client.GetTaskAsync("Access/status");
+
+                // Check for null response or empty body (connection failed)
+                if (response == null || string.IsNullOrWhiteSpace(response.Body))
+                {
+                    TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
+                    return false;
+                }
+
+                bool access = response.ResultAs<bool>();
+
+                if (!access)
+                {
+                    TaskDialog.Show("Access Denied", "Sorry, you don't have access!\nPlease contact the developer.\nGet the info from the About tab.");
+                }
+
+                return access;
             }
             catch (Exception ex)
             {
-                doc.print(ex.Message);
+                TaskDialog.Show("Error", $"Unexpected error occurred:\n{ex.Message}");
                 return false;
             }
         }
 
-    }
+        //public static bool getAccess(this Document doc)
+        //{
+        //    return GetAccessAsync(null).Result;
+        //}
+
+
+        public static bool getAccess(this Document doc)
+{
+            IFirebaseConfig config = new FirebaseConfig
+            {
+                AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
+                BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
+            };
+            bool access = false;
+            try
+            {
+
+                IFirebaseClient client = new FirebaseClient(config);
+                FirebaseResponse fbr = client.Get("Access\\status");
+                if(fbr == null || string.IsNullOrWhiteSpace(fbr.Body))
+                {
+                    TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
+                    return false;
+                }
+                access = client.Get("Access\\status").ResultAs<bool>();
+                if (!access) TaskDialog.Show("Error", "Sorry You Don't Have Access!!!\nPlease contact the developer\nGet the info from About Tab.");
+
+                return access;
+            }
+            catch (Exception ex)
+            {
+                //doc.print(ex.Message);
+                return access;
+            }
+        }
+
+        }
 }

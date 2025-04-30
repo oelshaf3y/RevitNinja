@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Revit_Ninja.Views;
 using RevitNinja.Utils;
 
 namespace Revit_Ninja.Commands
 {
     [TransactionAttribute(TransactionMode.Manual)]
-    internal class CopyFilters : IExternalCommand
+    internal class selectColored : IExternalCommand
     {
         UIDocument uidoc;
         Document doc;
@@ -20,12 +20,22 @@ namespace Revit_Ninja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
+            if(!doc.getAccess())
             {
                 return Result.Failed;
             }
-            CopyFiltersView cpf = new CopyFiltersView(uidoc);
-            cpf.ShowDialog();
+            string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "temp.txt");
+            List<string> ids = new List<string>();
+            try
+            {
+                ids = File.ReadAllLines(filepath).ToList();
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Error", "No File Found");
+                return Result.Failed;
+            }
+            uidoc.Selection.SetElementIds(ids.Select(x => new ElementId(int.Parse(x))).ToList());
             return Result.Succeeded;
         }
     }
