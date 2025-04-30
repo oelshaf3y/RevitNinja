@@ -13,6 +13,8 @@ namespace RevitNinja
 {
     internal class Application : IExternalApplication
     {
+        string assemblyName;
+        string asPath;
         public Result OnShutdown(UIControlledApplication application)
         {
             return Result.Failed;
@@ -20,8 +22,8 @@ namespace RevitNinja
 
         public Result OnStartup(UIControlledApplication application)
         {
-            string assemblyName = Assembly.GetExecutingAssembly().Location;
-            string asPath = System.IO.Path.GetDirectoryName(assemblyName);
+            assemblyName = Assembly.GetExecutingAssembly().Location;
+            asPath = System.IO.Path.GetDirectoryName(assemblyName);
             string TabName = "RSCC";
             //if (!Ninja.getAccess(null))
             //{

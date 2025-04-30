@@ -182,15 +182,18 @@
           "ref/net48/UIFramework.dll": {}
         }
       },
-      "RestSharp/104.3.3": {
+      "RestSharp/106.5.4": {
         "type": "package",
+        "frameworkAssemblies": [
+          "System.Web"
+        ],
         "compile": {
-          "lib/net4/RestSharp.dll": {
+          "lib/net452/RestSharp.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net4/RestSharp.dll": {
+          "lib/net452/RestSharp.dll": {
             "related": ".xml"
           }
         }
@@ -577,27 +580,18 @@
         "ref/net48/UIFramework.dll"
       ]
     },
-    "RestSharp/104.3.3": {
-      "sha512": "kQ8nqxfkDL9vn27dD2T8Nud6Y15Anf6bbGf6wWp/ezu187qEUB/aCpfuClpfI4+f83J2+EzfpYyN66FfNfiB3g==",
+    "RestSharp/106.5.4": {
+      "sha512": "AOAzWW/L0YNxOLjc2foBmKFRBGNshfKXlpQrWtX9U5fArZsuiz9o9tb2QsY6uXtMEtRdKJcj3J2Mw4L6UJVaAA==",
       "type": "package",
-      "path": "restsharp/104.3.3",
+      "path": "restsharp/106.5.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "lib/net35-client/RestSharp.dll",
-        "lib/net35-client/RestSharp.xml",
-        "lib/net35/RestSharp.dll",
-        "lib/net35/RestSharp.xml",
-        "lib/net4-client/RestSharp.dll",
-        "lib/net4-client/RestSharp.xml",
-        "lib/net4/RestSharp.dll",
-        "lib/net4/RestSharp.xml",
-        "lib/sl4-wp71/RestSharp.WindowsPhone.dll",
-        "lib/sl4-wp71/RestSharp.WindowsPhone.xml",
-        "lib/sl4/RestSharp.Silverlight.dll",
-        "lib/sl4/RestSharp.Silverlight.xml",
-        "readme.txt",
-        "restsharp.104.3.3.nupkg.sha512",
+        "lib/net452/RestSharp.dll",
+        "lib/net452/RestSharp.xml",
+        "lib/netstandard2.0/RestSharp.dll",
+        "lib/netstandard2.0/RestSharp.xml",
+        "restsharp.106.5.4.nupkg.sha512",
         "restsharp.nuspec"
       ]
     },
@@ -898,7 +892,8 @@
     ".NETFramework,Version=v4.8": [
       "FireSharp >= 1.0.0",
       "FirebaseAdmin >= 3.1.0",
-      "Nice3point.Revit.Api.UIFramework >= 2024.2.0"
+      "Nice3point.Revit.Api.UIFramework >= 2024.2.0",
+      "RestSharp >= 106.5.4"
     ]
   },
   "packageFolders": {
@@ -962,10 +957,26 @@
           "Nice3point.Revit.Api.UIFramework": {
             "target": "Package",
             "version": "[2024.2.0, )"
+          },
+          "RestSharp": {
+            "target": "Package",
+            "version": "[106.5.4, )"
           }
         },
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'RestSharp' 106.5.4 has a known high severity vulnerability, https://github.com/advisories/GHSA-9pq7-rcxv-47vq",
+      "libraryId": "RestSharp",
+      "targetGraphs": [
+        ".NETFramework,Version=v4.8"
+      ]
+    }
+  ]
 }

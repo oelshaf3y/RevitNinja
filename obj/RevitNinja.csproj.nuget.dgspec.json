@@ -61,6 +61,10 @@
             "Nice3point.Revit.Api.UIFramework": {
               "target": "Package",
               "version": "[2024.2.0, )"
+            },
+            "RestSharp": {
+              "target": "Package",
+              "version": "[106.5.4, )"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"

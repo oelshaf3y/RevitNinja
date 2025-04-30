@@ -17,6 +17,9 @@ using FireSharp.Config;
 using FireSharp;
 using FireSharp.Interfaces;
 using FireSharp.Response;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using System.Text;
 
 namespace RevitNinja.Utils
 {
@@ -303,21 +306,65 @@ namespace RevitNinja.Utils
         //    return GetAccessAsync(null).Result;
         //}
 
-
-        public static bool getAccess(this Document doc)
-{
-            IFirebaseConfig config = new FirebaseConfig
+        public static void CreateAdmin()
+        {
+            string assemblyName = Assembly.GetExecutingAssembly().Location;
+            string asPath = System.IO.Path.GetDirectoryName(assemblyName);
+            string path = Path.Combine(asPath, "fbadmin.json");
+            if (!File.Exists(path))
             {
-                AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
-                BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
-            };
-            bool access = false;
+                TaskDialog.Show("Error", "File not found"); return;
+            }
             try
             {
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromFile(path),
+                    ProjectId = "revitninjadb",
+                });
+            }
+            catch (Exception ex)
+            {
+                //TaskDialog.Show("Error",ex.Message);
+            }
+        }
+        public static bool getAccess(this Document doc)
+        {
+            CreateAdmin();
+            bool access = false;
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+            {
+                if (args.Name.StartsWith("RestSharp"))
+                {
+                    try
+                    {
+                        string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        string restSharpPath = Path.Combine(assemblyFolder, "RestSharp.dll");
+
+                        if (File.Exists(restSharpPath))
+                        {
+                            return Assembly.LoadFrom(restSharpPath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TaskDialog.Show("AssemblyResolve Error", $"Failed to load RestSharp manually:\n{ex.Message}");
+                    }
+                }
+
+                return null;
+            };
+            try
+            {
+                IFirebaseConfig config = new FirebaseConfig
+                {
+                    AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
+                    BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
+                };
 
                 IFirebaseClient client = new FirebaseClient(config);
                 FirebaseResponse fbr = client.Get("Access\\status");
-                if(fbr == null || string.IsNullOrWhiteSpace(fbr.Body))
+                if (fbr == null || string.IsNullOrWhiteSpace(fbr.Body))
                 {
                     TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
                     return false;
@@ -329,10 +376,12 @@ namespace RevitNinja.Utils
             }
             catch (Exception ex)
             {
-                //doc.print(ex.Message);
+                doc.print(ex.Message);
+                Clipboard.Clear();
+                Clipboard.SetText(ex.Message);
                 return access;
             }
         }
 
-        }
+    }
 }
