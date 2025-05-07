@@ -17,16 +17,15 @@ namespace RevitNinja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess()) return Result.Failed;
+
             bool horizontal = true;
             //var options = SetupOptionsBar();
             //System.Windows.Controls.TextBox txtbox = null;
             var theme = UIFramework.ApplicationTheme.CurrentTheme;
 
-            uc = new AlignView(theme,uidoc);
+            uc = new AlignView(theme, uidoc);
 
             double offset = 0;
             bool ByElement = false;

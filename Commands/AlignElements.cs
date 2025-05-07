@@ -3,11 +3,6 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
 using RevitNinja.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RevitNinja.Commands
 {
@@ -22,11 +17,9 @@ namespace RevitNinja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                doc.print("Please contact the developer");
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess())  return Result.Failed; 
+
             bool horizontal = true;
             var theme = UIFramework.ApplicationTheme.CurrentTheme;
 

@@ -1,9 +1,8 @@
-﻿using Autodesk.Revit.Attributes;
+﻿using System.Text;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.ExtensibleStorage;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
-using System.Text;
 
 namespace RevitNinja.Commands.ViewState
 {
@@ -16,10 +15,9 @@ namespace RevitNinja.Commands.ViewState
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess())  return Result.Failed; 
+
             //DataStorage storage =;
             View activeView = doc.ActiveView;
             StringBuilder sb = new StringBuilder();
@@ -86,5 +84,5 @@ namespace RevitNinja.Commands.ViewState
             return Result.Succeeded;
         }
     }
-    
+
 }

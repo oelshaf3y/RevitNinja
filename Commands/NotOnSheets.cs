@@ -13,10 +13,9 @@ namespace RevitNinja.Commands
 
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess()) return Result.Failed;
+
             int count = 0;
             List<View> views = new FilteredElementCollector(doc)
                 .OfCategory(BuiltInCategory.OST_Views)

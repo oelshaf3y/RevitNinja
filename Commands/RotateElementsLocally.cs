@@ -3,12 +3,6 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
 using RevitNinja.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace RevitNinja.Commands
 {
@@ -23,10 +17,9 @@ namespace RevitNinja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess())  return Result.Failed; 
+
             angle = 0;
             var theme = UIFramework.ApplicationTheme.CurrentTheme;
             List<Element> selected = new List<Element>();

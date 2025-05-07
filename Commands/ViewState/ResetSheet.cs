@@ -1,8 +1,8 @@
-﻿using Autodesk.Revit.Attributes;
+﻿using System.Text;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
-using System.Text;
 
 namespace RevitNinja.Commands.ViewState
 {
@@ -16,10 +16,9 @@ namespace RevitNinja.Commands.ViewState
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess()) return Result.Failed;
+
             sb = new StringBuilder();
             View activeView = doc.ActiveView;
             List<ViewSheet> sheets = new FilteredElementCollector(doc)

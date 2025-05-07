@@ -1,10 +1,8 @@
-﻿using System;
-using Autodesk.Revit.UI;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.Attributes;
 using RevitNinja.Utils;
-using System.Windows;
 
 namespace Revit_Ninja.Commands
 {
@@ -17,10 +15,9 @@ namespace Revit_Ninja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess())  return Result.Failed; 
+
             Reference selection;
             XYZ pointOfSelection;
             if (!(doc.ActiveView is View3D view3D)) { TaskDialog.Show("Error", "Active View must be 3D!"); return Result.Failed; }

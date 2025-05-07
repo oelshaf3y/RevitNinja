@@ -1,8 +1,8 @@
-﻿using Autodesk.Revit.Attributes;
+﻿using System.Text;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.UI;
-using System.Text;
+using Autodesk.Revit.UI.Selection;
 using RevitNinja.Utils;
 
 namespace RevitNinja.Commands
@@ -18,10 +18,8 @@ namespace RevitNinja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+            //if (!doc.getAccess())  return Result.Failed;
+
             options = new Options();
             options.ComputeReferences = true;
             if (doc.ActiveView is View3D) { TaskDialog.Show("Error", "Active View Can't be 3D!"); return Result.Failed; }

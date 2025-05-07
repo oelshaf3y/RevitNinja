@@ -1,13 +1,8 @@
-﻿using Autodesk.Revit.Attributes;
+﻿using System.Text;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RevitNinja.Utils;
+using Autodesk.Revit.UI.Selection;
 
 namespace RevitNinja.Commands
 {
@@ -25,10 +20,9 @@ namespace RevitNinja.Commands
             sb = new StringBuilder();
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess()) return Result.Failed;
+
             options = new Options();
             options.ComputeReferences = true;
             if (doc.ActiveView is View3D)

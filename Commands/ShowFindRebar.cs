@@ -1,10 +1,10 @@
-﻿using Autodesk.Revit.Attributes;
+﻿using System.Windows;
+using System.Windows.Controls;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
 using RevitNinja.Views;
-using System.Windows;
-using System.Windows.Controls;
 using ComboBox = System.Windows.Controls.ComboBox;
 using TextBox = System.Windows.Controls.TextBox;
 
@@ -27,10 +27,9 @@ namespace RevitNinja.Commands
                 // External Event for the dialog to use (to post requests)
                 uidoc = commandData.Application.ActiveUIDocument;
                 doc = uidoc.Document;
-                if (!doc.getAccess())
-                {
-                    return Result.Failed;
-                }
+
+                //if (!doc.getAccess())  return Result.Failed; 
+
                 var theme = UIFramework.ApplicationTheme.CurrentTheme;
 
                 uc = new FindRFT(theme, uidoc);
@@ -53,7 +52,7 @@ namespace RevitNinja.Commands
                 else return Result.Cancelled;
                 if (panel != null)
                 {
-                    RibbonController.ShowOptionsBar(uc,true);
+                    RibbonController.ShowOptionsBar(uc, true);
                 }
                 else
                 {

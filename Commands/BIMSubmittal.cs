@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autodesk.Revit.Attributes;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
@@ -22,10 +17,8 @@ namespace Revit_Ninja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess())  return Result.Failed; 
 
             using (TransactionGroup TG = new TransactionGroup(doc, "BIM Submittal"))
             {
@@ -42,7 +35,7 @@ namespace Revit_Ninja.Commands
                 {
                     delCad();
                 }
-                
+
                 removeLinks();
                 TG.Assimilate();
             }

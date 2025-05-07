@@ -1,7 +1,6 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using System.Windows;
 using RevitNinja.Utils;
 
 namespace RevitNinja.Commands
@@ -15,10 +14,8 @@ namespace RevitNinja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess())  return Result.Failed;
 
             FilteredElementCollector fec = new FilteredElementCollector(doc).OfClass(typeof(CADLinkType));
             int count = fec.Count();

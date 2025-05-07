@@ -1,8 +1,7 @@
 ﻿using Autodesk.Revit.Attributes;
-using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
-using RevitNinja.Utils;
 
 namespace RevitNinja.Commands
 {
@@ -15,10 +14,8 @@ namespace RevitNinja.Commands
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if (!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess()) return Result.Failed;
 
             FilteredElementCollector rebar = new FilteredElementCollector(doc, doc.ActiveView.Id).OfCategory(BuiltInCategory.OST_Rebar);
             List<ElementId> ids = new List<ElementId>();

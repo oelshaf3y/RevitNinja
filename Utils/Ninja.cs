@@ -17,8 +17,8 @@ using FireSharp.Config;
 using FireSharp;
 using FireSharp.Interfaces;
 using FireSharp.Response;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
+//using FirebaseAdmin;
+//using Google.Apis.Auth.OAuth2;
 using System.Text;
 
 namespace RevitNinja.Utils
@@ -264,124 +264,102 @@ namespace RevitNinja.Utils
             }
         }
 
-        public static async Task<bool> GetAccessAsync(this Document doc)
-        {
-            IFirebaseConfig config = new FirebaseConfig
-            {
-                AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
-                BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
-            };
+        //public static async Task<bool> GetAccessAsync(this Document doc)
+        //{
+        //    IFirebaseConfig config = new FirebaseConfig
+        //    {
+        //        AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
+        //        BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
+        //    };
 
-            try
-            {
-                IFirebaseClient client = new FirebaseClient(config);
+        //    try
+        //    {
+        //        IFirebaseClient client = new FirebaseClient(config);
 
-                FirebaseResponse response = await client.GetTaskAsync("Access/status");
+        //        FirebaseResponse response = await client.GetTaskAsync("Access/status");
 
-                // Check for null response or empty body (connection failed)
-                if (response == null || string.IsNullOrWhiteSpace(response.Body))
-                {
-                    TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
-                    return false;
-                }
+        //        // Check for null response or empty body (connection failed)
+        //        if (response == null || string.IsNullOrWhiteSpace(response.Body))
+        //        {
+        //            TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
+        //            return false;
+        //        }
 
-                bool access = response.ResultAs<bool>();
+        //        bool access = response.ResultAs<bool>();
 
-                if (!access)
-                {
-                    TaskDialog.Show("Access Denied", "Sorry, you don't have access!\nPlease contact the developer.\nGet the info from the About tab.");
-                }
+        //        if (!access)
+        //        {
+        //            TaskDialog.Show("Access Denied", "Sorry, you don't have access!\nPlease contact the developer.\nGet the info from the About tab.");
+        //        }
 
-                return access;
-            }
-            catch (Exception ex)
-            {
-                TaskDialog.Show("Error", $"Unexpected error occurred:\n{ex.Message}");
-                return false;
-            }
-        }
+        //        return access;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TaskDialog.Show("Error", $"Unexpected error occurred:\n{ex.Message}");
+        //        return false;
+        //    }
+        //}
 
         //public static bool getAccess(this Document doc)
         //{
         //    return GetAccessAsync(null).Result;
         //}
 
-        public static void CreateAdmin()
-        {
-            string assemblyName = Assembly.GetExecutingAssembly().Location;
-            string asPath = System.IO.Path.GetDirectoryName(assemblyName);
-            string path = Path.Combine(asPath, "fbadmin.json");
-            if (!File.Exists(path))
-            {
-                TaskDialog.Show("Error", "File not found"); return;
-            }
-            try
-            {
-                FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromFile(path),
-                    ProjectId = "revitninjadb",
-                });
-            }
-            catch (Exception ex)
-            {
-                //TaskDialog.Show("Error",ex.Message);
-            }
-        }
-        public static bool getAccess(this Document doc)
-        {
-            CreateAdmin();
-            bool access = false;
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
-            {
-                if (args.Name.StartsWith("RestSharp"))
-                {
-                    try
-                    {
-                        string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                        string restSharpPath = Path.Combine(assemblyFolder, "RestSharp.dll");
+        //public static void CreateAdmin()
+        //{
+        //    string assemblyName = Assembly.GetExecutingAssembly().Location;
+        //    string asPath = System.IO.Path.GetDirectoryName(assemblyName);
+        //    string path = Path.Combine(asPath, "fbadmin.json");
+        //    if (!File.Exists(path))
+        //    {
+        //        TaskDialog.Show("Error", "File not found"); return;
+        //    }
+        //    try
+        //    {
+        //        FirebaseApp.Create(new AppOptions()
+        //        {
+        //            Credential = GoogleCredential.FromFile(path),
+        //            ProjectId = "revitninjadb",
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //TaskDialog.Show("Error",ex.Message);
+        //    }
+        //}
+        //public static bool getAccess(this Document doc)
+        //{
+        //    //CreateAdmin();
+        //    bool access = false;
+        //    try
+        //    {
+        //        IFirebaseConfig config = new FirebaseConfig
+        //        {
+        //            AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
+        //            BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
+        //        };
 
-                        if (File.Exists(restSharpPath))
-                        {
-                            return Assembly.LoadFrom(restSharpPath);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        TaskDialog.Show("AssemblyResolve Error", $"Failed to load RestSharp manually:\n{ex.Message}");
-                    }
-                }
+        //        IFirebaseClient client = new FirebaseClient(config);
+        //        FirebaseResponse fbr = client.Get("Access\\status");
+        //        if (fbr == null || string.IsNullOrWhiteSpace(fbr.Body))
+        //        {
+        //            TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
+        //            return false;
+        //        }
+        //        access = client.Get("Access\\status").ResultAs<bool>();
+        //        if (!access) TaskDialog.Show("Error", "Sorry You Don't Have Access!!!\nPlease contact the developer\nGet the info from About Tab.");
 
-                return null;
-            };
-            try
-            {
-                IFirebaseConfig config = new FirebaseConfig
-                {
-                    AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
-                    BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
-                };
-
-                IFirebaseClient client = new FirebaseClient(config);
-                FirebaseResponse fbr = client.Get("Access\\status");
-                if (fbr == null || string.IsNullOrWhiteSpace(fbr.Body))
-                {
-                    TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
-                    return false;
-                }
-                access = client.Get("Access\\status").ResultAs<bool>();
-                if (!access) TaskDialog.Show("Error", "Sorry You Don't Have Access!!!\nPlease contact the developer\nGet the info from About Tab.");
-
-                return access;
-            }
-            catch (Exception ex)
-            {
-                doc.print(ex.Message);
-                Clipboard.Clear();
-                Clipboard.SetText(ex.Message);
-                return access;
-            }
-        }
+        //        return access;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        doc.print(ex.Message);
+        //        Clipboard.Clear();
+        //        Clipboard.SetText(ex.Message);
+        //        return access;
+        //    }
+        //}
 
     }
 }

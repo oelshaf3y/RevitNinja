@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Electrical;
 using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.DB.Plumbing;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.UI;
-using System.Windows.Controls;
-using System.Windows;
+using Autodesk.Revit.UI.Selection;
 using RevitNinja.Utils;
 
 namespace Revit_Ninja.Commands.Penetration
@@ -41,10 +35,9 @@ namespace Revit_Ninja.Commands.Penetration
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-            if(!doc.getAccess())
-            {
-                return Result.Failed;
-            }
+
+            //if (!doc.getAccess()) return Result.Failed; 
+
             app = commandData.Application.Application.Create;
             diasDR = new List<double>() { 15, 20, 25, 32, 40, 50, 75, 110, 160, 200, 250, 315, 355 };
             sb = new StringBuilder();
@@ -581,7 +574,7 @@ namespace Revit_Ninja.Commands.Penetration
             return worksets;
         }
 
-        
+
 
         private void getLinkedElements()
         {

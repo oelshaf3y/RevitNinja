@@ -96,10 +96,12 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
+    <PackageReference Include="Costura.Fody" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="FireSharp" Version="1.0.0" />
     <PackageReference Include="Nice3point.Revit.Api.UIFramework" Version="2024.2.0" />
-    <PackageReference Include="RestSharp" Version="106.5.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -143,10 +145,5 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-
-	<Target Name="ILMerge">
-		<!-- the ILMergePath property points to the location of ILMerge.exe console application -->
-		<Exec Command="$(ILMergeConsolePath) /out:RevitNinja.dll FireSharp.dll FirebaseAdmin.dll" />
-	</Target>
 
 </Project>
