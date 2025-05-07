@@ -36,7 +36,7 @@ namespace Revit_Ninja.Commands.Penetration
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //if (!doc.getAccess()) return Result.Failed; 
+            if (!doc.getAccess()) return Result.Failed;
 
             app = commandData.Application.Application.Create;
             diasDR = new List<double>() { 15, 20, 25, 32, 40, 50, 75, 110, 160, 200, 250, 315, 355 };

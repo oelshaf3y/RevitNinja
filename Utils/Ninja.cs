@@ -328,38 +328,38 @@ namespace RevitNinja.Utils
         //        //TaskDialog.Show("Error",ex.Message);
         //    }
         //}
-        //public static bool getAccess(this Document doc)
-        //{
-        //    //CreateAdmin();
-        //    bool access = false;
-        //    try
-        //    {
-        //        IFirebaseConfig config = new FirebaseConfig
-        //        {
-        //            AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
-        //            BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
-        //        };
+        public static bool getAccess(this Document doc)
+        {
+            //CreateAdmin();
+            bool access = false;
+            try
+            {
+                IFirebaseConfig config = new FirebaseConfig
+                {
+                    AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
+                    BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
+                };
 
-        //        IFirebaseClient client = new FirebaseClient(config);
-        //        FirebaseResponse fbr = client.Get("Access\\status");
-        //        if (fbr == null || string.IsNullOrWhiteSpace(fbr.Body))
-        //        {
-        //            TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
-        //            return false;
-        //        }
-        //        access = client.Get("Access\\status").ResultAs<bool>();
-        //        if (!access) TaskDialog.Show("Error", "Sorry You Don't Have Access!!!\nPlease contact the developer\nGet the info from About Tab.");
+                IFirebaseClient client = new FirebaseClient(config);
+                FirebaseResponse fbr = client.Get("Access\\status");
+                if (fbr == null || string.IsNullOrWhiteSpace(fbr.Body))
+                {
+                    TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
+                    return false;
+                }
+                access = client.Get("Access\\status").ResultAs<bool>();
+                if (!access) TaskDialog.Show("Error", "Sorry You Don't Have Access!!!\nPlease contact the developer\nGet the info from About Tab.");
 
-        //        return access;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        doc.print(ex.Message);
-        //        Clipboard.Clear();
-        //        Clipboard.SetText(ex.Message);
-        //        return access;
-        //    }
-        //}
+                return access;
+            }
+            catch (Exception ex)
+            {
+                doc.print(ex.Message);
+                Clipboard.Clear();
+                Clipboard.SetText(ex.Message);
+                return access;
+            }
+        }
 
     }
 }
