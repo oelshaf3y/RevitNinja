@@ -15,7 +15,7 @@ namespace RevitNinja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //if (!doc.getAccess()) return Result.Failed;
+            if (!doc.getAccess()) return Result.Failed;
 
             List<ElementId> ids = new List<ElementId>();
             Element SelectedElement;

@@ -17,7 +17,7 @@ namespace RevitNinja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //if (!doc.getAccess()) return Result.Failed; 
+            if (!doc.getAccess()) return Result.Failed;
 
             FilteredElementCollector AllElements = new FilteredElementCollector(doc, doc.ActiveView.Id).WhereElementIsNotElementType();
             //FilteredElementCollector allElements = new FilteredElementCollector(doc, doc.ActiveView.Id).WhereElementIsNotElementType();

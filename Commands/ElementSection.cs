@@ -3,6 +3,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using RevitNinja.Utils;
 
 namespace RevitNinja.Commands
 {
@@ -21,7 +22,7 @@ namespace RevitNinja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //if (!doc.getAccess()) return Result.Failed;
+            if (!doc.getAccess()) return Result.Failed;
 
             options = new Options();
             options.ComputeReferences = true;

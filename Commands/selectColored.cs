@@ -2,6 +2,7 @@
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using RevitNinja.Utils;
 
 namespace Revit_Ninja.Commands
 {
@@ -15,7 +16,7 @@ namespace Revit_Ninja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //if (!doc.getAccess())  return Result.Failed; 
+            if (!doc.getAccess())  return Result.Failed;
 
             string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "temp.txt");
             List<string> ids = new List<string>();

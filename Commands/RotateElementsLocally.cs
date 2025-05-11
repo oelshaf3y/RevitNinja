@@ -18,7 +18,7 @@ namespace RevitNinja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //if (!doc.getAccess())  return Result.Failed; 
+            if (!doc.getAccess())  return Result.Failed;
 
             angle = 0;
             var theme = UIFramework.ApplicationTheme.CurrentTheme;

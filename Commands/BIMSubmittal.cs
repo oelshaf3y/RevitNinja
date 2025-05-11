@@ -18,7 +18,7 @@ namespace Revit_Ninja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //if (!doc.getAccess())  return Result.Failed; 
+            if (!doc.getAccess())  return Result.Failed;
 
             using (TransactionGroup TG = new TransactionGroup(doc, "BIM Submittal"))
             {

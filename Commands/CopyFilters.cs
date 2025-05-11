@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Revit_Ninja.Views;
+using RevitNinja.Utils;
 
 namespace Revit_Ninja.Commands
 {
@@ -15,7 +16,7 @@ namespace Revit_Ninja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //if (!doc.getAccess())  return Result.Failed; 
+            if (!doc.getAccess())  return Result.Failed;
 
             CopyFiltersView cpf = new CopyFiltersView(uidoc);
             cpf.ShowDialog();

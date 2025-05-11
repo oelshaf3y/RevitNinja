@@ -6,7 +6,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
 using System.IO;
-using System.Numerics;
 using Plane = Autodesk.Revit.DB.Plane;
 using System.IO.Packaging;
 using System.Reflection;
@@ -14,12 +13,9 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Navigation;
 using FireSharp.Config;
-using FireSharp;
 using FireSharp.Interfaces;
+using FireSharp;
 using FireSharp.Response;
-//using FirebaseAdmin;
-//using Google.Apis.Auth.OAuth2;
-using System.Text;
 
 namespace RevitNinja.Utils
 {
@@ -264,6 +260,10 @@ namespace RevitNinja.Utils
             }
         }
 
+
+
+
+
         //public static async Task<bool> GetAccessAsync(this Document doc)
         //{
         //    IFirebaseConfig config = new FirebaseConfig
@@ -276,7 +276,7 @@ namespace RevitNinja.Utils
         //    {
         //        IFirebaseClient client = new FirebaseClient(config);
 
-        //        FirebaseResponse response = await client.GetTaskAsync("Access/status");
+        //        FirebaseResponse response = await client.GetAsync("Access/status");
 
         //        // Check for null response or empty body (connection failed)
         //        if (response == null || string.IsNullOrWhiteSpace(response.Body))
@@ -328,9 +328,24 @@ namespace RevitNinja.Utils
         //        //TaskDialog.Show("Error",ex.Message);
         //    }
         //}
+
+
         public static bool getAccess(this Document doc)
         {
             //CreateAdmin();
+
+            var appDomain = AppDomain.CreateDomain("RestSharpIsolatedDomain");
+            appDomain.AssemblyResolve += (sender, args) =>
+            {
+                if (args.Name.StartsWith("RestSharp,"))
+                    return Assembly.LoadFrom("RestSharp105.dll");
+                return null;
+            };
+            var rest = AppDomain.CurrentDomain.GetAssemblies()
+    .FirstOrDefault(a => a.FullName.StartsWith("RestSharp"));
+            if (rest != null)
+                TaskDialog.Show("Loaded", rest.FullName + "\nFrom: " + rest.Location);
+
             bool access = false;
             try
             {
@@ -345,20 +360,21 @@ namespace RevitNinja.Utils
                 if (fbr == null || string.IsNullOrWhiteSpace(fbr.Body))
                 {
                     TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
-                    return false;
+                    access = false;
                 }
                 access = client.Get("Access\\status").ResultAs<bool>();
                 if (!access) TaskDialog.Show("Error", "Sorry You Don't Have Access!!!\nPlease contact the developer\nGet the info from About Tab.");
 
-                return access;
+                access = access;
             }
             catch (Exception ex)
             {
                 doc.print(ex.Message);
                 Clipboard.Clear();
                 Clipboard.SetText(ex.Message);
-                return access;
+                access = access;
             }
+            return access;
         }
 
     }
