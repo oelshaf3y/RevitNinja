@@ -163,6 +163,26 @@ namespace Revit_Ninja.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] coordL {
+            get {
+                object obj = ResourceManager.GetObject("coordL", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] coordS {
+            get {
+                object obj = ResourceManager.GetObject("coordS", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] deleteCADL {
             get {
                 object obj = ResourceManager.GetObject("deleteCADL", resourceCulture);
@@ -296,6 +316,16 @@ namespace Revit_Ninja.Properties {
         internal static byte[] ninja_pic {
             get {
                 object obj = ResourceManager.GetObject("ninja-pic", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ninjaDB {
+            get {
+                object obj = ResourceManager.GetObject("ninjaDB", resourceCulture);
                 return ((byte[])(obj));
             }
         }

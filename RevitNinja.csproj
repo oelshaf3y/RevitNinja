@@ -25,6 +25,8 @@
 		<None Remove="Resources\byParamS.ico" />
 		<None Remove="Resources\capture.ico" />
 		<None Remove="Resources\captures.ico" />
+		<None Remove="Resources\coordL.ico" />
+		<None Remove="Resources\coordS.ico" />
 		<None Remove="Resources\deleteCADL.ico" />
 		<None Remove="Resources\deleteCADS.ico" />
 		<None Remove="Resources\github.png" />
@@ -39,6 +41,7 @@
 		<None Remove="Resources\midBet2ptsS.ico" />
 		<None Remove="Resources\ninja-pic.png" />
 		<None Remove="Resources\ninja.ico" />
+		<None Remove="Resources\ninjaDB.exe" />
 		<None Remove="Resources\ninjaIcon.png" />
 		<None Remove="Resources\NOS.ico" />
 		<None Remove="Resources\NOSsmall.ico" />
@@ -65,6 +68,8 @@
 		<Resource Include="Resources\byParamS.ico" />
 		<Resource Include="Resources\capture.ico" />
 		<Resource Include="Resources\captures.ico" />
+		<Resource Include="Resources\coordL.ico" />
+		<Resource Include="Resources\coordS.ico" />
 		<Resource Include="Resources\deleteCADL.ico" />
 		<Resource Include="Resources\deleteCADS.ico" />
 		<Resource Include="Resources\github.png" />
@@ -79,6 +84,7 @@
 		<Resource Include="Resources\midBet2ptsS.ico" />
 		<Resource Include="Resources\ninja-pic.png" />
 		<Resource Include="Resources\ninja.ico" />
+		<EmbeddedResource Include="Resources\ninjaDB.exe" />
 		<Resource Include="Resources\ninjaIcon.png" />
 		<Resource Include="Resources\NOS.ico" />
 		<Resource Include="Resources\NOSsmall.ico" />
@@ -97,11 +103,14 @@
 
 	<ItemGroup>
 
-		<PackageReference Include="FireSharp" Version="2.0.3" />
+		<PackageReference Include="Costura.Fody" Version="6.0.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
 		<PackageReference Include="Nice3point.Revit.Api.UIFramework" Version="2024.2.0" />
-
-		<PackageReference Include="RestSharp" Version="107.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

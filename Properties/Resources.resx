@@ -232,4 +232,13 @@
   <data name="builderWorkS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\builderWorkS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ninjaDB" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ninjaDB.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="coordS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\coordS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="coordL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\coordL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

@@ -50,17 +50,19 @@
         "net48": {
           "targetAlias": "net48",
           "dependencies": {
-            "FireSharp": {
+            "Costura.Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[2.0.3, )"
+              "version": "[6.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
             },
             "Nice3point.Revit.Api.UIFramework": {
               "target": "Package",
               "version": "[2024.2.0, )"
-            },
-            "RestSharp": {
-              "target": "Package",
-              "version": "[107.0.1, )"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"

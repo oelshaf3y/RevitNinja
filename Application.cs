@@ -49,7 +49,7 @@ namespace RevitNinja
             generalToolsPanel = application.CreateRibbonPanel(TabName, "General Tools");
             PushButtonData INFO = null, SAVESTATE = null, RESETSTATE = null, RESETSHEET = null, ALIGN2PTS = null, ALIGNELEMENTS = null;
             PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null; ;
-            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null;
+            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null,COORDINATES=null;
             try
             {
                 INFO = new PushButtonData("About me", "About Me", assemblyName, typeof(Info).FullName)
@@ -154,6 +154,18 @@ namespace RevitNinja
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/builderWork.ico")),
                     ToolTip = "Creates Builder Work on local project or linked projects."
                 };
+                PENETRATION = new PushButtonData("Penetration", "Builder Work", assemblyName, typeof(Penetration).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/builderWorks.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/builderWork.ico")),
+                    ToolTip = "Creates Builder Work on local project or linked projects."
+                };
+                COORDINATES = new PushButtonData("Coordinates", "Piles Coordinates", assemblyName, typeof(Coordinates).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/coordL.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/coordS.ico")),
+                    ToolTip = "Gets the element location for the structural foundations / structural columns categories"
+                };
 
             }
             catch { }
@@ -195,6 +207,8 @@ namespace RevitNinja
                 else TaskDialog.Show("Error", "DELETECAD");
                 if (!(PENETRATION is null)) generalToolsPanel.AddItem(PENETRATION);
                 else TaskDialog.Show("Error", "PENETRATION");
+                if (!(COORDINATES is null)) generalToolsPanel.AddItem(COORDINATES);
+                else TaskDialog.Show("Error", "COORDINATES");
                 //if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
                 //else TaskDialog.Show("Error", "SELECTBY");
                 //if (!(ROTATELOCALLY is null)) generalToolsPanel.AddItem(ROTATELOCALLY);

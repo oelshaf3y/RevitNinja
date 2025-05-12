@@ -1,0 +1,18 @@
+﻿<Window x:Class="Revit_Ninja.Views.coordinates"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Revit_Ninja.Views"
+        mc:Ignorable="d"
+        Title="Get Coordinates" Height="174" Width="428">
+    <Grid>
+        <Button Content="Ok" HorizontalAlignment="Right" Margin="0,0,88,20" Height="20" VerticalAlignment="Bottom" Width="32" Click="Button_Click_1"/>
+        <Button Content="cancel" HorizontalAlignment="Right" Margin="0,0,36,20" Height="20" VerticalAlignment="Bottom" Click="Button_Click" />
+        <Label Content="Parameter for Easting:" HorizontalAlignment="Left" Margin="20,24,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="eastingCombo" HorizontalAlignment="Left" Margin="26,57,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Parameter for Northing:" HorizontalAlignment="Left" Margin="198,24,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="northingCombo" HorizontalAlignment="Left" Margin="204,57,0,0" VerticalAlignment="Top" Width="120"/>
+
+    </Grid>
+</Window>

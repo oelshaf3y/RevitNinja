@@ -12,15 +12,13 @@ using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Navigation;
-using FireSharp.Config;
-using FireSharp.Interfaces;
-using FireSharp;
-using FireSharp.Response;
+using System.Diagnostics;
 
 namespace RevitNinja.Utils
 {
     public static class Ninja
     {
+        public static string dbfile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "dbaccess.json");
         public static double meterToFeet(this double distance) => distance / 0.3048;
         public static double mmToFeet(this double distance) => distance / 304.8;
         public static double feetToMeter(this double distance) => distance * 0.3048;
@@ -261,120 +259,144 @@ namespace RevitNinja.Utils
         }
 
 
+        public static bool tryAccess(Document doc)
+        {
+            Dictionary<string, object> db = new Dictionary<string, object>();
+            string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            try
+            {
+                // Ensure directory is created successfully
+                Directory.CreateDirectory(tempDir);
+                if (!Directory.Exists(tempDir))
+                {
+                    doc.print($"Failed to create temp directory: {tempDir}");
+                    return false;
+                }
+
+                string tempExePath = Path.Combine(tempDir, "ninjaDB.exe");
+                string expectedOutputPath = Path.Combine(tempDir, "ninjadb.json");
+
+                // Extract embedded EXE
+                var assembly = Assembly.GetExecutingAssembly();
+                var resourceName = assembly.GetManifestResourceNames()
+                    .FirstOrDefault(name => name.EndsWith("ninjaDB.exe"));
+
+                if (string.IsNullOrEmpty(resourceName))
+                {
+                    return false;
+                }
+
+                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    if (stream == null)
+                    {
+                        return false;
+                    }
+
+                    // Write EXE to temp path
+                    using (FileStream fileStream = new FileStream(tempExePath, FileMode.Create))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                }
+
+                // Verify EXE was written
+                if (!File.Exists(tempExePath))
+                {
+                    return false;
+                }
+
+                // Run process
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = tempExePath,
+                        WorkingDirectory = tempDir,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
+                    }
+                };
+
+                process.Start();
+                string processOutput = process.StandardOutput.ReadToEnd();
+                string processError = process.StandardError.ReadToEnd();
+                process.WaitForExit();
 
 
+                // Check for output file
+                if (File.Exists(expectedOutputPath))
+                {
+                    string outputContent = File.ReadAllText(expectedOutputPath);
+                    db = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(outputContent);
+                    db.TryGetValue("Access", out object accessValue);
+                    db.Add("Date", DateTime.Today.Date.ToString("yyyy-MM-dd"));
+                    File.WriteAllText(dbfile, Newtonsoft.Json.JsonConvert.SerializeObject(db));
+                    return accessValue.Equals(true);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                doc.print($"Error: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                // Single cleanup point
+                try
+                {
+                    if (Directory.Exists(tempDir))
+                        Directory.Delete(tempDir, true);
+                }
+                catch (Exception ex)
+                {
+                    doc.print($"Cleanup error: {ex.Message}");
+                }
+            }
 
-        //public static async Task<bool> GetAccessAsync(this Document doc)
-        //{
-        //    IFirebaseConfig config = new FirebaseConfig
-        //    {
-        //        AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
-        //        BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
-        //    };
+        }
 
-        //    try
-        //    {
-        //        IFirebaseClient client = new FirebaseClient(config);
-
-        //        FirebaseResponse response = await client.GetAsync("Access/status");
-
-        //        // Check for null response or empty body (connection failed)
-        //        if (response == null || string.IsNullOrWhiteSpace(response.Body))
-        //        {
-        //            TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
-        //            return false;
-        //        }
-
-        //        bool access = response.ResultAs<bool>();
-
-        //        if (!access)
-        //        {
-        //            TaskDialog.Show("Access Denied", "Sorry, you don't have access!\nPlease contact the developer.\nGet the info from the About tab.");
-        //        }
-
-        //        return access;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TaskDialog.Show("Error", $"Unexpected error occurred:\n{ex.Message}");
-        //        return false;
-        //    }
-        //}
-
-        //public static bool getAccess(this Document doc)
-        //{
-        //    return GetAccessAsync(null).Result;
-        //}
-
-        //public static void CreateAdmin()
-        //{
-        //    string assemblyName = Assembly.GetExecutingAssembly().Location;
-        //    string asPath = System.IO.Path.GetDirectoryName(assemblyName);
-        //    string path = Path.Combine(asPath, "fbadmin.json");
-        //    if (!File.Exists(path))
-        //    {
-        //        TaskDialog.Show("Error", "File not found"); return;
-        //    }
-        //    try
-        //    {
-        //        FirebaseApp.Create(new AppOptions()
-        //        {
-        //            Credential = GoogleCredential.FromFile(path),
-        //            ProjectId = "revitninjadb",
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //TaskDialog.Show("Error",ex.Message);
-        //    }
-        //}
 
 
         public static bool getAccess(this Document doc)
         {
             //CreateAdmin();
-
-            var appDomain = AppDomain.CreateDomain("RestSharpIsolatedDomain");
-            appDomain.AssemblyResolve += (sender, args) =>
+            if (File.Exists(dbfile))
             {
-                if (args.Name.StartsWith("RestSharp,"))
-                    return Assembly.LoadFrom("RestSharp105.dll");
-                return null;
-            };
-            var rest = AppDomain.CurrentDomain.GetAssemblies()
-    .FirstOrDefault(a => a.FullName.StartsWith("RestSharp"));
-            if (rest != null)
-                TaskDialog.Show("Loaded", rest.FullName + "\nFrom: " + rest.Location);
-
-            bool access = false;
-            try
-            {
-                IFirebaseConfig config = new FirebaseConfig
+                Dictionary<string, object> db = new Dictionary<string, object>();
+                db = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(dbfile));
+                db.TryGetValue("Date", out object date);
+                if (date.ToString() == DateTime.Today.Date.ToString("yyyy-MM-dd"))
                 {
-                    AuthSecret = "ZKLXobGbemSReyeMOevkquqeO9mCsvaJs4ENjpbe",
-                    BasePath = "https://revitninjadb-default-rtdb.firebaseio.com/"
-                };
-
-                IFirebaseClient client = new FirebaseClient(config);
-                FirebaseResponse fbr = client.Get("Access\\status");
-                if (fbr == null || string.IsNullOrWhiteSpace(fbr.Body))
-                {
-                    TaskDialog.Show("Connection Error", "Unable to connect to the database.\nPlease check your internet connection.");
-                    access = false;
+                    db.TryGetValue("Access", out object av);
+                    if (av.Equals(true)) return true;
                 }
-                access = client.Get("Access\\status").ResultAs<bool>();
-                if (!access) TaskDialog.Show("Error", "Sorry You Don't Have Access!!!\nPlease contact the developer\nGet the info from About Tab.");
-
-                access = access;
+                else
+                {
+                    File.Delete(dbfile);
+                    if (tryAccess(doc))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
+                        return false;
+                    }
+                }
             }
-            catch (Exception ex)
+            else if (!tryAccess(doc))
             {
-                doc.print(ex.Message);
-                Clipboard.Clear();
-                Clipboard.SetText(ex.Message);
-                access = access;
+                doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
+                return false;
             }
-            return access;
+            return true;
         }
 
     }
