@@ -10,7 +10,6 @@ namespace RevitNinja.Utils
         public NinjaSelectionFilter(Func<Element, bool> validate = null)
         {
             this.filter = validate;
-
         }
         public bool AllowElement(Element elem)
         {

@@ -19,6 +19,7 @@ namespace RevitNinja.Utils
     public static class Ninja
     {
         public static string dbfile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "dbaccess.json");
+        public static string version = "1.0.1";
         public static double meterToFeet(this double distance) => distance / 0.3048;
         public static double mmToFeet(this double distance) => distance / 304.8;
         public static double feetToMeter(this double distance) => distance * 0.3048;
@@ -262,50 +263,14 @@ namespace RevitNinja.Utils
         public static bool tryAccess(Document doc)
         {
             Dictionary<string, object> db = new Dictionary<string, object>();
-            string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            string tempDir = null;
             try
             {
-                // Ensure directory is created successfully
-                Directory.CreateDirectory(tempDir);
-                if (!Directory.Exists(tempDir))
-                {
-                    doc.print($"Failed to create temp directory: {tempDir}");
-                    return false;
-                }
-
-                string tempExePath = Path.Combine(tempDir, "ninjaDB.exe");
+                string tempExePath = ExtractEmbeddedResource(doc, "ninjaDB.exe");
+                tempDir = Path.GetDirectoryName(tempExePath);
                 string expectedOutputPath = Path.Combine(tempDir, "ninjadb.json");
 
-                // Extract embedded EXE
-                var assembly = Assembly.GetExecutingAssembly();
-                var resourceName = assembly.GetManifestResourceNames()
-                    .FirstOrDefault(name => name.EndsWith("ninjaDB.exe"));
-
-                if (string.IsNullOrEmpty(resourceName))
-                {
-                    return false;
-                }
-
-                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-                {
-                    if (stream == null)
-                    {
-                        return false;
-                    }
-
-                    // Write EXE to temp path
-                    using (FileStream fileStream = new FileStream(tempExePath, FileMode.Create))
-                    {
-                        stream.CopyTo(fileStream);
-                    }
-                }
-
-                // Verify EXE was written
-                if (!File.Exists(tempExePath))
-                {
-                    return false;
-                }
-
+                if (tempExePath == null) return false;
                 // Run process
                 var process = new Process
                 {
@@ -343,7 +308,7 @@ namespace RevitNinja.Utils
             }
             catch (Exception ex)
             {
-                doc.print($"Error: {ex.Message}");
+                TaskDialog.Show("Error", $"An error occurred: {ex.Message}");
                 return false;
             }
             finally
@@ -356,13 +321,11 @@ namespace RevitNinja.Utils
                 }
                 catch (Exception ex)
                 {
-                    doc.print($"Cleanup error: {ex.Message}");
+                    TaskDialog.Show("Cleanup Error", $"An error occurred during cleanup: {ex.Message}");
                 }
             }
 
         }
-
-
 
         public static bool getAccess(this Document doc)
         {
@@ -399,5 +362,47 @@ namespace RevitNinja.Utils
             return true;
         }
 
+        public static string ExtractEmbeddedResource(this Document doc, string resourceName)
+        {
+            string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            if (!Directory.Exists(tempDir))
+            {
+                Directory.CreateDirectory(tempDir);
+                if (!Directory.Exists(tempDir))
+                {
+                    return null;
+                }
+            }
+
+            string tempExePath = Path.Combine(tempDir, resourceName);
+
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourcePath = assembly.GetManifestResourceNames()
+                .FirstOrDefault(name => name.EndsWith(resourceName));
+
+            if (string.IsNullOrEmpty(resourcePath))
+            {
+                return null;
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream == null)
+                {
+                    return null;
+                }
+
+                using (FileStream fileStream = new FileStream(tempExePath, FileMode.Create))
+                {
+                    stream.CopyTo(fileStream);
+                }
+            }
+
+            if (!File.Exists(tempExePath))
+            {
+                return null;
+            }
+            return tempExePath;
+        }
     }
 }

@@ -241,4 +241,25 @@
   <data name="coordL" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\coordL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="toggleIssuesL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toggleIssuesL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="toggleIssues" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toggleIssues.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="loadIssuesL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\loadIssuesL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="loadIssues" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\loadIssues.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="viewIssueL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewIssueL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="viewIssue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewIssue.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RevitNinja_Revizto_Clash_Ball" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RevitNinja_Revizto_Clash_Ball.rfa;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

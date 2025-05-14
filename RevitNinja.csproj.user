@@ -23,6 +23,18 @@
     <Compile Update="Views\InfoView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\IssueViewer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\ReviztoIssues\CommentViewer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\ReviztoIssues\CommentWithImage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\ReviztoIssues\PickIssueView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\RotateElementsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -55,6 +67,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\InfoView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\IssueViewer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ReviztoIssues\CommentViewer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ReviztoIssues\CommentWithImage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ReviztoIssues\PickIssueView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\RotateElementsView.xaml">

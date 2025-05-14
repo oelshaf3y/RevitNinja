@@ -1,10 +1,11 @@
 ﻿using Autodesk.Revit.UI;
 using Revit_Ninja.Commands;
 using Revit_Ninja.Commands.Penetration;
+using Revit_Ninja.Commands.ReviztoIssues;
 using RevitNinja.Commands;
 using RevitNinja.Commands.ViewState;
 using RevitNinja.Utils;
-using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -24,6 +25,25 @@ namespace RevitNinja
         {
             assemblyName = Assembly.GetExecutingAssembly().Location;
             asPath = System.IO.Path.GetDirectoryName(assemblyName);
+            Ninja.tryAccess(null);
+            if (File.Exists(Ninja.dbfile))
+            {
+
+                string jsonString = File.ReadAllText(Ninja.dbfile);
+                Dictionary<string, object> db = new Dictionary<string, object>();
+                db = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+                db.TryGetValue("Version", out object Version);
+                if (!Version.Equals(Ninja.version))
+                {
+                    TaskDialog.Show("Update?", "Please update the addin to the latest version.");
+                }
+            }
+            else
+            {
+                TaskDialog.Show("Error", "Please make sure you are connected to the internet!");
+                return Result.Failed;
+            }
+
             string TabName = "RSCC";
             //if (!Ninja.getAccess(null))
             //{
@@ -47,9 +67,13 @@ namespace RevitNinja
             //rebarPanel = application.CreateRibbonPanel(TabName, "Rebar");
             RibbonPanel generalToolsPanel;
             generalToolsPanel = application.CreateRibbonPanel(TabName, "General Tools");
+
+            RibbonPanel reviztoPanel;
+            reviztoPanel = application.CreateRibbonPanel(TabName, "Revizto Tools");
             PushButtonData INFO = null, SAVESTATE = null, RESETSTATE = null, RESETSHEET = null, ALIGN2PTS = null, ALIGNELEMENTS = null;
-            PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null; ;
-            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null,COORDINATES=null;
+            PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null;
+            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null, COORDINATES = null;
+            PushButtonData LOADISSUES = null, TOGGLEISSUES = null, PICKISSUE = null, VIEWISSUE = null;
             try
             {
                 INFO = new PushButtonData("About me", "About Me", assemblyName, typeof(Info).FullName)
@@ -162,11 +186,34 @@ namespace RevitNinja
                 };
                 COORDINATES = new PushButtonData("Coordinates", "Piles Coordinates", assemblyName, typeof(Coordinates).FullName)
                 {
-                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/coordL.ico")),
-                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/coordS.ico")),
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/coordS.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/coordL.ico")),
                     ToolTip = "Gets the element location for the structural foundations / structural columns categories"
                 };
-
+                LOADISSUES = new PushButtonData("Load Revizto Issues", "Load Issues", assemblyName, typeof(Clashes).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/loadIssues.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/loadIssuesL.ico")),
+                    ToolTip = "Load Revizto issues from excel file."
+                };
+                TOGGLEISSUES = new PushButtonData("Issues On/Off", "Toggle Issues", assemblyName, typeof(ToggleIssues).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/toggleIssues.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/toggleIssuesL.ico")),
+                    ToolTip = "Hide/Unhide Clash Balls."
+                };
+                PICKISSUE = new PushButtonData("Find Issue", "Find", assemblyName, typeof(pickIssue).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/selectbys.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/selectbyl.ico")),
+                    ToolTip = "Select Issue by issue ID."
+                };
+                VIEWISSUE = new PushButtonData("View Issue Details", "View Issue", assemblyName, typeof(ViewIssue).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/viewIssue.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/viewIssueL.ico")),
+                    ToolTip = "Expand issue to see the full details."
+                };
             }
             catch { }
 
@@ -209,6 +256,10 @@ namespace RevitNinja
                 else TaskDialog.Show("Error", "PENETRATION");
                 if (!(COORDINATES is null)) generalToolsPanel.AddItem(COORDINATES);
                 else TaskDialog.Show("Error", "COORDINATES");
+                if (!(VIEWISSUE is null)) reviztoPanel.AddItem(VIEWISSUE);
+                else TaskDialog.Show("Error", "VIEWISSUE");
+                if (!(VIEWISSUE is null)) reviztoPanel.AddStackedItems(LOADISSUES, TOGGLEISSUES, PICKISSUE);
+                else TaskDialog.Show("Error", "VIEWISSUE, TOGGLEISSUES, PICKISSUE");
                 //if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
                 //else TaskDialog.Show("Error", "SELECTBY");
                 //if (!(ROTATELOCALLY is null)) generalToolsPanel.AddItem(ROTATELOCALLY);
