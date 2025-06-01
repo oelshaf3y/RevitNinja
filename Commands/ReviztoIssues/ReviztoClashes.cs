@@ -4,14 +4,15 @@ using Autodesk.Revit.UI;
 using Microsoft.Win32;
 using RevitNinja.Utils;
 using Microsoft.Office.Interop.Excel;
-using Newtonsoft.Json;
 using Autodesk.Revit.DB.Structure;
+using System.Text.Json;
+using System.Text;
 
 
 namespace Revit_Ninja.Commands.ReviztoIssues
 {
     [Transaction(TransactionMode.Manual)]
-    internal class Clashes : IExternalCommand
+    internal class ReviztoClashes : IExternalCommand
     {
         UIDocument uidoc;
         Document doc;
@@ -98,12 +99,17 @@ namespace Revit_Ninja.Commands.ReviztoIssues
                         try
                         {
                             issue.Comments.RemoveAt(0);
-                            ball.LookupParameter("Comments").Set(JsonConvert.SerializeObject(issue.Comments.Select(x => x.ToDictionary()).ToList()));
+                            ball.LookupParameter("Comments").Set(JsonSerializer.Serialize(issue.Comments));
                         }
                         catch { }
                         try
                         {
                             ball.LookupParameter("Date").Set(issue.Date);
+                        }
+                        catch { }
+                        try
+                        {
+                            ball.LookupParameter("Reporter").Set(issue.Reporter);
                         }
                         catch { }
                         try
@@ -166,7 +172,6 @@ namespace Revit_Ninja.Commands.ReviztoIssues
 
             Application excelApp = new Application();
             Workbook workbook = null;
-
             try
             {
                 workbook = excelApp.Workbooks.Open(filePath);
@@ -185,27 +190,29 @@ namespace Revit_Ninja.Commands.ReviztoIssues
                         issues.Last().Comments.Add(new Comment
                         (
                             content,
-                             GetCellValue(usedRange, row, 9),
-                             GetCellValue(usedRange, row, 10)
+                            GetCellValue(usedRange, row, 9),
+                            GetCellValue(usedRange, row, 10)
                         ));
                     }
                     else
                     {
 
                         Issue issue = new Issue
-                        {
-                            Id = id,
-                            SnapshotLink = GetCellValue(usedRange, row, 2),
-                            Date = GetCellValue(usedRange, row, 3),
-                            Status = GetCellValue(usedRange, row, 4),
-                            Title = GetCellValue(usedRange, row, 6),
-                            Stamp = GetCellValue(usedRange, row, 15),
-                            Level = GetCellValue(usedRange, row, 20),
-                            GridLocation = GetCellValue(usedRange, row, 21),
-                            Zone = GetCellValue(usedRange, row, 25),
-                            StampTitle = GetCellValue(usedRange, row, 26),
-                            Position = GetCellValue(usedRange, row, 29)
-                        };
+                        (
+                            id,
+                            GetCellValue(usedRange, row, 2),
+                            GetCellValue(usedRange, row, 3),
+                            GetCellValue(usedRange, row, 12),
+                            GetCellValue(usedRange, row, 4),
+                            GetCellValue(usedRange, row, 6),
+                            GetCellValue(usedRange, row, 15),
+                            GetCellValue(usedRange, row, 20),
+                            GetCellValue(usedRange, row, 21),
+                            GetCellValue(usedRange, row, 25),
+                            GetCellValue(usedRange, row, 26),
+                            GetCellValue(usedRange, row, 29),
+                            null
+                        );
                         issues.Add(issue);
                     }
                 }

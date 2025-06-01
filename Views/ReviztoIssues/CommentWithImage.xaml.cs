@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Revit_Ninja.Commands.ReviztoIssues;
 
 namespace Revit_Ninja.Views.ReviztoIssues
@@ -34,8 +23,21 @@ namespace Revit_Ninja.Views.ReviztoIssues
             bi.BeginInit();
             bi.UriSource = new Uri(fullFilePath, UriKind.Absolute);
             bi.EndInit();
-
             img.Source = bi;
+            img.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) =>
+            {
+                Window imageWindow = new Window();
+                WrapPanel wrap = new WrapPanel();
+                Image img2 = new Image();
+                img2.Width = Double.NaN;
+                img2.Height = Double.NaN;
+                img2.Source = bi;
+                wrap.Children.Add(img2);
+                imageWindow.Content = wrap;
+                imageWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                imageWindow.Show();
+                //img.Width = 1000;
+            };
             imagePanel.Children.Add(img);
             providerLabel.Content = comment.Provider;
             dateLabel.Content = comment.Date;

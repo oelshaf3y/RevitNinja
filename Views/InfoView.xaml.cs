@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using RevitNinja.Utils;
 
 namespace RevitNinja.Views
 {
@@ -22,6 +23,7 @@ namespace RevitNinja.Views
         public InfoView()
         {
             InitializeComponent();
+            this.VersionLabel.Content = "Version: +" + Ninja.version;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.ExtensibleStorage;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
 
@@ -24,21 +25,37 @@ namespace RevitNinja.Commands.ViewState
                 doc.print("Active view must be a view not a sheet or a schedule");
                 return Result.Failed;
             }
-            Parameter state = activeView.LookupParameter("View State");
-            if (state == null || state.AsString() == null)
+
+            #region Using Parameter
+            //Parameter state = activeView.LookupParameter("View State");
+            //if (state == null || state.AsString() == null)
+            //{
+            //    doc.print("view state is not stored or parameter doesn't exist!");
+            //    return Result.Failed;
+            //}
+            //else
+            //{
+            //    foreach (string s in state.AsString().Split(','))
+            //    {
+            //        int a = 0;
+            //        int.TryParse(s, out a);
+            //        if (a != 0) ids.Add(new ElementId(a));
+            //    }
+
+            //}
+            #endregion
+
+            #region using DataStorage
+
+            DataStorage data = doc.getDataStorage();
+            if(data == null)
             {
-                doc.print("view state is not stored or parameter doesn't exist!");
+                doc.print("No Data Storage found for View State");
                 return Result.Failed;
             }
-            else
-            {
-                foreach (string s in state.AsString().Split(','))
-                {
-                    int a = 0;
-                    int.TryParse(s, out a);
-                    if (a != 0) ids.Add(new ElementId(a));
-                }
-            }
+
+            #endregion
+
             FilteredElementCollector collector = new FilteredElementCollector(doc, activeView.Id).WhereElementIsNotElementType();
             using (Transaction tr = new Transaction(doc, "restore view state"))
             {

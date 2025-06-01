@@ -29,6 +29,8 @@
 		<None Remove="Resources\coordS.ico" />
 		<None Remove="Resources\deleteCADL.ico" />
 		<None Remove="Resources\deleteCADS.ico" />
+		<None Remove="Resources\deleteIssuesL.ico" />
+		<None Remove="Resources\deleteIssuesS.ico" />
 		<None Remove="Resources\github.png" />
 		<None Remove="Resources\hideUnhosted.ico" />
 		<None Remove="Resources\hideUnhostedS.ico" />
@@ -90,6 +92,8 @@
 		<Resource Include="Resources\coordS.ico" />
 		<Resource Include="Resources\deleteCADL.ico" />
 		<Resource Include="Resources\deleteCADS.ico" />
+		<Resource Include="Resources\deleteIssuesL.ico" />
+		<Resource Include="Resources\deleteIssuesS.ico" />
 		<Resource Include="Resources\github.png" />
 		<Resource Include="Resources\hideUnhosted.ico" />
 		<Resource Include="Resources\hideUnhostedS.ico" />
@@ -133,9 +137,9 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-
 		<PackageReference Include="Nice3point.Revit.Api.UIFramework" Version="2024.2.0" />
+
+		<PackageReference Include="System.Text.Json" Version="9.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>

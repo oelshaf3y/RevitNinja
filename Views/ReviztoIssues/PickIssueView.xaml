@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revit_Ninja.Views.ReviztoIssues"
         mc:Ignorable="d"
-        Title="Select Revizto Issue" Height="110" Width="300">
+        Title="Select Revizto Issue" Height="110" Width="300" WindowStartupLocation="CenterScreen">
     <Grid>
         <Label Content="Issue ID:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="idBox" HorizontalAlignment="Left" Margin="10,36,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
-        <Button Content="View" HorizontalAlignment="Left" Margin="143,35,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+        <Button Content="View" HorizontalAlignment="Left" Margin="143,35,0,0" VerticalAlignment="Top" Click="Button_Click" IsDefault="True"/>
         <Button Content="Select" HorizontalAlignment="Left" Margin="186,35,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="233,35,0,0" VerticalAlignment="Top" Click="Button_Click_2"/>
 

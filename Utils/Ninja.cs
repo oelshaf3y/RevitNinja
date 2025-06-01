@@ -13,13 +13,21 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Navigation;
 using System.Diagnostics;
+using System.Text.Json;
+using Autodesk.Revit.DB.ExtensibleStorage;
+using Microsoft.Office.Interop.Excel;
+using Line = Autodesk.Revit.DB.Line;
+using Icon = System.Drawing.Icon;
 
 namespace RevitNinja.Utils
 {
     public static class Ninja
     {
         public static string dbfile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "dbaccess.json");
-        public static string version = "1.0.1";
+        public static string version = "1.0.2";
+        public static Guid dataStorageGUID = new Guid("8998EC47-2E53-472B-9663-E1817A64F76F");
+        public static DataStorage dataStorage;
+        public static Schema schema;
         public static double meterToFeet(this double distance) => distance / 0.3048;
         public static double mmToFeet(this double distance) => distance / 304.8;
         public static double feetToMeter(this double distance) => distance * 0.3048;
@@ -295,10 +303,10 @@ namespace RevitNinja.Utils
                 if (File.Exists(expectedOutputPath))
                 {
                     string outputContent = File.ReadAllText(expectedOutputPath);
-                    db = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(outputContent);
+                    db = JsonSerializer.Deserialize<Dictionary<string, object>>(outputContent);
                     db.TryGetValue("Access", out object accessValue);
                     db.Add("Date", DateTime.Today.Date.ToString("yyyy-MM-dd"));
-                    File.WriteAllText(dbfile, Newtonsoft.Json.JsonConvert.SerializeObject(db));
+                    File.WriteAllText(dbfile, JsonSerializer.Serialize(db));
                     return accessValue.Equals(true);
                 }
                 else
@@ -333,7 +341,7 @@ namespace RevitNinja.Utils
             if (File.Exists(dbfile))
             {
                 Dictionary<string, object> db = new Dictionary<string, object>();
-                db = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(dbfile));
+                db = JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(dbfile));
                 db.TryGetValue("Date", out object date);
                 if (date.ToString() == DateTime.Today.Date.ToString("yyyy-MM-dd"))
                 {
@@ -403,6 +411,84 @@ namespace RevitNinja.Utils
                 return null;
             }
             return tempExePath;
+        }
+
+        public static void createDataStorage(this Document doc)
+        {
+            using (Transaction tr = new Transaction(doc, "Create Storage"))
+            {
+                tr.Start();
+                dataStorage = DataStorage.Create(doc);
+                dataStorage.Name = "Ninja_DataStorage";
+                if (Schema.Lookup(dataStorageGUID) == null)
+                {
+                    SchemaBuilder schemaBuilder = new SchemaBuilder(dataStorageGUID);
+                    schemaBuilder.SetSchemaName("Ninja_DataStorage");
+                    schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
+                    schemaBuilder.SetWriteAccessLevel(AccessLevel.Public);
+
+                    schemaBuilder.AddSimpleField("storage", typeof(string));
+                    schema = schemaBuilder.Finish();
+                }
+                else
+                {
+                    schema = Schema.Lookup(dataStorageGUID);
+                }
+                tr.Commit();
+                tr.Dispose();
+            }
+        }
+
+        public static void setDataStorage(this Document doc, string jsonData)
+        {
+            if (dataStorage == null) dataStorage = getDataStorage(doc);
+            if (dataStorage != null)
+            {
+                Entity entity = dataStorage.GetEntity(schema);
+                using (Transaction tr = new Transaction(doc))
+                {
+                    tr.Start("Save Data");
+                    if (entity.IsValid() && entity.Schema == schema)
+                    {
+                        entity.Set("storage", jsonData);
+                        dataStorage.SetEntity(entity);
+                    }
+                    tr.Commit();
+                    tr.Dispose();
+                }
+            }
+        }
+
+        public static DataStorage getDataStorage(this Document doc)
+        {
+            schema = Schema.Lookup(dataStorageGUID);
+            if (schema == null)
+            {
+                createDataStorage(doc);
+                return dataStorage;
+            }
+            var collector = new FilteredElementCollector(doc).OfClass(typeof(DataStorage)).Cast<DataStorage>();
+            foreach (var ds in collector)
+            {
+                Entity e = ds.GetEntity(schema);
+                if (e.IsValid() && e.Schema == schema)
+                {
+                    doc.print("data storage found");
+                    return ds;
+                }
+            }
+            return null;
+        }
+
+        public static string getStoredData(this DataStorage dataStorage)
+        {
+            if (dataStorage == null) return null;
+            Entity entity = dataStorage.GetEntity(schema);
+            if (entity.IsValid() && entity.Schema == schema)
+            {
+                return entity.Get<string>("storage");
+            }
+            return null;
         }
     }
 }

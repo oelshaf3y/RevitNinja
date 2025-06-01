@@ -259,6 +259,12 @@
   <data name="viewIssue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\viewIssue.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="deleteIssuesS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\deleteIssuesS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="deleteIssuesL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\deleteIssuesL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="RevitNinja_Revizto_Clash_Ball" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RevitNinja_Revizto_Clash_Ball.rfa;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

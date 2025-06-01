@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using Newtonsoft.Json;
 using Revit_Ninja.Views;
 using RevitNinja.Utils;
 
@@ -88,20 +83,22 @@ namespace Revit_Ninja.Commands.ReviztoIssues
         }
         public static Issue convertIssueData(Element ball)
         {
-            Issue issue = new Issue()
-            {
-                Comments = Comment.fromJson(ball.LookupParameter("Comments").AsString()),
-                Date = ball.LookupParameter("Date").AsString(),
-                GridLocation = ball.LookupParameter("GridLocation").AsString(),
-                Id = ball.LookupParameter("Id").AsString(),
-                Level = ball.LookupParameter("Issue Level").AsString(),
-                SnapshotLink = ball.LookupParameter("SnapshotLink").AsString(),
-                Stamp = ball.LookupParameter("Stamp").AsString(),
-                StampTitle = ball.LookupParameter("StampTitle").AsString(),
-                Status = ball.LookupParameter("Status").AsString(),
-                Title = ball.LookupParameter("Title").AsString(),
-                Zone = ball.LookupParameter("Zone").AsString()
-            };
+            Issue issue = new Issue
+            (
+                ball.LookupParameter("Id").AsString(),
+                ball.LookupParameter("SnapshotLink").AsString(),
+                ball.LookupParameter("Date").AsString(),
+                ball.LookupParameter("Reporter").AsString(),
+                ball.LookupParameter("Status").AsString(),
+                ball.LookupParameter("Title").AsString(),
+                ball.LookupParameter("Stamp").AsString(),
+                ball.LookupParameter("Issue Level").AsString(),
+                ball.LookupParameter("GridLocation").AsString(),
+                ball.LookupParameter("Zone").AsString(),
+                ball.LookupParameter("StampTitle").AsString(),
+                null,
+                Comment.fromJson(ball.LookupParameter("Comments").AsString())
+            );
             return issue;
         }
     }

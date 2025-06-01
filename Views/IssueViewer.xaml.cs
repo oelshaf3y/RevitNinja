@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Autodesk.Revit.UI;
 using Revit_Ninja.Commands.ReviztoIssues;
 using Revit_Ninja.Views.ReviztoIssues;
 
@@ -26,8 +16,14 @@ namespace Revit_Ninja.Views
         public IssueViewer(Issue issue)
         {
             InitializeComponent();
+            if (issue == null)
+            {
+                MessageBox.Show("No issue data provided.");
+                return;
+            }
             idBox.Text = issue.Id;
             dateLabel.Content = issue.Date;
+            reporterLabel.Text = issue.Reporter;
             statusLabel.Content = issue.Status;
             titleLabel.Text = issue.Title;
             stampLabel.Content = issue.Stamp;
@@ -35,11 +31,13 @@ namespace Revit_Ninja.Views
             gridLabel.Text = issue.GridLocation;
             zoneLabel.Text = issue.Zone;
             stampTitleLabel.Text = issue.StampTitle;
-            
+
             Image img = new Image();
             img.Width = Double.NaN;
             img.Height = Double.NaN;
+
             string fullFilePath = issue.SnapshotLink;
+
             BitmapImage bi = new BitmapImage();
             bi.BeginInit();
             bi.UriSource = new Uri(fullFilePath, UriKind.Absolute);
@@ -47,6 +45,21 @@ namespace Revit_Ninja.Views
 
             img.Source = bi;
             imagePanel.Children.Add(img);
+
+            img.MouseLeftButtonDown += (object sender, MouseButtonEventArgs e) =>
+            {
+                Window imageWindow = new Window();
+                WrapPanel wrap = new WrapPanel();
+                Image img2 = new Image();
+                img2.Width = Double.NaN;
+                img2.Height = Double.NaN;
+                img2.Source = bi;
+                wrap.Children.Add(img2);
+                imageWindow.Content = wrap;
+                imageWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                imageWindow.Show();
+                //img.Width = 1000;
+            };
             foreach (Comment comment in issue.Comments)
             {
                 if (comment.Content.StartsWith("http"))

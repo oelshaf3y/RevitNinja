@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using Autodesk.Revit.UI;
 
 namespace Revit_Ninja.Commands.ReviztoIssues
 {
@@ -8,6 +11,7 @@ namespace Revit_Ninja.Commands.ReviztoIssues
         public string Id { get; set; }
         public string SnapshotLink { get; set; }
         public string Date { get; set; }
+        public string Reporter { get; set; }
         public string Status { get; set; }
         public string Title { get; set; }
         public string Stamp { get; set; }
@@ -17,23 +21,34 @@ namespace Revit_Ninja.Commands.ReviztoIssues
         public string StampTitle { get; set; }
         public string Position { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
-        public Dictionary<string, object> ToDictionary()
+
+        [JsonConstructor]
+        public Issue(string Id, string SnapshotLink, string Date, string Reporter, string Status, string Title, string Stamp,
+            string Level, string GridLocation, string Zone, string StampTitle, string Position = null, List<Comment> Comments = null)
         {
-            Dictionary<string, object> dict = new Dictionary<string, object>();
-            PropertyInfo[] properties = typeof(Issue).GetProperties();
-
-            foreach (PropertyInfo property in properties)
-            {
-                object value = property.GetValue(this);
-                dict.Add(property.Name, value ?? string.Empty); // Handle null values
-            }
-
-            return dict;
+            this.Id = Id;
+            this.SnapshotLink = SnapshotLink;
+            this.Date = Date;
+            this.Reporter = Reporter;
+            this.Status = Status;
+            this.Title = Title;
+            this.Stamp = Stamp;
+            this.Level = Level;
+            this.GridLocation = GridLocation;
+            this.Zone = Zone;
+            this.StampTitle = StampTitle;
+            this.Position = Position;
+            if (Comments != null) this.Comments = Comments;
+            else this.Comments = new List<Comment>();
         }
         public string ToJson()
         {
-            var dict = this.ToDictionary();
-            return JsonConvert.SerializeObject(dict, Formatting.Indented); // or Formatting.None
+            //var dict = this.ToDictionary();
+            return JsonSerializer.Serialize(this); // or Formatting.None
+        }
+        public static Issue fromJson(string json)
+        {
+            return JsonSerializer.Deserialize<Issue>(json);
         }
     }
 
@@ -43,36 +58,20 @@ namespace Revit_Ninja.Commands.ReviztoIssues
         public string Provider { get; set; }
         public string Date { get; set; }
 
-        public Comment(string cont,string provider,string date)
+        [JsonConstructor]
+        public Comment(string Content, string Provider, string Date)
         {
-            this.Content = cont;
-            this.Provider=provider;
-            this.Date = date;
-
-        }
-        public Dictionary<string, object> ToDictionary()
-        {
-            Dictionary<string, object> dict = new Dictionary<string, object>();
-            PropertyInfo[] properties = typeof(Comment).GetProperties();
-
-            foreach (PropertyInfo property in properties)
-            {
-                object value = property.GetValue(this);
-                dict.Add(property.Name, value ?? string.Empty); // Handle null values
-            }
-
-            return dict;
+            this.Content = Content;
+            this.Provider = Provider;
+            this.Date = Date;
         }
         public string ToJson()
         {
-            var dict = this.ToDictionary();
-            return JsonConvert.SerializeObject(dict, Formatting.Indented); // or Formatting.None
+            return JsonSerializer.Serialize(this); // or Formatting.None
         }
         public static List<Comment> fromJson(string json)
         {
-            var li = JsonConvert.DeserializeObject<List<Comment>>(json);
-            //var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            return li;
+            return JsonSerializer.Deserialize<List<Comment>>(json);
         }
 
     }

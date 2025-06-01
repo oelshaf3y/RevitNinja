@@ -3,7 +3,7 @@
 		<Name>RevitNinja</Name>
 		<Publisher>Omar O.El-Shafey</Publisher>
 		<Assembly>RevitNinja.dll</Assembly>
-		<AddInId>04DE82A6-1369-452F-9A53-AD807B59A263</AddInId>
+		<AddInId>58AB5002-2CED-42CB-B59E-AC9D56EF9498</AddInId>
 		<FullClassName>RevitNinja.Application</FullClassName>
 		<Text>O.elshaf3y|2024</Text>
 		<VendorId>Omar El-Shafey|01147985807</VendorId>

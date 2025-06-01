@@ -5,20 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revit_Ninja.Views"
         mc:Ignorable="d"
-        Title="Ninja Issue Viewer" ResizeMode="CanResizeWithGrip" Width="800" Height="581">
+        Title="Ninja Issue Viewer" ResizeMode="CanResizeWithGrip" Width="800" Height="581" WindowStartupLocation="CenterScreen">
     <Grid>
         <Label Content="Issue ID:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="idBox" HorizontalAlignment="Left" Margin="10,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="copyId" Margin="142,39,0,0" Content="Copy" HorizontalAlignment="Left" Width="43" Height="22" VerticalAlignment="Top" Click="copyId_Click"/>
-        <WrapPanel x:Name="imagePanel" Margin="10,68,0,0" Background="#FFEBEBEB" HorizontalAlignment="Left" Width="240" Height="150" VerticalAlignment="Top"/>
         <Label Content="Status:" HorizontalAlignment="Left" Margin="17,222,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="statusLabel" Content="In Progress" HorizontalAlignment="Left" Margin="70,222,0,0" VerticalAlignment="Top" Background="#FFFFCB00"/>
+        <Label x:Name="statusLabel" Content="In Progress" HorizontalAlignment="Left" Margin="70,222,0,0" VerticalAlignment="Top"/>
         <Label Content="Date:" HorizontalAlignment="Left" Margin="18,253,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
         <Label x:Name="dateLabel" Content="14/5/2025" HorizontalAlignment="Left" Margin="60,253,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
         <Label Content="Stamp:" HorizontalAlignment="Left" Margin="18,284,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
         <Label x:Name="stampLabel" Content="H202" HorizontalAlignment="Left" Margin="60,284,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
-        <Label Content="Level:" HorizontalAlignment="Left" Margin="18,315,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
-        <TextBlock x:Name="levelLabel" Text="Sea Level" HorizontalAlignment="Left" Margin="60,320,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
+        <Label Content="Level:" HorizontalAlignment="Left" Margin="18,349,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
+        <TextBlock x:Name="levelLabel" Text="Sea Level" HorizontalAlignment="Left" Margin="60,354,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
         <Label Content="Grid Location:" HorizontalAlignment="Left" Margin="18,380,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
         <TextBlock x:Name="gridLabel"  Text="Grids 50-80" HorizontalAlignment="Left" Margin="101,385,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533" Width="149"/>
         <Label Content="Zone:" HorizontalAlignment="Left" Margin="18,444,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533"/>
@@ -42,6 +41,9 @@
         </ScrollViewer>
         <Button x:Name="closeBut" Content="Close" Margin="0,0,35,10" HorizontalAlignment="Right" Width="33" Click="closeBut_Click" Height="20" VerticalAlignment="Bottom"/>
         <Button x:Name="solveBut" Content="Mark as Solved" Margin="0,0,88,10" HorizontalAlignment="Right" Width="90" Background="#FF47DD39" BorderBrush="{x:Null}" Foreground="White" Height="20" VerticalAlignment="Bottom" Click="solveBut_Click"/>
+        <WrapPanel x:Name="imagePanel" Margin="10,68,0,0" HorizontalAlignment="Left" Width="240" Height="150" VerticalAlignment="Top"/>
+        <Label Content="Reporter:" HorizontalAlignment="Left" Margin="18,315,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533" Background="{x:Null}"/>
+        <TextBlock x:Name="reporterLabel" Text="Omar Elshafey" HorizontalAlignment="Left" Margin="81,320,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.526,0.533" Background="#FF00FF9A"/>
 
     </Grid>
 </Window>
