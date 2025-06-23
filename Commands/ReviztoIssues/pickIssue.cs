@@ -21,6 +21,8 @@ namespace Revit_Ninja.Commands.ReviztoIssues
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess()) return Result.Failed;
+
             Element ball = null;
             PickIssueView picker = new PickIssueView();
             picker.ShowDialog();

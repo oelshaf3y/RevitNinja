@@ -1,4 +1,9 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -8,9 +13,8 @@ using RevitNinja.Utils;
 
 namespace Revit_Ninja.Commands.ReviztoIssues
 {
-
     [TransactionAttribute(TransactionMode.Manual)]
-    internal class ViewIssue : IExternalCommand
+    internal class movingIssue : IExternalCommand
     {
         UIDocument uidoc;
         Document doc;
@@ -19,6 +23,11 @@ namespace Revit_Ninja.Commands.ReviztoIssues
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
             if (!doc.getAccess()) return Result.Failed;
+            if (!(doc.ActiveView is View3D))
+            {
+                doc.print("Active View must be a 3D View.");
+                return Result.Cancelled;
+            }
             Element ball = null;
             List<Element> clashBalls = new List<Element>();
             try
@@ -65,23 +74,20 @@ namespace Revit_Ninja.Commands.ReviztoIssues
             }
             else
             {
-                Issue issue = convertIssueData(ball);
-                IssueViewer viewer = new IssueViewer(issue);
-                viewer.ShowDialog();
-                if (viewer.solved)
+                Reference refe = uidoc.Selection.PickObject(ObjectType.PointOnElement);
+                XYZ point = refe.GlobalPoint;
+                using (Transaction tr = new Transaction(doc, "Solve Issue"))
                 {
-                    using (Transaction tr = new Transaction(doc, "Solve Issue"))
-                    {
-                        tr.Start();
-                        ball.LookupParameter("Solved").Set(1);
-                        tr.Commit();
-                        tr.Dispose();
-                    }
+                    tr.Start();
+                    ball.Location.Move(point - ((LocationPoint)ball.Location).Point);
+                    tr.Commit();
+                    tr.Dispose();
                 }
             }
 
             return Result.Succeeded;
         }
+
         public static Issue convertIssueData(Element ball)
         {
             Issue issue = new Issue

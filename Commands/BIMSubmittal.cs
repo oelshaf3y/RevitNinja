@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.Attributes;
+﻿using System.Text;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
@@ -18,27 +19,43 @@ namespace Revit_Ninja.Commands
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            if (!doc.getAccess())  return Result.Failed;
+            if (!doc.getAccess()) return Result.Failed;
 
+            StringBuilder sb = new StringBuilder();
             using (TransactionGroup TG = new TransactionGroup(doc, "BIM Submittal"))
             {
                 TG.Start();
                 TaskDialogResult tdr = doc.YesNoMessage("are you sure you want to remove:\n\n     Links,\n     Unused Views\n     and create 2 additional views\n\nthis step can not be UNDONE!!\n©Omar Elshafey | 2025");
                 if (tdr == TaskDialogResult.No) return Result.Cancelled;
-                if (!Create3DViews())
+                try { Create3DViews(); } catch { }
+                try
                 {
-                    TG.RollBack();
-                    return Result.Cancelled;
+
+                    NOS();
                 }
-                NOS();
+                catch { sb.AppendLine("Failed to delete unused views!"); }
                 if (doc.YesNoMessage("do you want to remove all DWG ?") == TaskDialogResult.Yes)
                 {
-                    delCad();
-                }
+                    try
+                    {
 
-                removeLinks();
+                        delCad();
+                    }
+                    catch { sb.AppendLine("Failed to remove CAD drawings!"); }
+                }
+                if (doc.YesNoMessage("do you want to remove all Links ?") == TaskDialogResult.Yes)
+                {
+                    try
+                    {
+
+                        removeLinks();
+                    }
+                    catch { sb.AppendLine("Failed to remove links!"); }
+                }
                 TG.Assimilate();
             }
+            if (sb.Length > 0) doc.print(sb.ToString());
+
             return Result.Succeeded;
         }
 
@@ -50,6 +67,33 @@ namespace Revit_Ninja.Commands
             {
                 tx.Start();
 
+                #region if the views exist
+                List<View> views = new FilteredElementCollector(doc)
+                    .OfCategory(BuiltInCategory.OST_Views)
+                    .WhereElementIsViewIndependent()
+                    .Cast<View>().Where(x => x is View3D)
+                    .ToList();
+                foreach (View view in views)
+                {
+                    if (view.Name.ToLower().Contains("acc") || view.Name.ToLower().Contains("revizto"))
+                    {
+                        view.Name = "ACC/Revizto View";
+                        excluded.Add(view.Id);
+                    }
+                    else if (view.Name.ToLower().Contains("assemble"))
+                    {
+                        view.Name = "Assemble View";
+                        excluded.Add(view.Id);
+                    }
+                }
+                if (views.Any(x => x.Name == "ACC/Revizto View") && views.Any(x => x.Name == "Assemble View"))
+                {
+                    tx.Commit();
+                    return true;
+                }
+                #endregion
+
+                #region create new views
                 // Get the default 3D View type
                 ViewFamilyType viewFamilyType = new FilteredElementCollector(doc)
                     .OfClass(typeof(ViewFamilyType))
@@ -112,7 +156,7 @@ namespace Revit_Ninja.Commands
             doc.print("Additional views have been created successfully!");
             return true;
             #endregion
-
+            #endregion
         }
 
         public bool NOS()
@@ -186,20 +230,55 @@ namespace Revit_Ninja.Commands
         public bool delCad()
         {
 
-            FilteredElementCollector fec = new FilteredElementCollector(doc).OfClass(typeof(CADLinkType));
-            int count = fec.Count();
-            if (count == 0) { TaskDialog.Show("Info", "No more DWG Imports In The Project."); return true; }
+            List<CADLinkType> DWGs = new FilteredElementCollector(doc).OfClass(typeof(CADLinkType)).Cast<CADLinkType>().ToList();
+            int count = 0;
+            if (DWGs.Count() == 0) { TaskDialog.Show("Info", "No more DWG Imports In The Project."); return true; }
             else
             {
-                TaskDialogResult dia = doc.YesNoMessage($"Are You Sure You Want To Delete {count} CAD Files?\nThis CAN NOT BE UNDONE!");
+                TaskDialogResult dia = doc.YesNoMessage($"Are You Sure You Want To Delete {DWGs.Count()} CAD Files?\nThis CAN NOT BE UNDONE!");
                 if (dia == TaskDialogResult.No) return false;
             }
-            Transaction tr = new Transaction(doc, "Delete CAD Imports");
-            tr.Start();
-            doc.Delete(fec.Select(x => x.Id).ToArray());
+            using (TransactionGroup tg = new TransactionGroup(doc, "Delete Cads"))
+            {
+                tg.Start();
+                foreach (CADLinkType cad in DWGs)
+                {
+                    try
+                    {
+                        if (cad.Pinned)
+                        {
+                            using (Transaction tr = new Transaction(doc, "Unpin"))
+                            {
+                                tr.Start();
+                                cad.Pinned = false;
+                                tr.Commit();
+                            }
+                        }
+                        using (Transaction tt = new Transaction(doc, "Remove CAD"))
+                        {
+                            tt.Start();
+                            try
+                            {
+
+                                doc.Delete(cad.Id);
+                                count++;
+                            }
+                            catch (Exception ex)
+                            {
+                                //doc.print(ex.ToString());
+                            }
+                            tt.Commit();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //doc.print(ex.ToString());
+                    }
+                }
+                tg.Assimilate();
+            }
+            //doc.Delete(fec.Select(x => x.Id).ToArray());
             TaskDialog.Show("Done", $"Successfully deleted {count} CAD Files.");
-            tr.Commit();
-            tr.Dispose();
             return true;
         }
 
@@ -225,7 +304,7 @@ namespace Revit_Ninja.Commands
                     }
                     catch (Exception ex)
                     {
-                        doc.print(ex.ToString());
+                        //doc.print(ex.ToString());
                     }
                 }
                 tr.Commit();

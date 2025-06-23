@@ -10,13 +10,14 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Text.Json;
+using System.Diagnostics;
+using System.Net;
 
 namespace RevitNinja
 {
     internal class Application : IExternalApplication
     {
-        string assemblyName;
-        string asPath;
+        string assemblyName, asPath, Link;
         public Result OnShutdown(UIControlledApplication application)
         {
             return Result.Failed;
@@ -34,9 +35,31 @@ namespace RevitNinja
                 Dictionary<string, object> db = new Dictionary<string, object>();
                 db = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
                 db.TryGetValue("Version", out object Version);
+                db.TryGetValue("UpdaterLink", out object updateLink);
+                Link = updateLink.ToString();
+                Version = Version.ToString();
                 if (!Version.Equals(Ninja.version))
                 {
-                    TaskDialog.Show("Update?", "Please update the addin to the latest version.");
+                    TaskDialogResult tdr = Ninja.YesNoMessage(null, $"There's an Update to Version {Version}!\nDo you want to update to the latest version?", "Update Available");
+                    if (tdr == TaskDialogResult.Yes)
+                    {
+                        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "NinjaUpdater.exe");
+                        if (!File.Exists(path))
+                        {
+                            // 1. Download the updater
+                            using (WebClient client = new WebClient())
+                            {
+                                client.DownloadFile(Link, path);
+                            }
+                        }
+                        // 2. Launch the updater with a user-friendly message
+                        System.Diagnostics.Process.Start(new ProcessStartInfo
+                        {
+                            FileName = path,
+                            UseShellExecute = true // required for showing any UI or running elevated
+                        });
+
+                    }
                 }
             }
             else
@@ -74,7 +97,7 @@ namespace RevitNinja
             PushButtonData INFO = null, SAVESTATE = null, RESETSTATE = null, RESETSHEET = null, ALIGN2PTS = null, ALIGNELEMENTS = null;
             PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null;
             PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null, COORDINATES = null;
-            PushButtonData LOADISSUES = null, TOGGLEISSUES = null, PICKISSUE = null, VIEWISSUE = null, DELETEISSUES = null;
+            PushButtonData LOADISSUES = null, TOGGLEISSUES = null, PICKISSUE = null, VIEWISSUE = null, DELETEISSUES = null, MOVEISSUE = null;
             try
             {
                 INFO = new PushButtonData("About me", "About Me", assemblyName, typeof(Info).FullName)
@@ -221,6 +244,12 @@ namespace RevitNinja
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/DeleteIssuesL.ico")),
                     ToolTip = "Delete all imported issues."
                 };
+                MOVEISSUE = new PushButtonData("Move Issue in 3D", "Move Issue", assemblyName, typeof(movingIssue).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/MoveS.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/MoveS.ico")),
+                    ToolTip = "Move issue to selected point in 3D."
+                };
             }
             catch { }
 
@@ -237,42 +266,62 @@ namespace RevitNinja
 
                 if (!(SAVESTATE is null)) viewsPanel.AddItem(SAVESTATE);
                 else TaskDialog.Show("Error", "SAVESTATE");
+
                 if (!(RESETSTATE is null)) viewsPanel.AddItem(RESETSTATE);
                 else TaskDialog.Show("Error", "RESETSTATE");
+
                 if (!(RESETSHEET is null)) viewsPanel.AddItem(RESETSHEET);
                 else TaskDialog.Show("Error", "RESETSHEET");
+
                 //if (!(NOS is null)) viewsPanel.AddItem(NOS);
                 //else TaskDialog.Show("Error", "NOS");
+
 
                 if (!(BIMSUB is null)) viewsPanel.AddItem(BIMSUB);
                 else TaskDialog.Show("Error", "NOS");
 
 
+
                 //if (!(HIDEUNHOSTED is null)) rebarPanel.AddItem(HIDEUNHOSTED);
                 //else TaskDialog.Show("Error", "HIDEUNHOSTED");
+
                 //if (!(TOGGLEREBAR is null)) rebarPanel.AddItem(TOGGLEREBAR);
                 //else TaskDialog.Show("Error", "TOGGLEREBAR");
+
                 //if (!(REBARHOST is null)) rebarPanel.AddItem(REBARHOST);
                 //else TaskDialog.Show("Error", "REBARHOST");
+
                 //if (!(FINDREBAR is null)) rebarPanel.AddItem(FINDREBAR);
                 //else TaskDialog.Show("Error", "FINDREBAR");
 
+
                 if (!(DELETECAD is null)) generalToolsPanel.AddItem(DELETECAD);
                 else TaskDialog.Show("Error", "DELETECAD");
+
                 if (!(PENETRATION is null)) generalToolsPanel.AddItem(PENETRATION);
                 else TaskDialog.Show("Error", "PENETRATION");
+
                 if (!(COORDINATES is null)) generalToolsPanel.AddItem(COORDINATES);
                 else TaskDialog.Show("Error", "COORDINATES");
+
                 if (!(LOADISSUES is null)) reviztoPanel.AddItem(LOADISSUES);
                 else TaskDialog.Show("Error", "LOADISSUES");
+
                 if (!(VIEWISSUE is null)) reviztoPanel.AddItem(VIEWISSUE);
                 else TaskDialog.Show("Error", "VIEWISSUE");
-                if (!(VIEWISSUE is null)) reviztoPanel.AddStackedItems(PICKISSUE, TOGGLEISSUES, DELETEISSUES);
+
+                if (!(MOVEISSUE is null)) reviztoPanel.AddItem(MOVEISSUE);
+                else TaskDialog.Show("Error", "MOVEISSUE");
+
+                if (!(PICKISSUE is null || TOGGLEISSUES is null || DELETEISSUES is null)) reviztoPanel.AddStackedItems(PICKISSUE, TOGGLEISSUES, DELETEISSUES);
                 else TaskDialog.Show("Error", "PICKISSUE,TOGGLEISSUES, DELETEISSUES");
+
                 //if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
                 //else TaskDialog.Show("Error", "SELECTBY");
+
                 //if (!(ROTATELOCALLY is null)) generalToolsPanel.AddItem(ROTATELOCALLY);
                 //else TaskDialog.Show("Error", "ROTATELOCALLY");
+
                 //if (ALIGN2PTS is null)
                 //    TaskDialog.Show("Error", "ALIGN2PTS");
                 //if (ALIGNELEMENTS is null)

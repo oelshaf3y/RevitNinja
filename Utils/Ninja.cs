@@ -24,7 +24,7 @@ namespace RevitNinja.Utils
     public static class Ninja
     {
         public static string dbfile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "dbaccess.json");
-        public static string version = "1.0.2";
+        public static string version = "1.1.0";
         public static Guid dataStorageGUID = new Guid("8998EC47-2E53-472B-9663-E1817A64F76F");
         public static DataStorage dataStorage;
         public static Schema schema;
@@ -44,9 +44,11 @@ namespace RevitNinja.Utils
             MessageBox.Show(mes.ToString());
         }
 
-        public static TaskDialogResult YesNoMessage(this Document doc, object mes)
+        public static TaskDialogResult YesNoMessage(this Document doc, object mes, string Title = null)
         {
-            TaskDialog dialog = new TaskDialog("Question?")
+            if (Title == null) Title = "Question?";
+
+            TaskDialog dialog = new TaskDialog(Title)
             {
                 MainInstruction = mes.ToString(),
                 CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No
@@ -307,7 +309,11 @@ namespace RevitNinja.Utils
                     db.TryGetValue("Access", out object accessValue);
                     db.Add("Date", DateTime.Today.Date.ToString("yyyy-MM-dd"));
                     File.WriteAllText(dbfile, JsonSerializer.Serialize(db));
-                    return accessValue.Equals(true);
+                    if (accessValue.ToString().ToLower() == "true")
+                    {
+                        return true;
+                    }
+                    else return false;
                 }
                 else
                 {
@@ -346,7 +352,12 @@ namespace RevitNinja.Utils
                 if (date.ToString() == DateTime.Today.Date.ToString("yyyy-MM-dd"))
                 {
                     db.TryGetValue("Access", out object av);
-                    if (av.Equals(true)) return true;
+                    if (av.ToString().ToLower() == "true") return true;
+                    else
+                    {
+                        doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
+                        return false;
+                    }
                 }
                 else
                 {
@@ -362,12 +373,18 @@ namespace RevitNinja.Utils
                     }
                 }
             }
-            else if (!tryAccess(doc))
+            else
             {
-                doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
-                return false;
+                if (!tryAccess(doc))
+                {
+                    doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
-            return true;
         }
 
         public static string ExtractEmbeddedResource(this Document doc, string resourceName)

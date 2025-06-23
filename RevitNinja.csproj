@@ -43,6 +43,8 @@
 		<None Remove="Resources\loadIssuesL.ico" />
 		<None Remove="Resources\MidBet2ptsL.ico" />
 		<None Remove="Resources\midBet2ptsS.ico" />
+		<None Remove="Resources\MoveL.ico" />
+		<None Remove="Resources\MoveS.ico" />
 		<None Remove="Resources\ninja-pic.png" />
 		<None Remove="Resources\ninja.ico" />
 		<None Remove="Resources\ninjaDB.exe" />
@@ -106,6 +108,12 @@
 		<Resource Include="Resources\loadIssuesL.ico" />
 		<Resource Include="Resources\MidBet2ptsL.ico" />
 		<Resource Include="Resources\midBet2ptsS.ico" />
+		<Resource Include="Resources\MoveL.ico">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\MoveS.ico">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\ninja-pic.png" />
 		<Resource Include="Resources\ninja.ico" />
 		<EmbeddedResource Include="Resources\ninjaDB.exe" />

@@ -15,6 +15,8 @@ namespace Revit_Ninja.Commands.ReviztoIssues
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess()) return Result.Failed;
+
             List<Element> clashBalls = new List<Element>();
             try
             {

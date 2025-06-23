@@ -343,6 +343,26 @@ namespace Revit_Ninja.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] MoveL {
+            get {
+                object obj = ResourceManager.GetObject("MoveL", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] MoveS {
+            get {
+                object obj = ResourceManager.GetObject("MoveS", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] ninja {
             get {
                 object obj = ResourceManager.GetObject("ninja", resourceCulture);
