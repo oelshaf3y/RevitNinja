@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Net;
+using RevitNinja.Views;
 
 namespace RevitNinja
 {
@@ -40,26 +41,8 @@ namespace RevitNinja
                 Version = Version.ToString();
                 if (!Version.Equals(Ninja.version))
                 {
-                    TaskDialogResult tdr = Ninja.YesNoMessage(null, $"There's an Update to Version {Version}!\nDo you want to update to the latest version?", "Update Available");
-                    if (tdr == TaskDialogResult.Yes)
-                    {
-                        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "NinjaUpdater.exe");
-                        if (!File.Exists(path))
-                        {
-                            // 1. Download the updater
-                            using (WebClient client = new WebClient())
-                            {
-                                client.DownloadFile(Link, path);
-                            }
-                        }
-                        // 2. Launch the updater with a user-friendly message
-                        System.Diagnostics.Process.Start(new ProcessStartInfo
-                        {
-                            FileName = path,
-                            UseShellExecute = true // required for showing any UI or running elevated
-                        });
-
-                    }
+                    UpdaterView updater = new UpdaterView(Version.ToString(), Link);
+                    updater.ShowDialog();
                 }
             }
             else

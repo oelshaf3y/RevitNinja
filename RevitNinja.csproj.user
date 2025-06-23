@@ -20,7 +20,7 @@
     <Compile Update="Views\FindRFT.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\InfoView.xaml.cs">
+    <Compile Update="Views\UpdaterView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\IssueViewer.xaml.cs">
@@ -67,6 +67,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\InfoView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UpdaterView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\IssueViewer.xaml">

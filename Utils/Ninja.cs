@@ -24,7 +24,7 @@ namespace RevitNinja.Utils
     public static class Ninja
     {
         public static string dbfile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "dbaccess.json");
-        public static string version = "1.1.0";
+        public static string version = "1.1.1";
         public static Guid dataStorageGUID = new Guid("8998EC47-2E53-472B-9663-E1817A64F76F");
         public static DataStorage dataStorage;
         public static Schema schema;
