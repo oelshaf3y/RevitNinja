@@ -4,6 +4,11 @@ using System.IO;
 using System.Windows;
 using System.Windows.Shapes;
 using Path = System.IO.Path;
+using static System.Net.WebRequestMethods;
+using System.Text.Json;
+using System.Windows.Controls;
+using RevitNinja.Utils;
+using File = System.IO.File;
 
 namespace RevitNinja.Views
 {
@@ -40,19 +45,24 @@ namespace RevitNinja.Views
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "NinjaUpdater.exe");
+            //update the db
+            string path = Path.Combine(Ninja.folderPath, "NinjaUpdater.exe");
             if (!File.Exists(path))
             {
                 // 1. Download the updater
                 StartDownload(Link, path);
             }
-            // 2. Launch the updater with a user-friendly message
-            System.Diagnostics.Process.Start(new ProcessStartInfo
+
+            if (File.Exists(Ninja.dbfile))
             {
-                FileName = path,
-                UseShellExecute = true // required for showing any UI or running elevated
-            });
+                Dictionary<string, object> db = new Dictionary<string, object>();
+                db = JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(Ninja.dbfile));
+                db.Add("UpdateOnClose", true);
+                db.Add("UpdaterPath", path);
+                File.WriteAllText(Ninja.dbfile, JsonSerializer.Serialize(db));
+            }
+
+
             this.Close();
 
         }

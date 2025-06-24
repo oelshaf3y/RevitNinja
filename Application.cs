@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Diagnostics;
 using System.Net;
 using RevitNinja.Views;
+using System.Windows.Shapes;
 
 namespace RevitNinja
 {
@@ -21,14 +22,43 @@ namespace RevitNinja
         string assemblyName, asPath, Link;
         public Result OnShutdown(UIControlledApplication application)
         {
+            try
+            {
+                string dllPath = "";
+                if (File.Exists(Ninja.dbfile))
+                {
+                    Dictionary<string, object> db = new Dictionary<string, object>();
+                    db = JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(Ninja.dbfile));
+                    bool update = db.TryGetValue("UpdateOnClose", out object updateOnClose);
+                    if (update && updateOnClose.ToString().ToLower() == "true")
+                    {
+                        db.TryGetValue("UpdaterPath", out object path);
+                        dllPath = path.ToString();
+                        // 2. Launch the updater with a user-friendly message
+                        System.Diagnostics.Process.Start(new ProcessStartInfo
+                        {
+                            FileName = dllPath,
+                            UseShellExecute = true // required for showing any UI or running elevated
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             return Result.Failed;
         }
 
         public Result OnStartup(UIControlledApplication application)
         {
+            if (!Directory.Exists(Ninja.folderPath))
+            {
+                Directory.CreateDirectory(Ninja.folderPath);
+            }
             assemblyName = Assembly.GetExecutingAssembly().Location;
             asPath = System.IO.Path.GetDirectoryName(assemblyName);
-            Ninja.tryAccess(null);
+            Ninja.getAccess(null);
             if (File.Exists(Ninja.dbfile))
             {
 

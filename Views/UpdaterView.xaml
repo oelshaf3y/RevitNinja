@@ -41,7 +41,7 @@ Source="pack://application:,,,/RevitNinja;component/Resources/linkedin.png" Stre
        Source="pack://application:,,,/RevitNinja;component/Resources/icons8-swords-67.png"/>
         </Button>
         <Button Content="Cancel"  Height="28" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="62" Margin="0,0,416,10" BorderBrush="{x:Null}" Background="#FF3078FC" Foreground="White" Click="Button_Click_1" />
-        <Button Content="Update Now!" HorizontalAlignment="Left" Margin="16,222,0,0" VerticalAlignment="Top" Height="28" Width="84"  BorderBrush="{x:Null}" Background="#FF3078FC" Foreground="White" Click="Button_Click_2"/>
+        <Button Content="Update on Close!" HorizontalAlignment="Left" Margin="16,222,0,0" VerticalAlignment="Top" Height="28" Width="109"  BorderBrush="{x:Null}" Background="#FF3078FC" Foreground="White" Click="Button_Click_2"/>
         <Label x:Name="versionLabel" Content="test" Foreground="White"  HorizontalAlignment="Left" Margin="55,178,0,0" VerticalAlignment="Top"/>
         <WrapPanel Margin="16,203,24,38">
             <ProgressBar x:Name="DownloadProgressBar" Height="3" Width="300" Minimum="0" Maximum="100" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF3078FC"/>
