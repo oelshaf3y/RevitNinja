@@ -29,23 +29,7 @@ namespace RevitNinja.Commands.ViewState
                 doc.print("No sheets found to be restored");
                 return Result.Failed;
             }
-            if (activeView is ViewPlan || activeView is ViewSection)
-            {
-                if (activeView.LookupParameter("View State") == null)
-                {
-                    doc.print("No saved states to be restored");
-                    return Result.Failed;
-                }
-            }
-            else if ((activeView is ViewSheet))
-            {
-                if (doc.GetElement(((ViewSheet)activeView).GetAllViewports().First()).LookupParameter("View State") == null)
-                {
-                    doc.print("No saved states to be restored");
-                    return Result.Failed;
-                }
-            }
-            if (doc.YesNoMessage("Do you want to reset all sheets?") == TaskDialogResult.No)
+            if (doc.YesNoMessage("Do you want to reset all sheets?\nThis might take a long time!") == TaskDialogResult.No)
             {
 
                 if (!(activeView is ViewSheet))
@@ -69,8 +53,6 @@ namespace RevitNinja.Commands.ViewState
             }
             else
             {
-
-
                 using (TransactionGroup tg = new TransactionGroup(doc, "Fix All Sheets"))
                 {
                     tg.Start();
@@ -91,18 +73,15 @@ namespace RevitNinja.Commands.ViewState
         {
             List<Viewport> viewPorts = sheet.GetAllViewports().Select(x => doc.GetElement(x)).Cast<Viewport>().ToList();
             if (viewPorts.Count == 0) return false;
-            if (viewPorts.First().LookupParameter("View State") == null) return false;
+            StringBuilder sb = new StringBuilder();
             try
             {
 
                 foreach (Viewport viewPort in viewPorts)
                 {
-
-                    if (!resetView(viewPort.ViewId))
-                    {
-                        sb.AppendLine("Viewport " + doc.GetElement(viewPort.ViewId).Name + " in Sheet No: " + sheet.SheetNumber + " is not reset.");
-                    }
-
+                    string res = doc.resetView(doc.GetElement(viewPort.ViewId) as View);
+                    if (res.Length > 0)
+                        sb.AppendLine(res);
                 }
                 return true;
             }
@@ -111,47 +90,8 @@ namespace RevitNinja.Commands.ViewState
                 doc.print(ex.StackTrace);
                 return false;
             }
+            doc.print(sb);
         }
 
-        public bool resetView(ElementId viewID)
-        {
-            List<ElementId> ids = new List<ElementId>();
-            View view = doc.GetElement(viewID) as View;
-            Parameter state = view.LookupParameter("View State");
-            if (state.AsString() == null)
-            {
-                return false;
-            }
-            else
-            {
-                foreach (string s in state.AsString().Split(','))
-                {
-                    int a = 0;
-                    int.TryParse(s, out a);
-                    if (a != 0) ids.Add(new ElementId(a));
-                }
-            }
-            FilteredElementCollector collector = new FilteredElementCollector(doc, view.Id).WhereElementIsNotElementType();
-            using (Transaction tr = new Transaction(doc, "restore view state"))
-            {
-                tr.Start();
-                foreach (ElementId id in collector.Select(x => x.Id).Except(ids.ToList()).ToList())
-                {
-                    try
-                    {
-                        view.HideElements(new List<ElementId>() { id });
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
-                view.UnhideElements(ids.ToList());
-                tr.Commit();
-                tr.Dispose();
-
-                return true;
-            }
-        }
     }
 }

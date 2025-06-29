@@ -78,25 +78,16 @@ namespace RevitNinja.Commands.ViewState
             List<string> ids = onlyVisible.Select(x => x.Id.ToString()).ToList();
 
             #region Using DataStorage
-            string storedData = doc.getDataStorage().getStoredData();
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            if (storedData != null)
-            {
-                dict = JsonSerializer.Deserialize<Dictionary<string, string>>(storedData);
-            }
             foreach (ElementId id in onlyVisible.Select(x => x.Id))
             {
                 sb.Append(id.ToString() + ",");
             }
-            dict.Add("View State", sb.ToString());
             #endregion
-            //uidoc.Selection.SetElementIds(onlyVisible.Select(x => x.Id).ToList());
             using (TransactionGroup tg = new TransactionGroup(doc, "Save View State"))
             {
                 tg.Start();
                 //state.Set(sb.ToString());
-                doc.setDataStorage(JsonSerializer.Serialize(dict));
-                doc.print(Ninja.dataStorage.Name);
+                doc.saveViewState(sb.ToString(), activeView);
                 tg.Assimilate();
                 tg.Dispose();
             }

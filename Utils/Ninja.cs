@@ -23,12 +23,10 @@ namespace RevitNinja.Utils
 {
     public static class Ninja
     {
-        public static string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Roaming", "Autodesk", "Revit", "Addins","RevitNinja");
-        public static string dbfile = Path.Combine(folderPath , "dbaccess.json");
+        public static string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Roaming", "Autodesk", "Revit", "Addins", "RevitNinja");
+        public static string dbfile = Path.Combine(folderPath, "dbaccess.json");
         public static string version = "1.1.02";
         public static Guid dataStorageGUID = new Guid("8998EC47-2E53-472B-9663-E1817A64F76F");
-        public static DataStorage dataStorage;
-        public static Schema schema;
         public static double meterToFeet(this double distance) => distance / 0.3048;
         public static double mmToFeet(this double distance) => distance / 304.8;
         public static double feetToMeter(this double distance) => distance * 0.3048;
@@ -431,82 +429,111 @@ namespace RevitNinja.Utils
             return tempExePath;
         }
 
-        public static void createDataStorage(this Document doc)
+        public static Schema getSchema()
         {
-            using (Transaction tr = new Transaction(doc, "Create Storage"))
+            Schema schema;
+
+            if (Schema.Lookup(dataStorageGUID) == null)
+            {
+                SchemaBuilder builder = new SchemaBuilder(dataStorageGUID);
+                builder.SetSchemaName("Ninja_DataStorage");
+                builder.SetReadAccessLevel(AccessLevel.Public);
+                builder.SetWriteAccessLevel(AccessLevel.Public);
+                builder.AddSimpleField("storage", typeof(string));
+                schema = builder.Finish();
+            }
+            else
+            {
+                schema = Schema.Lookup(dataStorageGUID);
+            }
+            return schema;
+        }
+        public static Entity getStorage(this View view)
+        {
+            Entity entity = view.GetEntity(getSchema());
+            return entity.IsValid() ? entity : null;
+        }
+        public static void saveViewState(this Document doc, string storedIDs, View view)
+        {
+            using (Transaction tr = new Transaction(doc, "Save View State"))
             {
                 tr.Start();
-                dataStorage = DataStorage.Create(doc);
-                dataStorage.Name = "Ninja_DataStorage";
-                if (Schema.Lookup(dataStorageGUID) == null)
+                Entity entity = view.getStorage();
+                if (entity == null)
                 {
-                    SchemaBuilder schemaBuilder = new SchemaBuilder(dataStorageGUID);
-                    schemaBuilder.SetSchemaName("Ninja_DataStorage");
-                    schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
-                    schemaBuilder.SetWriteAccessLevel(AccessLevel.Public);
+                    entity = new Entity(getSchema());
+                }
+                entity.Set<string>("storage", storedIDs);
+                view.SetEntity(entity);
+                tr.Commit();
+            }
+        }
+        public static string resetView(this Document doc, View view)
+        {
+            List<ElementId> ids = new List<ElementId>();
+            #region using DataStorage
+            Entity entity = view.getStorage();
+            if (entity != null)
+            {
+                string storedData = entity.Get<string>("storage");
+                if (storedData != null)
+                {
+                    foreach (string s in storedData.Split(','))
+                    {
+                        int a = 0;
+                        int.TryParse(s, out a);
+                        if (a != 0) ids.Add(new ElementId(a));
+                    }
+                }
+            }
+            #endregion
 
-                    schemaBuilder.AddSimpleField("storage", typeof(string));
-                    schema = schemaBuilder.Finish();
+
+            #region Using Parameter
+            else
+            {
+                //no stored data 
+                Autodesk.Revit.DB.Parameter state = view.LookupParameter("View State");
+                if (state == null || state.AsString() == null)
+                {
+                    return $"view state for View: {view.Name} is not stored!";
                 }
                 else
                 {
-                    schema = Schema.Lookup(dataStorageGUID);
+                    string savedIDs = state.AsString();
+                    foreach (string s in state.AsString().Split(','))
+                    {
+                        int a = 0;
+                        int.TryParse(s, out a);
+                        if (a != 0) ids.Add(new ElementId(a));
+                        doc.saveViewState(savedIDs, view);
+                    }
+
                 }
+            }
+            #endregion
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc, view.Id).WhereElementIsNotElementType();
+            using (Transaction tr = new Transaction(doc, "restore view state"))
+            {
+                tr.Start();
+                foreach (ElementId id in collector.Select(x => x.Id).Except(ids.ToList()).ToList())
+                {
+                    try
+                    {
+                        view.HideElements(new List<ElementId>() { id });
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                view.UnhideElements(ids.ToList());
                 tr.Commit();
                 tr.Dispose();
             }
+            return "";
         }
 
-        public static void setDataStorage(this Document doc, string jsonData)
-        {
-            if (dataStorage == null) dataStorage = getDataStorage(doc);
-            if (dataStorage != null)
-            {
-                Entity entity = dataStorage.GetEntity(schema);
-                using (Transaction tr = new Transaction(doc))
-                {
-                    tr.Start("Save Data");
-                    if (entity.IsValid() && entity.Schema == schema)
-                    {
-                        entity.Set("storage", jsonData);
-                        dataStorage.SetEntity(entity);
-                    }
-                    tr.Commit();
-                    tr.Dispose();
-                }
-            }
-        }
-
-        public static DataStorage getDataStorage(this Document doc)
-        {
-            schema = Schema.Lookup(dataStorageGUID);
-            if (schema == null)
-            {
-                createDataStorage(doc);
-                return dataStorage;
-            }
-            var collector = new FilteredElementCollector(doc).OfClass(typeof(DataStorage)).Cast<DataStorage>();
-            foreach (var ds in collector)
-            {
-                Entity e = ds.GetEntity(schema);
-                if (e.IsValid() && e.Schema == schema)
-                {
-                    doc.print("data storage found");
-                    return ds;
-                }
-            }
-            return null;
-        }
-
-        public static string getStoredData(this DataStorage dataStorage)
-        {
-            if (dataStorage == null) return null;
-            Entity entity = dataStorage.GetEntity(schema);
-            if (entity.IsValid() && entity.Schema == schema)
-            {
-                return entity.Get<string>("storage");
-            }
-            return null;
-        }
     }
 }

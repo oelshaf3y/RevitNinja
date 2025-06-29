@@ -58,7 +58,7 @@ namespace RevitNinja
             }
             assemblyName = Assembly.GetExecutingAssembly().Location;
             asPath = System.IO.Path.GetDirectoryName(assemblyName);
-            Ninja.getAccess(null);
+            Ninja.tryAccess(null);
             if (File.Exists(Ninja.dbfile))
             {
 
