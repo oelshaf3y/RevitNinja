@@ -23,30 +23,30 @@ namespace Revit_Ninja.Commands.Penetration
     public partial class PenetrationForm : Window
     {
         public List<string> linksnames;
-        public List<int> linksinds = new List<int>();
-        public bool sel, click;
+        public List<int> linksIndices = new List<int>();
+        public bool bySelection, click;
         List<FamilySymbol> familySymbols;
         List<string> families;
         public FamilySymbol famSymb;
         IList<FamilySymbol> symbols;
-        public bool cont;
+        public bool state;
         Document doc;
         public PenetrationForm(List<string> linksnames, List<FamilySymbol> famSymbols, List<string> families, Document doc)
         {
             InitializeComponent();
             comboBox1.SelectedIndex = 3;
             comboBox2.SelectedIndex = 1;
-            comboBox3.SelectedIndex=0;
+            elementTypeCombo.SelectedIndex=0;
             this.doc = doc;
             this.linksnames = linksnames;
             click = false;
             this.familySymbols = famSymbols;
             this.families = families;
             this.families.Select(x => x).Distinct().ToList().ForEach(x => comboBox1.Items.Add(x));
-            comboBox3.Items.Add("Pipe");
-            comboBox3.Items.Add("Duct");
-            comboBox3.Items.Add("Cable Tray");
-            comboBox3.Items.Add("Conduit");
+            elementTypeCombo.Items.Add("Pipe");
+            elementTypeCombo.Items.Add("Duct");
+            elementTypeCombo.Items.Add("Cable Tray");
+            elementTypeCombo.Items.Add("Conduit");
             foreach (string s in linksnames)
             {
                 CheckBox c = new CheckBox();
@@ -69,7 +69,7 @@ namespace Revit_Ninja.Commands.Penetration
 
         private void cancelBut_click(object sender, RoutedEventArgs e)
         {
-            cont = false;
+            state = false;
             this.Close();
         }
 
@@ -89,7 +89,7 @@ namespace Revit_Ninja.Commands.Penetration
                     return;
 
                 }
-                else if (comboBox3.SelectedIndex == -1)
+                else if (elementTypeCombo.SelectedIndex == -1)
                 {
                     doc.print("Please Select a Category");
                     return;
@@ -102,7 +102,7 @@ namespace Revit_Ninja.Commands.Penetration
             }
             else
             {
-                if (linksinds.Count == 0 && (checkBox2.IsChecked == false || checkBox3.IsChecked == false))
+                if (linksIndices.Count == 0 && (nativeStr.IsChecked == false || nativeMec.IsChecked == false))
                 {
                     doc.print("Please select a link to create the penetrations in it");
                     return;
@@ -113,11 +113,11 @@ namespace Revit_Ninja.Commands.Penetration
                 CheckBox c = checkedListBox1.Items[i] as CheckBox;
                 if (c.IsChecked == true)
                 {
-                    linksinds.Add(i);
+                    linksIndices.Add(i);
                 }
             }
-            sel = checkBox1.IsChecked == true ? true : false;
-            cont = true;
+            bySelection = checkBox1.IsChecked == true ? true : false;
+            state = true;
             this.Close();
         }
 
@@ -128,7 +128,7 @@ namespace Revit_Ninja.Commands.Penetration
             label3.Visibility = radioButton2.IsChecked == true ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
             comboBox1.Visibility = radioButton2.IsChecked == true ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
             comboBox2.Visibility = radioButton2.IsChecked == true ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
-            comboBox3.Visibility = radioButton2.IsChecked == true ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
+            elementTypeCombo.Visibility = radioButton2.IsChecked == true ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
         }
 
         private void comboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)

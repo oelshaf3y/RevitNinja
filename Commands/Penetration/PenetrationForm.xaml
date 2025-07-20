@@ -13,7 +13,7 @@
         <Label x:Name="label2" Content="Type Name ( Sleeve Family )" HorizontalAlignment="Left" Margin="10,292,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="comboBox2" HorizontalAlignment="Left" Margin="10,323,0,0" VerticalAlignment="Top" Width="246"/>
         <Label x:Name="label3" Content="Element Type" HorizontalAlignment="Left" Margin="10,347,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox3" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="246"/>
+        <ComboBox x:Name="elementTypeCombo" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="246"/>
         <Button x:Name="button2" Content="Cancel" HorizontalAlignment="Left" Margin="20,424,0,0" VerticalAlignment="Top" Click="cancelBut_click" Width="53" RenderTransformOrigin="0.5,0.5" Height="26">
             <Button.RenderTransform>
                 <TransformGroup>
@@ -31,8 +31,8 @@
             <RadioButton x:Name="radioButton2" Content="By Element Type" Checked="radioButton2_Checked" Unchecked="radioButton2_Checked" IsChecked="True"/>
         </StackPanel>
         <StackPanel Width="200" Margin="565,366,35,41">
-            <CheckBox x:Name="checkBox2" Content="Native Structural"/>
-            <CheckBox x:Name="checkBox3" Content="Native Mechanical"/>
+            <CheckBox x:Name="nativeStr" Content="Native Structural"/>
+            <CheckBox x:Name="nativeMec" Content="Native Mechanical"/>
         </StackPanel>
 
     </Grid>

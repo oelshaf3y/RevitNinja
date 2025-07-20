@@ -483,9 +483,49 @@ namespace Revit_Ninja.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] RevitNinja_CIRC_OPENING {
+            get {
+                object obj = ResourceManager.GetObject("RevitNinja_CIRC_OPENING", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] RevitNinja_Point {
+            get {
+                object obj = ResourceManager.GetObject("RevitNinja_Point", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] RevitNinja_REC_OPENING {
+            get {
+                object obj = ResourceManager.GetObject("RevitNinja_REC_OPENING", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] RevitNinja_Revizto_Clash_Ball {
             get {
                 object obj = ResourceManager.GetObject("RevitNinja_Revizto_Clash_Ball", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] RevitNinja_Section_Head {
+            get {
+                object obj = ResourceManager.GetObject("RevitNinja_Section_Head", resourceCulture);
                 return ((byte[])(obj));
             }
         }

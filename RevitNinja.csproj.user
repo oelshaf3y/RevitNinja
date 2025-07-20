@@ -11,13 +11,25 @@
     <Compile Update="Views\AlignView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\BIMSubmittalView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\coordinates.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\PointCoord\CoordView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\CopyFiltersView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\FindRFT.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\PointCoord\EditPoints.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\PointCoord\selectPoint.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\UpdaterView.xaml.cs">
@@ -57,7 +69,13 @@
     <Page Update="Views\AlignView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\BIMSubmittalView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\coordinates.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\PointCoord\CoordView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\CopyFiltersView.xaml">
@@ -67,6 +85,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\InfoView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\PointCoord\EditPoints.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\PointCoord\selectPoint.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\UpdaterView.xaml">

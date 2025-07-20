@@ -58,7 +58,11 @@
 		<None Remove="Resources\ResetView.ico" />
 		<None Remove="Resources\resetViewS.ico" />
 		<None Remove="Resources\revitninjatext.png" />
+		<None Remove="Resources\RevitNinja_CIRC_OPENING.rfa" />
+		<None Remove="Resources\RevitNinja_Point.rfa" />
+		<None Remove="Resources\RevitNinja_REC_OPENING.rfa" />
 		<None Remove="Resources\RevitNinja_Revizto_Clash_Ball.rfa" />
+		<None Remove="Resources\RevitNinja_Section_Head.rfa" />
 		<None Remove="Resources\rotateLocallyL.ico" />
 		<None Remove="Resources\rotateLocallyS.ico" />
 		<None Remove="Resources\selectbyl.ico" />
@@ -117,7 +121,11 @@
 		<Resource Include="Resources\ninja-pic.png" />
 		<Resource Include="Resources\ninja.ico" />
 		<EmbeddedResource Include="Resources\ninjaDB.exe" />
+		<EmbeddedResource Include="Resources\RevitNinja_CIRC_OPENING.rfa" />
+		<EmbeddedResource Include="Resources\RevitNinja_Point.rfa" />
+		<EmbeddedResource Include="Resources\RevitNinja_REC_OPENING.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_Revizto_Clash_Ball.rfa" />
+		<EmbeddedResource Include="Resources\RevitNinja_Section_Head.rfa" />
 		<Resource Include="Resources\ninjaIcon.png" />
 		<Resource Include="Resources\NOS.ico" />
 		<Resource Include="Resources\NOSsmall.ico" />
@@ -164,6 +172,7 @@
 			<HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2024\RevitAPIUI.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+		<Reference Include="System.Net.Http" />
 	</ItemGroup>
 
 	<ItemGroup>

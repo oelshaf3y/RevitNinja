@@ -16,19 +16,17 @@ namespace Revit_Ninja.Commands.Penetration
         UIDocument uidoc;
         Document doc;
         Autodesk.Revit.Creation.Application app;
-        IList<Level> levels;
-        IList<Element> AllLinks, allLinksUnique, aLLWalls, ALLBEAMS, selectedLinks, ductsCablesConduitsPipes, ducts, cables, conduits, pipes, floors,
-             nativeDucts, nativePipes, nativeCableTrays, nativeConduits, nativeFloors, nativeWalls, nativeBeams;
-        IList<HostElement> hostElements;
-        List<string> familysymbolnamesuniq, selDocsNames;
-        List<double> diasDR;
-        IList<Reference> references;
-        StringBuilder sb;
-        Options optt;
+        List<Level> levels;
+        List<Element> AllLinks, allLinksUnique, aLLWalls, ALLBEAMS, selectedLinks, allPenetratingElements, ducts, cables, conduits, pipes, floors;
+        List<HostElement> hostElements;
+        List<string> selDocsNames;
+        List<double> diameters;
+        List<Reference> references;
+        Options options;
         int FSCount;
         FilteredWorksetCollector nativeWorkSets, LinkedWorksets;
-        IList<Workset> worksets, nativeWorkset;
-        IList<PenetratingElement> penetratingElements;
+        List<Workset> worksets, nativeWorkset;
+        List<PenetratingElement> penetratingElements;
         WorksetsForm wsform;
         FilteredElementCollector allsymbols;
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet element)
@@ -36,21 +34,28 @@ namespace Revit_Ninja.Commands.Penetration
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
+            using (Transaction tr = new Transaction(doc))
+            {
+                tr.Start("Load Family");
+                doc.LoadFamily(doc.ExtractEmbeddedResource("RevitNinja_CIRC_OPENING.rfa"));
+                doc.LoadFamily(doc.ExtractEmbeddedResource("RevitNinja_REC_OPENING.rfa"));
+                tr.Commit();
+                tr.Dispose();
+            }
+
+
             if (!doc.getAccess()) return Result.Failed;
 
+            allPenetratingElements = new List<Element>();
+            hostElements = new List<HostElement>();
+
             app = commandData.Application.Application.Create;
-            diasDR = new List<double>() { 15, 20, 25, 32, 40, 50, 75, 110, 160, 200, 250, 315, 355 };
-            sb = new StringBuilder();
-            optt = app.NewGeometryOptions();
-            optt.ComputeReferences = true;
+            diameters = new List<double>() { 15, 20, 25, 32, 40, 50, 75, 110, 160, 200, 250, 315, 355 };
+            options = app.NewGeometryOptions();
+            options.ComputeReferences = true;
+
             allsymbols = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_GenericModel);
-            nativeDucts = new FilteredElementCollector(doc).OfClass(typeof(Duct)).ToList();
-            nativePipes = new FilteredElementCollector(doc).OfClass(typeof(Pipe)).ToList();
-            nativeCableTrays = new FilteredElementCollector(doc).OfClass(typeof(CableTray)).ToList();
-            nativeConduits = new FilteredElementCollector(doc).OfClass(typeof(Conduit)).ToList();
-            nativeFloors = new FilteredElementCollector(doc).OfClass(typeof(Floor)).ToList();
-            nativeWalls = new FilteredElementCollector(doc).OfClass(typeof(Wall)).Where(x => ((Wall)x).Width >= (50 / 304.8)).ToList();
-            nativeBeams = new FilteredElementCollector(doc).OfClass(typeof(FamilyInstance)).Where(x => x.Category.Name == "Structural Framing").ToList();
+
             nativeWorkSets = new FilteredWorksetCollector(doc);
             nativeWorkset = nativeWorkSets.ToList();
 
@@ -66,21 +71,17 @@ namespace Revit_Ninja.Commands.Penetration
 
 
 
-            familysymbolnamesuniq = allsymbols.Cast<FamilySymbol>().Select(fi => fi.Family.Name).ToList();
+            //familysymbolnamesuniq = allsymbols.Cast<FamilySymbol>().Select(fi => fi.Family.Name).ToList();
 
             levels = new FilteredElementCollector(doc).OfClass(typeof(Level)).Cast<Level>().OrderBy(x => x.Elevation).ToList();
             AllLinks = new FilteredElementCollector(doc).OfClass(typeof(RevitLinkInstance)).ToList();
 
 
-            if (AllLinks.Count == 0)
-            {
-                doc.print("No Links Loaded!!");
-                //return Result.Failed;
-            }
-            PenetrationForm form = new PenetrationForm(AllLinks.Select(x => doc.GetElement(x.GetTypeId()).Name).Distinct().ToList(),
-                allsymbols.Cast<FamilySymbol>().ToList(), familysymbolnamesuniq, doc);
+            PenetrationForm penetrationView = new PenetrationForm(AllLinks.Select(x => doc.GetElement(x.GetTypeId()).Name).Distinct().ToList(),
+                allsymbols.Cast<FamilySymbol>().ToList(), allsymbols.Cast<FamilySymbol>().Select(x => x.Family.Name).Distinct().ToList(), doc);
 
             allLinksUnique = new List<Element>();
+
             foreach (Element link in AllLinks)
             {
                 if (!allLinksUnique.Contains(link))
@@ -88,46 +89,42 @@ namespace Revit_Ninja.Commands.Penetration
                     allLinksUnique.Add(link);
                 }
             }
-            form.ShowDialog();
 
-            if (form.cont == false) { return Result.Cancelled; }
+            penetrationView.ShowDialog();
+
+            if (penetrationView.state == false) { return Result.Cancelled; }
             hostElements = new List<HostElement>();
-            ductsCablesConduitsPipes = new List<Element>();
-            if (form.checkBox2.IsChecked == true)
-            {
-                foreach (Element elem in nativeFloors)
-                {
-                    hostElements.Add(new HostElement(elem, null));
-                }
-                foreach (Element elem in nativeWalls)
-                {
-                    hostElements.Add(new HostElement(elem, null));
-                }
-                foreach (Element elem in nativeBeams)
-                {
-                    hostElements.Add(new HostElement(elem, null));
-                }
-                //native structural elements collection
-            }
-            if (form.checkBox3.IsChecked == true)
-            {
-                foreach (Element elem in nativeDucts) ductsCablesConduitsPipes.Add(elem);
-                foreach (Element elem in nativePipes) ductsCablesConduitsPipes.Add(elem);
-                foreach (Element elem in nativeConduits) ductsCablesConduitsPipes.Add(elem);
-                foreach (Element elem in nativeCableTrays) ductsCablesConduitsPipes.Add(elem);
+            allPenetratingElements = new List<Element>();
 
+            //native structural elements collection
+            if (penetrationView.nativeStr.IsChecked == true)
+            {
+
+                hostElements.AddRange(new FilteredElementCollector(doc).OfClass(typeof(Floor)).Select(x => new HostElement(x, null)));
+                hostElements.AddRange(new FilteredElementCollector(doc).OfClass(typeof(Wall)).Where(x => ((Wall)x).Width >= (50 / 304.8)).Select(x => new HostElement(x, null)));
+                hostElements.AddRange(new FilteredElementCollector(doc).OfClass(typeof(FamilyInstance)).Where(x => x.Category.Name == "Structural Framing").Select(x => new HostElement(x, null)));
+            }
+
+            //collecting all MEP elements from model
+            if (penetrationView.nativeMec.IsChecked == true)
+            {
+                allPenetratingElements.AddRange(new FilteredElementCollector(doc).OfClass(typeof(Duct)).ToList());
+                allPenetratingElements.AddRange(new FilteredElementCollector(doc).OfClass(typeof(Pipe)).ToList());
+                allPenetratingElements.AddRange(new FilteredElementCollector(doc).OfClass(typeof(CableTray)).ToList());
+                allPenetratingElements.AddRange(new FilteredElementCollector(doc).OfClass(typeof(Conduit)).ToList());
 
             }
-            bool byworkset = form.radioButton1.IsChecked == true ? true : false;
+
+            bool byworkset = penetrationView.radioButton1.IsChecked == true ? true : false;
 
             selectedLinks = new List<Element>();
             selDocsNames = new List<string>();
-            foreach (int i in form.linksinds)
+            foreach (int index in penetrationView.linksIndices)
             {
                 string linkPath = null;
-                linkPath = ((RevitLinkInstance)allLinksUnique[i]).GetLinkDocument()?.PathName?.Trim();
+                linkPath = ((RevitLinkInstance)allLinksUnique[index]).GetLinkDocument()?.PathName?.Trim();
                 if (linkPath == null) continue;
-                selectedLinks.Add(allLinksUnique[i]);
+                selectedLinks.Add(allLinksUnique[index]);
                 selDocsNames.Add(linkPath);
             }
 
@@ -141,7 +138,7 @@ namespace Revit_Ninja.Commands.Penetration
             }
             else
             {
-                string elementType = form.comboBox3.SelectedItem.ToString();
+                string elementType = penetrationView.elementTypeCombo.SelectedItem.ToString();
                 switch (elementType)
                 {
                     case "Pipe":
@@ -159,17 +156,17 @@ namespace Revit_Ninja.Commands.Penetration
                 }
             }
 
-            if (form.sel)
+            if (penetrationView.bySelection)
             {
                 try
                 {
                     if (byworkset)
                     {
-                        references = uidoc.Selection.PickObjects(ObjectType.LinkedElement, new selectionFilter(), "Select Elements in RVT Link");
+                        references = uidoc.Selection.PickObjects(ObjectType.LinkedElement, new selectionFilter(), "Select Elements in RVT Link").ToList();
                     }
                     else
                     {
-                        references = uidoc.Selection.PickObjects(ObjectType.LinkedElement, new selectionFilter(x => x.GetType() == type), "Select Elements in RVT Link");
+                        references = uidoc.Selection.PickObjects(ObjectType.LinkedElement, new selectionFilter(x => x.GetType() == type), "Select Elements in RVT Link").ToList();
 
                     }
 
@@ -190,11 +187,11 @@ namespace Revit_Ninja.Commands.Penetration
                         if (!byworkset)
                         {
                             if (linkedElement.GetType() != type) continue;
-                            ductsCablesConduitsPipes.Add(linkedElement);
+                            allPenetratingElements.Add(linkedElement);
                         }
                         else
                         {
-                            ductsCablesConduitsPipes.Add(linkedElement);
+                            allPenetratingElements.Add(linkedElement);
                         }
                     }
                     else if (linkedElement is Floor || linkedElement is Wall || linkedElement.Category.Name == "Structural Framing" || linkedElement.Category.Name == "Structural Columns")
@@ -206,14 +203,15 @@ namespace Revit_Ninja.Commands.Penetration
             }
             else
             {
+                // if not by selection
                 getLinkedElements();
 
             }
             #region getting element information
             penetratingElements = new List<PenetratingElement>();
-            for (int i = 0; i < ductsCablesConduitsPipes.Count; i++)
+            for (int i = 0; i < allPenetratingElements.Count; i++)
             {
-                Element elem = ductsCablesConduitsPipes.ElementAt(i); //element
+                Element elem = allPenetratingElements.ElementAt(i); //element
                 LocationCurve elementLocationCurve = ((LocationCurve)elem.Location);
                 Curve elementCurve = null;
                 if (elementLocationCurve != null) { elementCurve = elementLocationCurve.Curve; }
@@ -235,16 +233,16 @@ namespace Revit_Ninja.Commands.Penetration
                     }
 
                     // loop in steel pipes 
-                    for (int k = 0; k < diasDR.Count; k++)
+                    for (int k = 0; k < diameters.Count; k++)
                     {
-                        double d = diasDR[k];
+                        double d = diameters[k];
                         if (Math.Round(outsideDiam * 304.8) <= d)
                         {
                             if (Math.Round(outsideDiam * 304.8) == d)
                             {
-                                if (k != diasDR.Count - 1)
+                                if (k != diameters.Count - 1)
                                 {
-                                    diameter = diasDR[k + 1] / 304.8;
+                                    diameter = diameters[k + 1] / 304.8;
                                 }
                                 else
                                 {
@@ -302,8 +300,8 @@ namespace Revit_Ninja.Commands.Penetration
                 uidoc.Selection.SetElementIds(penetratingElements.Select(x => x.element.Id).ToList());
                 //doc.print(penetratingElements.Count());
                 //return Result.Succeeded;
-                string famName = form.comboBox1.SelectedItem.ToString();
-                string symbName = form.comboBox2.SelectedItem.ToString();
+                string famName = penetrationView.comboBox1.SelectedItem.ToString();
+                string symbName = penetrationView.comboBox2.SelectedItem.ToString();
                 FamilySymbol famSymbol = allsymbols.Cast<FamilySymbol>().Where(x => (x.Family.Name == famName) && (x.Name == symbName)).FirstOrDefault();
                 foreach (PenetratingElement penElement in penetratingElements.Where(x => x.element.GetType() == type).ToList())
                 {
@@ -458,6 +456,7 @@ namespace Revit_Ninja.Commands.Penetration
                                 {
 
                                     faceRef = face.Reference.CreateLinkReference(hostElement.rli);//reference
+                                    doc.print(faceRef);
                                 }
                                 else
                                 {
@@ -594,19 +593,19 @@ namespace Revit_Ninja.Commands.Penetration
                     new FilteredElementCollector(linkedDoc).OfClass(typeof(Pipe)).ToList().ForEach(x => pipes.Add(x));
                     foreach (Element e in ducts)
                     {
-                        ductsCablesConduitsPipes.Add(e);
+                        allPenetratingElements.Add(e);
                     }
                     foreach (Element e in cables)
                     {
-                        ductsCablesConduitsPipes.Add(e);
+                        allPenetratingElements.Add(e);
                     }
                     foreach (Element e in pipes)
                     {
-                        ductsCablesConduitsPipes.Add(e);
+                        allPenetratingElements.Add(e);
                     }
                     foreach (Element e in conduits)
                     {
-                        ductsCablesConduitsPipes.Add(e);
+                        allPenetratingElements.Add(e);
                     }
                     foreach (Element el in aLLWalls)
                     {
@@ -681,7 +680,7 @@ namespace Revit_Ninja.Commands.Penetration
         }
         private Solid getSolid(Element elem)
         {
-            GeometryElement gele = elem.get_Geometry(optt);
+            GeometryElement gele = elem.get_Geometry(options);
             foreach (GeometryObject geo in gele)
             {
                 Solid g = geo as Solid;

@@ -1,0 +1,24 @@
+﻿<Window x:Class="Revit_Ninja.Views.PointCoord.selectPoint"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Revit_Ninja.Views.PointCoord"
+        mc:Ignorable="d"
+        Title="Points To Coordinates" Height="288" Width="244">
+    <Grid>
+        <Label Content="how would you like to get the points?" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
+        <WrapPanel Orientation="Vertical" Margin="10,37,0,0" Height="96" VerticalAlignment="Top">
+
+            <RadioButton x:Name="activeView" Content="Active view only" Margin="5" IsChecked="True"/>
+            <RadioButton x:Name="allPoints" Content="All points in project" Margin="5"/>
+            <RadioButton x:Name="selection" Content="By Selecttion" Margin="5"/>
+
+        </WrapPanel>
+        <Button Content="Import Points" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Width="96" Height="29" BorderBrush="{x:Null}" Foreground="White" Background="#FF00A7FF" Click="importPointsClick" />
+        <Button Content="Export Points" HorizontalAlignment="Left" Margin="10,206,0,0" VerticalAlignment="Top" Width="96" Height="29" BorderBrush="{x:Null}" Foreground="White" Background="#FF00A7FF" Click="exportPointsClick" />
+        <Button Content="Plot/Modify" HorizontalAlignment="Left" Margin="142,166,0,0" VerticalAlignment="Top" Width="78" Height="29" BorderBrush="{x:Null}" Foreground="White" Background="#FF00A7FF" Click="plotButClick"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="142,206,0,0" VerticalAlignment="Top" Width="78" Height="29" BorderBrush="{x:Null}" Foreground="White" Background="#FFF96A6A" Click="cancelButClick"/>
+
+    </Grid>
+</Window>

@@ -47,11 +47,13 @@ namespace RevitNinja.Views
         {
             //update the db
             string path = Path.Combine(Ninja.folderPath, "NinjaUpdater.exe");
-            if (!File.Exists(path))
-            {
-                // 1. Download the updater
-                StartDownload(Link, path);
-            }
+            StartDownload(Link, path);
+
+            //if (!File.Exists(path))
+            //{
+            //    // 1. Download the updater
+            //    StartDownload(Link, path);
+            //}
 
             if (File.Exists(Ninja.dbfile))
             {
@@ -66,10 +68,11 @@ namespace RevitNinja.Views
             this.Close();
 
         }
-        private void StartDownload(string url, string destination)
+        private async Task StartDownload(string url, string destination)
         {
-            WebClient client = new WebClient();
 
+
+            WebClient client = new WebClient();
             client.DownloadProgressChanged += (s, e) =>
             {
                 DownloadProgressBar.Value = e.ProgressPercentage;

@@ -274,4 +274,16 @@
   <data name="MoveL" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MoveL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="RevitNinja_CIRC_OPENING" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RevitNinja_CIRC_OPENING.rfa;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RevitNinja_REC_OPENING" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RevitNinja_REC_OPENING.rfa;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RevitNinja_Section_Head" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RevitNinja_Section_Head.rfa;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RevitNinja_Point" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RevitNinja_Point.rfa;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
