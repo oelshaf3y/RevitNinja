@@ -29,7 +29,6 @@ namespace Revit_Ninja.Views.PointCoord
         private void plotButClick(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
-            getselectionType();
             operation = OperationType.EditOrPlot;
             Close();
         }
@@ -39,17 +38,11 @@ namespace Revit_Ninja.Views.PointCoord
             DialogResult = false;
             Close();
         }
-        public void getselectionType()
-        {
-            if (allPoints.IsChecked == true) selectionType = SelectionType.AllPoints;
-            else if (activeView.IsChecked == true) selectionType = SelectionType.ActiveView;
-            else selectionType = SelectionType.SelectedPoints;
-        }
+        
 
         private void exportPointsClick(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
-            getselectionType();
             operation = OperationType.ExportPoints;
             Close();
         }

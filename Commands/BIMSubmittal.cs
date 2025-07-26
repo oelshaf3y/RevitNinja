@@ -2,8 +2,10 @@
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Microsoft.Office.Interop.Excel;
 using Revit_Ninja.Views;
 using RevitNinja.Utils;
+using Parameter = Autodesk.Revit.DB.Parameter;
 
 namespace Revit_Ninja.Commands
 {
@@ -14,7 +16,10 @@ namespace Revit_Ninja.Commands
         Document doc;
         View3D new3DView, duplicate;
         List<ElementId> excluded = new List<ElementId>();
-
+        StringBuilder sb = new StringBuilder();
+        List<ViewSection> sections = new List<ViewSection>();
+        List<View> allViews = new List<View>();
+        List<ViewSheet> sheets = new List<ViewSheet>();
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             uidoc = commandData.Application.ActiveUIDocument;
@@ -25,7 +30,15 @@ namespace Revit_Ninja.Commands
             BIMSubmittalView window = new BIMSubmittalView();
             window.ShowDialog();
 
-            StringBuilder sb = new StringBuilder();
+            sections = new FilteredElementCollector(doc)
+                .OfClass(typeof(ViewSection))
+                .Cast<ViewSection>()
+                .Where(v => !v.IsTemplate && v.ViewType == ViewType.Section)
+                .ToList();
+            allViews = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Views).WhereElementIsNotElementType().Cast<View>().ToList();
+            sheets = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Sheets).WhereElementIsNotElementType()
+                .Cast<ViewSheet>().ToList();
+
             using (TransactionGroup TG = new TransactionGroup(doc, "BIM Submittal"))
             {
                 TG.Start();
@@ -34,7 +47,7 @@ namespace Revit_Ninja.Commands
                 if (window.DeleteNOSCB.IsChecked == true) try { NOS(); } catch { sb.AppendLine("Failed to delete unused views!"); }
                 if (window.DelCADCB.IsChecked == true) try { delCad(); } catch { sb.AppendLine("Failed to remove CAD drawings!"); }
                 if (window.RemoveLinksCB.IsChecked == true) try { removeLinks(); } catch { sb.AppendLine("Failed to remove links!"); }
-                if (window.SectionsAndSheetsCB.IsChecked == true) try { populateSections(); } catch { sb.AppendLine("Failed to populate sections!"); }
+                if (window.SectionsAndSheetsCB.IsChecked == true) try { populateSections(commandData); } catch { sb.AppendLine("Failed to populate sections!"); }
                 TG.Assimilate();
             }
             if (sb.Length > 0) doc.print(sb.ToString());
@@ -312,113 +325,203 @@ namespace Revit_Ninja.Commands
         }
 
 
-        public void populateSections()
+        public void populateSections(ExternalCommandData commandData)
         {
 
-            string path = doc.ExtractEmbeddedResource("RevitNinja_Section_Head.rfa");
-            List<ViewSection> sections = new FilteredElementCollector(doc)
-                .OfClass(typeof(ViewSection))
-                .Cast<ViewSection>()
-                .Where(v => !v.IsTemplate && v.ViewType == ViewType.Section)
-                .ToList();
-
-            List<View> allViews = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Views).WhereElementIsNotElementType().Cast<View>().ToList();
-            List<ViewSheet> sheets = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Sheets).WhereElementIsNotElementType()
-                .Cast<ViewSheet>().ToList();
-            //uidoc.Selection.SetElementIds(new List<ElementId> { sections.First().Id });
-            StringBuilder sb = new StringBuilder();
-            ////Element s = doc.GetElement(uidoc.Selection.PickObject(ObjectType.Element));
+            string seactionHeadPath = doc.ExtractEmbeddedResource("RevitNinja_Section_Head.rfa");
+            string calloutPath = doc.ExtractEmbeddedResource("RevitNinja_CallOut_Head.rfa");
 
 
+            #region assign parameter to sections
+            if (sections.First().LookupParameter("TRSDC_Sheet Number") is null)
+            {
+                try
+                {
 
+                    Ninja.assignParameter(commandData, "Ninja-Views", "TRSDC_Sheet Number", BuiltInCategory.OST_Views, SpecTypeId.String.Text);
+                }
+                catch (Exception ex)
+                {
+                    doc.print("Failed to create TRSDC_Sheet Number parameter.\n" + ex.Message);
+                }
+            }
+            #endregion
+
+            #region assign parameters to sheets
+            try
+            {
+                if (sheets.First().LookupParameter("TRSDC_Sheet Number") is null)
+                    Ninja.assignParameter(commandData, "Ninja-Sheets", "TRSDC_Sheet Number", BuiltInCategory.OST_Sheets, SpecTypeId.String.Text);
+
+                if (sheets.First().LookupParameter("TRSDC_Volume/System") is null)
+                    Ninja.assignParameter(commandData, "Ninja-Sheets", "TRSDC_Volume/System", BuiltInCategory.OST_Sheets, SpecTypeId.String.Text);
+
+                if (sheets.First().LookupParameter("TRSDC_Building level") is null)
+                    Ninja.assignParameter(commandData, "Ninja-Sheets", "TRSDC_Building level", BuiltInCategory.OST_Sheets, SpecTypeId.String.Text);
+
+                if (sheets.First().LookupParameter("Sheet Title Line 1") is null)
+                    Ninja.assignParameter(commandData, "Ninja-Sheets", "Sheet Title Line 1", BuiltInCategory.OST_Sheets, SpecTypeId.String.Text);
+
+                if (sheets.First().LookupParameter("Sheet Title Line 2") is null)
+                    Ninja.assignParameter(commandData, "Ninja-Sheets", "Sheet Title Line 2", BuiltInCategory.OST_Sheets, SpecTypeId.String.Text);
+
+                if (sheets.First().LookupParameter("Sheet Title Line 3") is null)
+                    Ninja.assignParameter(commandData, "Ninja-Sheets", "Sheet Title Line 3", BuiltInCategory.OST_Sheets, SpecTypeId.String.Text);
+
+                if (sheets.First().LookupParameter("Sheet Title Line 4") is null)
+                    Ninja.assignParameter(commandData, "Ninja-Sheets", "Sheet Title Line 4", BuiltInCategory.OST_Sheets, SpecTypeId.String.Text);
+            }
+            catch (Exception ex) { }
+            #endregion
+
+            #region get/set sheet meta data
             using (Transaction tr = new Transaction(doc, "renumbering sheets"))
             {
                 tr.Start();
+
                 ProjectInfo information = doc.ProjectInformation;
                 sheets.ForEach(sheet =>
                 {
-                    try
+                    StringBuilder sbuilder = new StringBuilder();
+                    string oldNumber = "";
+                    if (!(sheet.SheetNumber.ToLower().Trim() == "model issue screen" || sheet.Name.ToLower().Trim() == "model issue screen"))
                     {
-                        StringBuilder sbuilder = new StringBuilder();
-                        sbuilder.Append(information.LookupParameter("TRSDC_Program Code").AsString() + "-");
-                        sbuilder.Append(information.LookupParameter("TRSDC_Project Code").AsString());
-                        sbuilder.Append(information.LookupParameter("TRSDC_Contract Code").AsString() + "-");
-                        sbuilder.Append(information.LookupParameter("TRSDC_Originator Code").AsString() + "-");
-                        sbuilder.Append(sheet.LookupParameter("TRSDC_Volume/System").AsString() + "-");
+                        try
+                        {
+                            if (sheet.SheetNumber.Split('-').Length > 2) oldNumber = sheet.SheetNumber.Split('-').Last();
+                            else oldNumber = sheet.SheetNumber;
+                            sbuilder.Append(information.LookupParameter("TRSDC_Program Code").AsString() + "-");
+                            sbuilder.Append(information.LookupParameter("TRSDC_Project Code").AsString());
+                            sbuilder.Append(information.LookupParameter("TRSDC_Contract Code").AsString() + "-");
+                            sbuilder.Append(information.LookupParameter("TRSDC_Originator Code").AsString() + "-");
+                            sbuilder.Append(sheet.LookupParameter("TRSDC_Volume/System").AsString() + "-");
 
-                        string BL = sheet.LookupParameter("TRSDC_Building level").AsString();
-                        if (BL.Trim().Length > 0)
-                            sbuilder.Append(BL + "-");
-                        else if (sheet.LookupParameter("TRSDC_Building Level").AsString().Trim().Length > 0)
-                            sbuilder.Append(sheet.LookupParameter("TRSDC_Building Level").AsString() + "-");
-                        else
-                            sbuilder.Append(information.LookupParameter("TRSDC_Model Level").AsString() + "-");
+                            string BL = sheet.LookupParameter("TRSDC_Building level").AsString();
+                            if (BL.Trim().Length > 0)
+                                sbuilder.Append(BL + "-");
+                            else if (sheet.LookupParameter("TRSDC_Building Level").AsString().Trim().Length > 0)
+                                sbuilder.Append(sheet.LookupParameter("TRSDC_Building Level").AsString() + "-");
+                            else
+                                sbuilder.Append(information.LookupParameter("TRSDC_Model Level").AsString() + "-");
 
-                        sbuilder.Append(information.LookupParameter("TRSDC_Document Type").AsString() + "-");
-                        sbuilder.Append(information.LookupParameter("TRSDC_Discipline").AsString() + "-");
-                        sbuilder.Append(sheet.LookupParameter("TRSDC_Sheet Number").AsString());
+                            sbuilder.Append(information.LookupParameter("TRSDC_Document Type").AsString() + "-");
+                            if (sheet.SheetNumber.Split('-').Length >= 2) sbuilder.Append(sheet.SheetNumber.Split('-').ElementAt(sheet.SheetNumber.Split('-').Length - 2) + "-");
+                            else sbuilder.Append(information.LookupParameter("TRSDC_Discipline").AsString() + "-");
+                            sbuilder.Append(sheet.LookupParameter("TRSDC_Sheet Number").AsString());
 
-                        if (sheet.SheetNumber != sbuilder.ToString()) sheet.SheetNumber = sbuilder.ToString();
+                            sheet.LookupParameter("TRSDC_Sheet Number").Set(oldNumber);
+                            if (sheet.SheetNumber != sbuilder.ToString()) sheet.SheetNumber = sbuilder.ToString();
+                            if (sbuilder.Length > 0) sbuilder.Clear();
 
-                        if (sbuilder.Length > 0) sbuilder.Clear();
+                            if (sheet.LookupParameter("Sheet Title Line 1").AsString() != null && sheet.LookupParameter("Sheet Title Line 1").AsString().Trim().Length > 0) sbuilder.Append(sheet.LookupParameter("Sheet Title Line 1").AsString());
+                            if (sheet.LookupParameter("Sheet Title Line 2").AsString() != null && sheet.LookupParameter("Sheet Title Line 2").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 2").AsString());
+                            if (sheet.LookupParameter("Sheet Title Line 3").AsString() != null && sheet.LookupParameter("Sheet Title Line 3").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 3").AsString());
+                            if (sheet.LookupParameter("Sheet Title Line 4").AsString() != null && sheet.LookupParameter("Sheet Title Line 4").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 4").AsString());
 
-                        sbuilder.Append(sheet.LookupParameter("Sheet Title Line 1").AsString());
 
-                        if (sheet.LookupParameter("Sheet Title Line 2").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 2").AsString());
-
-                        sheet.Name = sbuilder.ToString();
-                    }
-                    catch (Exception ex)
-                    {
-                        sb.AppendLine(sheet.SheetNumber + "\n" + ex.StackTrace);
-
+                            sheet.Name = sbuilder.ToString();
+                        }
+                        catch (Exception ex)
+                        {
+                            sb.AppendLine(sheet.SheetNumber + "\n" + ex.Message + "\n" + sbuilder.ToString());
+                        }
                     }
                 });
 
                 tr.Commit();
             }
+            #endregion
 
+            #region load section head family
             using (Transaction tr = new Transaction(doc, "Load family"))
             {
                 tr.Start();
-                doc.LoadFamily(path);
+                doc.LoadFamily(seactionHeadPath);
+                doc.LoadFamily(calloutPath);
+
                 //get section head family
                 FamilySymbol fs = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol))
                     .Cast<FamilySymbol>()
                     .FirstOrDefault(x => x.FamilyName == "RevitNinja_Section_Head");
-
-                var sectionType = doc.GetElement(sections.First().GetTypeId()) as ViewFamilyType;
-                var sectionTag = doc.GetElement(sectionType.LookupParameter("Section Tag").AsElementId()) as LineAndTextAttrSymbol;
-                sectionTag.LookupParameter("Section Head").Set(fs.Id);
-                tr.Commit();
-            }
-
-            using (Transaction tr = new Transaction(doc, "rectify sheet numbers"))
-            {
-                tr.Start();
-                sections.ForEach(x =>
+                FamilySymbol fco = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol))
+                    .Cast<FamilySymbol>()
+                    .FirstOrDefault(x => x.FamilyName == "RevitNinja_CallOut_Head");
+                foreach (ViewFamilyType sectionType in sections.Select(x => x.GetTypeId()).Distinct().Select(x => doc.GetElement(x)).Cast<ViewFamilyType>())
                 {
-                    string newNumber = x.LookupParameter("Sheet Number").AsString().Split('-').Last();
+
+                    //var sectionType = doc.GetElement(sections.First().GetTypeId()) as ViewFamilyType;
                     try
                     {
 
-                        x.LookupParameter("TRSDC_Sheet Number").Set(newNumber);
-                        //sb.AppendLine(sectionHead.Name);
+                        var sectionTag = doc.GetElement(sectionType.LookupParameter("Section Tag").AsElementId()) as LineAndTextAttrSymbol;
+                        sectionTag.LookupParameter("Section Head").Set(fs.Id);
+                        ElementType calloutTag = doc.GetElement(sectionType.LookupParameter("Callout Tag").AsElementId()) as ElementType;
+                        calloutTag.LookupParameter("Callout Head").Set(fco.Id);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex){ doc.print(ex.Message); }
+                }
+                tr.Commit();
+            }
+            #endregion
+
+            #region remove the parameter from the section templates
+            List<View> sectionTemplates = sections.Select(x => x.ViewTemplateId).Distinct().Where(x => x != ElementId.InvalidElementId).Select(x => doc.GetElement(x)).Cast<View>().ToList();
+            ElementId paramId = sections.First().LookupParameter("TRSDC_Sheet Number").Id;
+            using (Transaction tr = new Transaction(doc, "release parameter from template"))
+            {
+                tr.Start();
+                try
+                {
+                    foreach (View template in sectionTemplates)
                     {
-                        sb.AppendLine(x.Id + "\n" + ex.Message);
+                        var parametersIds = template.GetNonControlledTemplateParameterIds();
+                        if (parametersIds.Contains(paramId)) continue;
+                        parametersIds.Add(paramId);
+                        template.SetNonControlledTemplateParameterIds(parametersIds);
                     }
-                    //if (p.IsReadOnly) doc.print("readonly");
-                });
+                }
+                catch (Exception ex)
+                {
+                    doc.print("Failed to release the parameter from the template.\n" + ex.Message);
+                }
+                tr.Commit();
+            }
+            #endregion
+
+            #region modify sheet numbers
+            using (TransactionGroup tg = new TransactionGroup(doc, "rectify sheet numbers"))
+            {
+                tg.Start();
+
+                foreach (ViewSection section in sections)
+                {
+                    using (Transaction t = new Transaction(doc, "Assign parameter"))
+                    {
+                        t.Start();
+                        string newNumber = "";
+                        try
+                        {
+                            newNumber = section.LookupParameter("Sheet Number").AsString().Split('-').Last();
+                            section.LookupParameter("TRSDC_Sheet Number").Set(newNumber);
+                            //sb.AppendLine(sectionHead.Name);
+                        }
+                        catch (Exception ex)
+                        {
+                            doc.print($"The Parameter TRSDC_Sheet Number is Read-Only for sheet: {section.LookupParameter("Sheet Number").AsString()}.\n" +
+                                 $"Please check the parameter and try again.\n" +
+                                 $"Edit the section view template to Not Include the parameter TRSDC_Sheet Number.");
+                            break;
+                        }
+                        t.Commit();
+                    }
+                }
                 if (sb.Length > 0)
                     doc.print(sb);
                 else doc.print("Mission Accomplished!");
-                tr.Commit();
+                tg.Assimilate();
             }
-
+            #endregion
         }
     }
-
 
 }

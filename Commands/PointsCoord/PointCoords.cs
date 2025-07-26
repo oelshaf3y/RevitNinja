@@ -34,13 +34,12 @@ namespace Revit_Ninja.Commands.PointsCoord
                      .Cast<FamilySymbol>()
                      .Where(x => x.Family.Name == "RevitNinja_Point").FirstOrDefault();
             }
-            catch (Exception ex) { doc.print(ex.Message); }
+            catch (Exception ex) { }
             #endregion
 
             #region load symbol if not found
             if (symbol == null)
             {
-                doc.print("test");
                 using (Transaction tr = new Transaction(doc, "Load Family"))
                 {
                     tr.Start();
@@ -69,7 +68,7 @@ namespace Revit_Ninja.Commands.PointsCoord
                  .Where(x => x.Symbol.Family.Name == "RevitNinja_Point")
                  .ToList();
             }
-            catch (Exception ex) { doc.print(ex.Message); }
+            catch (Exception ex) {  }
             #endregion
 
             #region insert new point

@@ -423,6 +423,26 @@ namespace Revit_Ninja.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] pointsL {
+            get {
+                object obj = ResourceManager.GetObject("pointsL", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] pointsS {
+            get {
+                object obj = ResourceManager.GetObject("pointsS", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] Rebl {
             get {
                 object obj = ResourceManager.GetObject("Rebl", resourceCulture);
@@ -476,6 +496,16 @@ namespace Revit_Ninja.Properties {
         internal static byte[] resetViewS {
             get {
                 object obj = ResourceManager.GetObject("resetViewS", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] RevitNinja_CallOut_Head {
+            get {
+                object obj = ResourceManager.GetObject("RevitNinja_CallOut_Head", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -576,6 +606,26 @@ namespace Revit_Ninja.Properties {
         internal static byte[] selectbys {
             get {
                 object obj = ResourceManager.GetObject("selectbys", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TableL {
+            get {
+                object obj = ResourceManager.GetObject("TableL", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TableS {
+            get {
+                object obj = ResourceManager.GetObject("TableS", resourceCulture);
                 return ((byte[])(obj));
             }
         }

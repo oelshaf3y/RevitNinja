@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Net;
 using RevitNinja.Views;
 using System.Windows.Shapes;
+using Revit_Ninja.Commands.PointsCoord;
 
 namespace RevitNinja
 {
@@ -82,35 +83,35 @@ namespace RevitNinja
             }
 
             string TabName = "RSCC";
-            //if (!Ninja.getAccess(null))
-            //{
-            //    return Result.Failed;
-            //}
             try
             {
                 application.CreateRibbonTab(TabName);
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.Message);
                 return Result.Cancelled;
             }
             RibbonPanel infoPanel;
             infoPanel = application.CreateRibbonPanel(TabName, "About The Developer");
+
             RibbonPanel viewsPanel;
             viewsPanel = application.CreateRibbonPanel(TabName, "Views");
-            RibbonPanel rebarPanel;
-            //rebarPanel = application.CreateRibbonPanel(TabName, "Rebar");
+
             RibbonPanel generalToolsPanel;
             generalToolsPanel = application.CreateRibbonPanel(TabName, "General Tools");
 
+            RibbonPanel rebarPanel;
+            rebarPanel = application.CreateRibbonPanel(TabName, "Rebar");
+
             RibbonPanel reviztoPanel;
             reviztoPanel = application.CreateRibbonPanel(TabName, "Revizto Tools");
+
             PushButtonData INFO = null, SAVESTATE = null, RESETSTATE = null, RESETSHEET = null, ALIGN2PTS = null, ALIGNELEMENTS = null;
             PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null;
-            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null, COORDINATES = null;
+            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null, COORDINATES = null, POINTSCOORDS = null, COORDSTABLE = null;
             PushButtonData LOADISSUES = null, TOGGLEISSUES = null, PICKISSUE = null, VIEWISSUE = null, DELETEISSUES = null, MOVEISSUE = null;
+
             try
             {
                 INFO = new PushButtonData("About me", "About Me", assemblyName, typeof(Info).FullName)
@@ -263,77 +264,56 @@ namespace RevitNinja
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/MoveS.ico")),
                     ToolTip = "Move issue to selected point in 3D."
                 };
+                POINTSCOORDS = new PushButtonData("Points To Coordinates", "Points Coordinates", assemblyName, typeof(PointCoords).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/pointsS.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/pointsL.ico")),
+                    ToolTip = "Create points as spot coordinates."
+                };
+                COORDSTABLE = new PushButtonData("Operate on points", "Points Operations", assemblyName, typeof(OperateOnPoints).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/TableS.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/TableL.ico")),
+                    ToolTip = "Modify, Plot, Import and Export points."
+                };
+
             }
             catch { }
 
-
-
-            // DELETECAD = null,
-            // ROTATELOCALLY = null; ;
-            // SELECTBY = null,
-
             try
             {
+                #region info Panel
                 if (!(INFO is null)) infoPanel.AddItem(INFO);
                 else TaskDialog.Show("Error", "INFO");
+                #endregion
 
+                #region view panel
                 if (!(SAVESTATE is null)) viewsPanel.AddItem(SAVESTATE);
                 else TaskDialog.Show("Error", "SAVESTATE");
+                if (!(RESETSTATE is null && RESETSHEET is null)) viewsPanel.AddStackedItems(RESETSTATE, RESETSHEET);
 
-                if (!(RESETSTATE is null)) viewsPanel.AddItem(RESETSTATE);
-                else TaskDialog.Show("Error", "RESETSTATE");
+                if (BIMSUB is null) TaskDialog.Show("Error", "BIMSUB");
+                if (DELETECAD is null) TaskDialog.Show("Error", "DELETECAD");
+                if (!(DELETECAD is null && BIMSUB is null))
+                    viewsPanel.AddStackedItems(BIMSUB, DELETECAD);
+                #endregion
 
-                if (!(RESETSHEET is null)) viewsPanel.AddItem(RESETSHEET);
-                else TaskDialog.Show("Error", "RESETSHEET");
-
-                //if (!(NOS is null)) viewsPanel.AddItem(NOS);
-                //else TaskDialog.Show("Error", "NOS");
-
-
-                if (!(BIMSUB is null)) viewsPanel.AddItem(BIMSUB);
-                else TaskDialog.Show("Error", "NOS");
-
-
-
-                //if (!(HIDEUNHOSTED is null)) rebarPanel.AddItem(HIDEUNHOSTED);
-                //else TaskDialog.Show("Error", "HIDEUNHOSTED");
-
-                //if (!(TOGGLEREBAR is null)) rebarPanel.AddItem(TOGGLEREBAR);
-                //else TaskDialog.Show("Error", "TOGGLEREBAR");
-
-                //if (!(REBARHOST is null)) rebarPanel.AddItem(REBARHOST);
-                //else TaskDialog.Show("Error", "REBARHOST");
-
-                //if (!(FINDREBAR is null)) rebarPanel.AddItem(FINDREBAR);
-                //else TaskDialog.Show("Error", "FINDREBAR");
-
-
-                if (!(DELETECAD is null)) generalToolsPanel.AddItem(DELETECAD);
-                else TaskDialog.Show("Error", "DELETECAD");
-
+                #region general tool panel
                 if (!(PENETRATION is null)) generalToolsPanel.AddItem(PENETRATION);
                 else TaskDialog.Show("Error", "PENETRATION");
 
                 if (!(COORDINATES is null)) generalToolsPanel.AddItem(COORDINATES);
                 else TaskDialog.Show("Error", "COORDINATES");
 
-                if (!(LOADISSUES is null)) reviztoPanel.AddItem(LOADISSUES);
-                else TaskDialog.Show("Error", "LOADISSUES");
+                if (POINTSCOORDS is null)
+                    TaskDialog.Show("Error", "POINTSCOORDS");
+                if (COORDSTABLE is null)
+                    TaskDialog.Show("Error", "COORDSTABLE");
+                if (!(POINTSCOORDS is null && COORDSTABLE is null))
+                    generalToolsPanel.AddStackedItems(POINTSCOORDS, COORDSTABLE);
 
-                if (!(VIEWISSUE is null)) reviztoPanel.AddItem(VIEWISSUE);
-                else TaskDialog.Show("Error", "VIEWISSUE");
-
-                if (!(MOVEISSUE is null)) reviztoPanel.AddItem(MOVEISSUE);
-                else TaskDialog.Show("Error", "MOVEISSUE");
-
-                if (!(PICKISSUE is null || TOGGLEISSUES is null || DELETEISSUES is null)) reviztoPanel.AddStackedItems(PICKISSUE, TOGGLEISSUES, DELETEISSUES);
-                else TaskDialog.Show("Error", "PICKISSUE,TOGGLEISSUES, DELETEISSUES");
-
-                //if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
-                //else TaskDialog.Show("Error", "SELECTBY");
-
-                //if (!(ROTATELOCALLY is null)) generalToolsPanel.AddItem(ROTATELOCALLY);
-                //else TaskDialog.Show("Error", "ROTATELOCALLY");
+                if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
+                else TaskDialog.Show("Error", "SELECTBY");
 
                 //if (ALIGN2PTS is null)
                 //    TaskDialog.Show("Error", "ALIGN2PTS");
@@ -341,15 +321,44 @@ namespace RevitNinja
                 //    TaskDialog.Show("Error", "ALIGNELEMENTS");
                 //if (ALIGNTAGS is null)
                 //    TaskDialog.Show("Error", "ALIGNTAGS");
+
                 //if (!(ALIGNELEMENTS is null && ALIGN2PTS is null && ALIGNTAGS is null))
                 //    generalToolsPanel.AddStackedItems(ALIGN2PTS, ALIGNELEMENTS, ALIGNTAGS);
+
+                //if (!(ROTATELOCALLY is null)) generalToolsPanel.AddItem(ROTATELOCALLY);
+                //else TaskDialog.Show("Error", "ROTATELOCALLY");
+                #endregion
+
+                #region rebar panel
+                if (!(FINDREBAR is null)) rebarPanel.AddItem(FINDREBAR);
+                else TaskDialog.Show("Error", "FINDREBAR");
+
+                if (HIDEUNHOSTED is null) TaskDialog.Show("Error", "HIDEUNHOSTED");
+                if (TOGGLEREBAR is null) TaskDialog.Show("Error", "TOGGLEREBAR");
+                if (!(HIDEUNHOSTED is null && TOGGLEREBAR is null)) rebarPanel.AddStackedItems(TOGGLEREBAR, HIDEUNHOSTED);
+
+                if (!(REBARHOST is null)) rebarPanel.AddItem(REBARHOST);
+                else TaskDialog.Show("Error", "REBARHOST");
+                #endregion
+
+                #region revizto panel
+                if (!(LOADISSUES is null)) reviztoPanel.AddItem(LOADISSUES);
+                else TaskDialog.Show("Error", "LOADISSUES");
+
+                if (VIEWISSUE is null) TaskDialog.Show("Error", "VIEWISSUE");
+                if (MOVEISSUE is null) TaskDialog.Show("Error", "MOVEISSUE");
+                if (!(VIEWISSUE is null && MOVEISSUE is null))
+                    reviztoPanel.AddStackedItems(VIEWISSUE, MOVEISSUE);
+
+                if (!(PICKISSUE is null || TOGGLEISSUES is null || DELETEISSUES is null)) reviztoPanel.AddStackedItems(PICKISSUE, TOGGLEISSUES, DELETEISSUES);
+                else TaskDialog.Show("Error", "PICKISSUE,TOGGLEISSUES, DELETEISSUES");
+                #endregion
             }
             catch (System.Exception ex)
             {
                 TaskDialog.Show("exception", ex.ToString());
-                //TaskDialog.Show("exception", ex.Message);
-
             }
+
             return Result.Succeeded;
         }
     }

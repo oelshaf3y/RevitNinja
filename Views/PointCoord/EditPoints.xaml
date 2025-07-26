@@ -12,16 +12,16 @@
         <Label Content="Suffix" HorizontalAlignment="Left" Margin="25,82,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="suffixCombo" HorizontalAlignment="Left" Margin="29,107,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="suffixCombo_SelectionChanged"/>
         <Label Content="Start From" HorizontalAlignment="Left" Margin="25,138,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="numberBox" PreviewTextInput="IntegerTextBox_PreviewTextInput" MaxLength="9"  HorizontalAlignment="Left" Margin="29,168,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" TextChanged="numberBox_TextChanged"/>
+        <TextBox x:Name="numberBox" PreviewTextInput="IntegerTextBox_PreviewTextInput"  HorizontalAlignment="Left" Margin="29,168,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" TextChanged="numberBox_TextChanged"/>
         <Button Content="Plot" HorizontalAlignment="Left" Margin="393,97,0,0" VerticalAlignment="Top" Width="45" BorderBrush="{x:Null}" Background="#FF00B3FF" Foreground="White" Click="plotButClick" />
         <Button Content="Edit" HorizontalAlignment="Left" Margin="393,125,0,0" VerticalAlignment="Top" Width="45" BorderBrush="{x:Null}" Background="#FF00B3FF" Foreground="White" Click="editButClick" />
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="393,157,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFFF6C6C" Foreground="White" Width="45" Click="cancelButClick" />
         <Label Content="New Prefix" HorizontalAlignment="Left" Margin="210,32,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="newPrefix" MaxLength="9"  HorizontalAlignment="Left" Margin="210,58,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="newPrefix"  HorizontalAlignment="Left" Margin="210,58,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
         <Label Content="New Suffix" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="210,86,0,0"/>
-        <TextBox x:Name="newSuffix" MaxLength="9"  HorizontalAlignment="Left" Margin="210,111,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="newSuffix"  HorizontalAlignment="Left" Margin="210,111,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
         <Label Content="New Start From" HorizontalAlignment="Left" Margin="210,141,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="newNumber" PreviewTextInput="IntegerTextBox_PreviewTextInput" MaxLength="9"  HorizontalAlignment="Left" Margin="210,168,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="newNumber" PreviewTextInput="IntegerTextBox_PreviewTextInput"  HorizontalAlignment="Left" Margin="210,168,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
         <Label Content="Select points:" HorizontalAlignment="Left" Margin="25,7,0,0" VerticalAlignment="Top"/>
         <CheckBox Content="All Points" x:Name="allPointsCB" HorizontalAlignment="Left" Margin="367,58,0,0" VerticalAlignment="Top" Unchecked="allPointsCB_UnChecked" Checked="allPointsCB_Checked"/>
 

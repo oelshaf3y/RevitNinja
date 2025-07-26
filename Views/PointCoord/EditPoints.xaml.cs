@@ -18,11 +18,13 @@ namespace Revit_Ninja.Views.PointCoord
         {
             this.points = points;
             InitializeComponent();
-            var prefixes = points.Select(x => x.Prefix).Distinct().ToList();
-            prefixes.ForEach(p => prefixCombo.Items.Add(p));
-            prefixCombo.Items.Add("All");
-            numberBox.Text = points.Min(x => x.ID).ToString();
-            if (prefixCombo.Items.Count > 0) prefixCombo.SelectedIndex = prefixCombo.Items.Count - 1;
+            if (points.Count > 0)
+            {
+                var prefixes = points.Select(x => x.Prefix).Distinct().ToList();
+                prefixes.ForEach(p => prefixCombo.Items.Add(p));
+                numberBox.Text = points.Min(x => x.ID).ToString();
+                if (prefixCombo.Items.Count > 0) prefixCombo.SelectedIndex = prefixCombo.Items.Count - 1;
+            }
         }
 
         private void IntegerTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)

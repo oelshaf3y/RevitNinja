@@ -47,13 +47,13 @@ namespace RevitNinja.Views
         {
             //update the db
             string path = Path.Combine(Ninja.folderPath, "NinjaUpdater.exe");
-            StartDownload(Link, path);
+            //StartDownload(Link, path);
 
-            //if (!File.Exists(path))
-            //{
-            //    // 1. Download the updater
-            //    StartDownload(Link, path);
-            //}
+            if (!File.Exists(path))
+            {
+                // 1. Download the updater
+                StartDownload(Link, path);
+            }
 
             if (File.Exists(Ninja.dbfile))
             {

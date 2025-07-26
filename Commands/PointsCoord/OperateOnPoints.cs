@@ -8,6 +8,8 @@ using RevitNinja.Utils;
 using Autodesk.Revit.Attributes;
 using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Interop.Excel;
+using Line = Autodesk.Revit.DB.Line;
+using Group = Autodesk.Revit.DB.Group;
 
 namespace Revit_Ninja.Commands.PointsCoord
 {
@@ -34,19 +36,23 @@ namespace Revit_Ninja.Commands.PointsCoord
 
             projectLocation = doc.ActiveProjectLocation;
 
-            allPoints = new FilteredElementCollector(doc)
-                 .OfClass(typeof(FamilyInstance))
-                 .WhereElementIsNotElementType()
-                 .Cast<FamilyInstance>()
-                 .Where(x => x.Symbol.Family.Name == "RevitNinja_Point")
-                 .ToList();
+            try
+            {
 
-
+                allPoints = new FilteredElementCollector(doc)
+                     .OfClass(typeof(FamilyInstance))
+                     .WhereElementIsNotElementType()
+                     .Cast<FamilyInstance>()
+                     .Where(x => x.Symbol.Family.Name == "RevitNinja_Point")
+                     .ToList();
+            }
+            catch { }
 
             selectPoint GetPointsView = new selectPoint();
             GetPointsView.ShowDialog();
             if (GetPointsView.DialogResult == false) return Result.Cancelled;
             operation = GetPointsView.operation;
+            selectionType = getSelectionType(GetPointsView);
             points = getPoints(selectionType);
             switch (operation)
             {
@@ -70,6 +76,12 @@ namespace Revit_Ninja.Commands.PointsCoord
             return Result.Succeeded;
         }
 
+        private SelectionType getSelectionType(selectPoint view)
+        {
+            if (view.activeView.IsChecked == true) return SelectionType.ActiveView;
+            else if (view.allPoints.IsChecked == true) return SelectionType.AllPoints;
+            else return SelectionType.SelectedPoints;
+        }
         private bool ExportPoints()
         {
             try
@@ -132,7 +144,6 @@ namespace Revit_Ninja.Commands.PointsCoord
             }
             catch (Exception ex)
             {
-                doc.print(ex.Message);
                 return false;
             }
         }
@@ -198,7 +209,6 @@ namespace Revit_Ninja.Commands.PointsCoord
             }
             catch (Exception ex)
             {
-                doc.print(ex.Message);
                 return false;
             }
             return true;
@@ -232,7 +242,7 @@ namespace Revit_Ninja.Commands.PointsCoord
                      .Cast<FamilySymbol>()
                      .Where(x => x.Family.Name == "RevitNinja_Point").FirstOrDefault();
             }
-            catch (Exception ex) { doc.print(ex.Message); }
+            catch (Exception ex) {  }
             #endregion
 
             #region load symbol if not found
@@ -312,18 +322,25 @@ namespace Revit_Ninja.Commands.PointsCoord
             {
                 case SelectionType.AllPoints:
                     {
-                        selectedPoints = allPoints.Select(x => x as Element).ToList();
+                        if (allPoints.Count() > 0)
+                            selectedPoints = allPoints.Select(x => x as Element).ToList();
+                        else selectedPoints = new List<Element>();
                         break;
                     }
                 case SelectionType.ActiveView:
                     {
-                        selectedPoints = new FilteredElementCollector(doc, doc.ActiveView.Id)
-                             .OfClass(typeof(FamilyInstance))
-                             .WhereElementIsNotElementType()
-                             .Cast<FamilyInstance>()
-                             .Where(x => x.Symbol.Family.Name == "RevitNinja_Point")
-                             .Select(x => x as Element)
-                             .ToList();
+                        try
+                        {
+
+                            selectedPoints = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                                 .OfClass(typeof(FamilyInstance))
+                                 .WhereElementIsNotElementType()
+                                 .Cast<FamilyInstance>()
+                                 .Where(x => x.Symbol.Family.Name == "RevitNinja_Point")
+                                 .Select(x => x as Element)
+                                 .ToList();
+                        }
+                        catch { selectedPoints = new List<Element>(); }
                         break;
                     }
                 case SelectionType.SelectedPoints:
@@ -336,39 +353,48 @@ namespace Revit_Ninja.Commands.PointsCoord
                                 .Select(x => doc.GetElement(x)).ToList();
 
                         }
-                        catch { }
+                        catch (Exception ex) { selectedPoints = new List<Element>(); }
                         break;
                     }
             }
-            foreach (Element element in selectedPoints)
+            if (selectedPoints.Count() > 0)
             {
-                string suffix = "";
-                string prefix, easting, northing;
-                int ID = 0;
-                string PointLabel = element.LookupParameter("PointLabel").AsString();
-                easting = element.LookupParameter("Easting").AsString();
-                northing = element.LookupParameter("Northing").AsString();
-                string[] label = Regex.Split(PointLabel, @"(?<=\D)(?=\d)|(?<=\d)(?=\D)");
-                if (label.Count() > 1)
+                foreach (Element element in selectedPoints)
                 {
-                    prefix = label.First();
-                    ID = int.Parse(label.ElementAt(1));
-                    if (label.Count() > 2)
-                        suffix = label.ElementAt(2);
+                    string suffix = "";
+                    string prefix, easting, northing;
+                    int ID = 0;
+                    string PointLabel = element.LookupParameter("PointLabel").AsString();
+                    easting = element.LookupParameter("Easting").AsString();
+                    northing = element.LookupParameter("Northing").AsString();
+                    string[] label = Regex.Split(PointLabel, @"(?<=\D)(?=\d)|(?<=\d)(?=\D)");
+                    if (label.Count() > 1)
+                    {
+                        prefix = label.First();
+                        ID = int.Parse(label.ElementAt(1));
+                        if (label.Count() > 2)
+                            suffix = label.ElementAt(2);
+                    }
+                    else
+                    {
+                        prefix = "";
+                        suffix = "";
+                        ID = int.Parse(PointLabel);
+                    }
+                    points.Add(new PointLocation(ID, prefix, suffix, easting, northing, element));
                 }
-                else
-                {
-                    prefix = "";
-                    suffix = "";
-                    ID = int.Parse(PointLabel);
-                }
-                points.Add(new PointLocation(ID, prefix, suffix, easting, northing, element));
+                return points.OrderBy(x => x.ID).ToList();
             }
-            return points.OrderBy(x => x.ID).ToList();
+            else
+            {
+                return new List<PointLocation>();
+            }
         }
 
         private bool IsDuplicatePointLabel(string label)
         {
+            return true;
+
             List<Element> listOfElements = allPoints.Select(x => x as Element).ToList();
             bool found = false;
             listOfElements.ForEach(element =>
@@ -393,6 +419,7 @@ namespace Revit_Ninja.Commands.PointsCoord
             string prefix = coordEdit.prefixCombo.SelectedItem?.ToString() ?? "";
             string suffix = coordEdit.suffixCombo.SelectedItem?.ToString() ?? "";
             if (coordEdit.DialogResult == false) return false;
+            #region edit points
             if (coordEdit.edit)
             {
                 if (coordEdit.allPointsCB.IsChecked == true)
@@ -406,9 +433,9 @@ namespace Revit_Ninja.Commands.PointsCoord
                 int newID = coordEdit.newID;
                 if (editablePoints.Count > 0)
                 {
-                    using (TransactionGroup tg = new TransactionGroup(doc, "Edit Points"))
+                    using (Transaction tr = new Transaction(doc, "Edit point"))
                     {
-                        tg.Start();
+                        tr.Start();
                         foreach (PointLocation point in editablePoints)
                         {
                             string label = coordEdit.newPrefix.Text + newID.ToString() + coordEdit.newSuffix.Text;
@@ -417,18 +444,16 @@ namespace Revit_Ninja.Commands.PointsCoord
                                 doc.print($"The label ( {label} ) exists, please choose another criteria.");
                                 return false;
                             }
-                            using (Transaction tr = new Transaction(doc, "Edit point"))
-                            {
-                                tr.Start();
-                                point.element.LookupParameter("PointLabel").Set(label);
-                                tr.Commit();
-                            }
-                            newID++;
+                            point.element.LookupParameter("PointLabel").Set(label);
                         }
-                        tg.Assimilate();
+                        newID++;
+                        tr.Commit();
                     }
                 }
             }
+            #endregion
+
+            #region plot table
             else if (coordEdit.plot)
             {
                 //here plot the table of the points
@@ -443,12 +468,18 @@ namespace Revit_Ninja.Commands.PointsCoord
                 using (TransactionGroup tg = new TransactionGroup(doc, "Plot Coordinates"))
                 {
                     tg.Start();
+
+                    #region getting table corner
                     XYZ corner = XYZ.Zero;
                     try
                     {
                         corner = uidoc.Selection.PickPoint("Select a point to plot the table or press ESC to cancel");
                     }
                     catch { return false; }
+                    #endregion
+
+                    #region getting text note types
+
                     TextNoteType tableText, tableHeader;
                     try
                     {
@@ -470,36 +501,158 @@ namespace Revit_Ninja.Commands.PointsCoord
                             tr.Commit();
                         }
                     }
+                    #endregion
+
+                    #region plot table
                     TextNote pId;
                     List<ElementId> TableElements = new List<ElementId>();
+                    List<TextNote> col1 = new List<TextNote>();
+                    List<TextNote> col2 = new List<TextNote>();
+                    List<TextNote> col3 = new List<TextNote>();
+                    List<XYZ> locationPoints = new List<XYZ>();
+
+                    double scale = doc.ActiveView.Scale;
+                    double offset = 7.0.mmToFeet();
+                    XYZ newLoc = corner + offset * doc.ActiveView.RightDirection * scale;
                     using (Transaction tr = new Transaction(doc, "Plot the table"))
                     {
                         tr.Start();
-                        pId = TextNote.Create(doc, doc.ActiveView.Id, corner + 5.0.mmToFeet() * doc.ActiveView.RightDirection, "Label", tableHeader.Id);
+                        pId = TextNote.Create(doc, doc.ActiveView.Id, newLoc + 0.5 * offset * doc.ActiveView.UpDirection * scale, "Label", tableHeader.Id);
                         TableElements.Add(pId.Id);
+                        col1.Add(pId);
+                        pId = TextNote.Create(doc, doc.ActiveView.Id, newLoc + 0.5 * offset * doc.ActiveView.UpDirection * scale, "Easting", tableHeader.Id);
+                        TableElements.Add(pId.Id);
+                        col2.Add(pId);
+                        pId = TextNote.Create(doc, doc.ActiveView.Id, newLoc + 0.5 * offset * doc.ActiveView.UpDirection * scale, "Northing", tableHeader.Id);
+                        TableElements.Add(pId.Id);
+                        col3.Add(pId);
                         tr.Commit();
                     }
                     BoundingBoxXYZ bbx = pId.get_BoundingBox(doc.ActiveView);
                     double width = bbx.Max.X - bbx.Min.X;
+                    double maxWidth1 = 0;
+                    double maxWidth2 = 0;
+                    double maxWidth3 = 0;
+                    if (width > maxWidth1) maxWidth1 = width;
+
+
                     //double height = bbx.Max.Y - bbx.Min.Y;
                     foreach (PointLocation point in editablePoints)
                     {
-                        using (Transaction tr = new Transaction(doc, "Plot the table"))
+                        newLoc = newLoc - offset * doc.ActiveView.UpDirection * scale;
+                        using (TransactionGroup tg2 = new TransactionGroup(doc, "plot point"))
                         {
-                            tr.Start();
-                            corner = corner -  5.0.mmToFeet() * doc.ActiveView.UpDirection;
-                            TextNote pLabel = TextNote.Create(doc, doc.ActiveView.Id, corner, point.Prefix + point.ID + point.Suffix, tableText.Id);
-                            tr.Commit();
-                            bbx = pLabel.get_BoundingBox(doc.ActiveView);
-                            //height = bbx.Max.Y - bbx.Min.Y;
+                            tg2.Start();
+                            using (Transaction tr = new Transaction(doc, "Plot label"))
+                            {
+                                tr.Start();
+                                TextNote pLabel = TextNote.Create(doc, doc.ActiveView.Id, newLoc, point.Prefix + point.ID + point.Suffix, tableText.Id);
+                                tr.Commit();
+                                TableElements.Add(pLabel.Id);
+                                col1.Add(pLabel);
+                                bbx = pLabel.get_BoundingBox(doc.ActiveView);
+                                width = bbx.Max.X - bbx.Min.X;
+                                if (width > maxWidth1) maxWidth1 = width;
+
+                            }
+                            using (Transaction tr = new Transaction(doc, "Plot Easting"))
+                            {
+                                tr.Start();
+                                TextNote pLabel = TextNote.Create(doc, doc.ActiveView.Id, newLoc + width * doc.ActiveView.RightDirection + offset * scale * doc.ActiveView.RightDirection, point.Easting, tableText.Id);
+                                tr.Commit();
+                                col2.Add(pLabel);
+                                TableElements.Add(pLabel.Id);
+                                bbx = pLabel.get_BoundingBox(doc.ActiveView);
+                                width = bbx.Max.X - bbx.Min.X;
+                                if (width > maxWidth2) maxWidth2 = width;
+
+                            }
+                            using (Transaction tr = new Transaction(doc, "Plot label"))
+                            {
+                                tr.Start();
+                                TextNote pLabel = TextNote.Create(doc, doc.ActiveView.Id, newLoc + width * doc.ActiveView.RightDirection + offset * scale * doc.ActiveView.RightDirection, point.Northing, tableText.Id);
+                                tr.Commit();
+                                col3.Add(pLabel);
+                                TableElements.Add(pLabel.Id);
+                                bbx = pLabel.get_BoundingBox(doc.ActiveView);
+                                width = bbx.Max.X - bbx.Min.X;
+                                if (width > maxWidth3) maxWidth3 = width;
+
+                            }
+
+                            tg2.Assimilate();
                         }
                     }
+                    using (Transaction tr = new Transaction(doc, "Arrange"))
+                    {
+                        tr.Start();
+                        newLoc = newLoc - offset * doc.ActiveView.RightDirection * scale;
+                        Line left = Line.CreateBound(corner + offset * doc.ActiveView.UpDirection * scale, newLoc - offset * doc.ActiveView.UpDirection * scale);
+                        TableElements.Add(doc.Create.NewDetailCurve(doc.ActiveView, left).Id);
+                        XYZ st = left.GetEndPoint(0).Add(maxWidth1 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale);
+                        XYZ end = left.GetEndPoint(1).Add(maxWidth1 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale);
+                        Line right = Line.CreateBound(st, end);
+                        st = st.Add(maxWidth2 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale);
+                        end = end.Add(maxWidth2 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale);
+                        Line right2 = Line.CreateBound(st, end);
+                        st = st.Add(maxWidth3 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale);
+                        end = end.Add(maxWidth3 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale);
+                        Line endLine = Line.CreateBound(st, end);
+                        Line top = Line.CreateBound(corner + offset * doc.ActiveView.UpDirection * scale, st);
+                        //Line bot = Line.CreateBound(newLoc - offset * doc.ActiveView.UpDirection * scale, end);
+                        TableElements.Add(doc.Create.NewDetailCurve(doc.ActiveView, left).Id);
+                        TableElements.Add(doc.Create.NewDetailCurve(doc.ActiveView, right).Id);
+                        TableElements.Add(doc.Create.NewDetailCurve(doc.ActiveView, right2).Id);
+                        TableElements.Add(doc.Create.NewDetailCurve(doc.ActiveView, endLine).Id);
+                        TableElements.Add(doc.Create.NewDetailCurve(doc.ActiveView, top).Id);
+                        //TableElements.Add(doc.Create.NewDetailCurve(doc.ActiveView, bot).Id);
+                        for (int i = 0; i < col1.Count; i++)
+                        {
+                            try
+                            {
+
+                                TextNote label = col1[i] as TextNote;
+                                TextNote easting = col2[i] as TextNote;
+                                TextNote northing = col3[i] as TextNote;
+                                XYZ loc = label.Coord;
+                                XYZ stPt = loc.Add(-offset * (doc.ActiveView.UpDirection * scale + doc.ActiveView.RightDirection * scale));
+                                XYZ endPt = stPt.Add(maxWidth1 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale);
+                                endPt = endPt.Add(maxWidth2 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale);
+                                endPt = endPt.Add(maxWidth3 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale);
+
+                                Line line = Line.CreateBound(stPt, endPt);
+                                TableElements.Add(doc.Create.NewDetailCurve(doc.ActiveView, line).Id);
+
+                                XYZ eastingLoc = loc + maxWidth1 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale;
+                                XYZ northingLoc = eastingLoc + maxWidth2 * doc.ActiveView.RightDirection + 3 * offset * doc.ActiveView.RightDirection * scale;
+                                easting.Location.Move(eastingLoc - easting.Coord);
+                                northing.Location.Move(northingLoc - northing.Coord);
+                            }
+                            catch (Exception ex) { return false; }
+                        }
+                        Group group = doc.Create.NewGroup(TableElements);
+                        bool grouped = false;
+                        int cc = 0;
+                        while (!grouped)
+                        {
+                            try
+                            {
+                                group.GroupType.Name = "Coordinates Table";
+                                grouped = true;
+                            }
+                            catch { cc++; }
+                        }
+                        tr.Commit();
+                    }
+                    #endregion
 
                     tg.Assimilate();
                 }
 
 
             }
+            #endregion
+
             return true;
         }
     }

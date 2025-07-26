@@ -51,6 +51,8 @@
 		<None Remove="Resources\ninjaIcon.png" />
 		<None Remove="Resources\NOS.ico" />
 		<None Remove="Resources\NOSsmall.ico" />
+		<None Remove="Resources\pointsL.ico" />
+		<None Remove="Resources\pointsS.ico" />
 		<None Remove="Resources\Rebl.ico" />
 		<None Remove="Resources\Rebs.ico" />
 		<None Remove="Resources\resetSheets.ico" />
@@ -58,6 +60,7 @@
 		<None Remove="Resources\ResetView.ico" />
 		<None Remove="Resources\resetViewS.ico" />
 		<None Remove="Resources\revitninjatext.png" />
+		<None Remove="Resources\RevitNinja_CallOut_Head.rfa" />
 		<None Remove="Resources\RevitNinja_CIRC_OPENING.rfa" />
 		<None Remove="Resources\RevitNinja_Point.rfa" />
 		<None Remove="Resources\RevitNinja_REC_OPENING.rfa" />
@@ -67,6 +70,8 @@
 		<None Remove="Resources\rotateLocallyS.ico" />
 		<None Remove="Resources\selectbyl.ico" />
 		<None Remove="Resources\selectbys.ico" />
+		<None Remove="Resources\TableL.ico" />
+		<None Remove="Resources\TableS.ico" />
 		<None Remove="Resources\toggleIssues.ico" />
 		<None Remove="Resources\toggleIssuesL.ico" />
 		<None Remove="Resources\viewIssue.ico" />
@@ -121,6 +126,7 @@
 		<Resource Include="Resources\ninja-pic.png" />
 		<Resource Include="Resources\ninja.ico" />
 		<EmbeddedResource Include="Resources\ninjaDB.exe" />
+		<EmbeddedResource Include="Resources\RevitNinja_CallOut_Head.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_CIRC_OPENING.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_Point.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_REC_OPENING.rfa" />
@@ -129,6 +135,12 @@
 		<Resource Include="Resources\ninjaIcon.png" />
 		<Resource Include="Resources\NOS.ico" />
 		<Resource Include="Resources\NOSsmall.ico" />
+		<Resource Include="Resources\pointsL.ico">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\pointsS.ico">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\Rebl.ico" />
 		<Resource Include="Resources\Rebs.ico" />
 		<Resource Include="Resources\resetSheets.ico" />
@@ -140,6 +152,12 @@
 		<Resource Include="Resources\rotateLocallyS.ico" />
 		<Resource Include="Resources\selectbyl.ico" />
 		<Resource Include="Resources\selectbys.ico" />
+		<Resource Include="Resources\TableL.ico">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\TableS.ico">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\toggleIssues.ico" />
 		<Resource Include="Resources\toggleIssuesL.ico" />
 		<Resource Include="Resources\viewIssue.ico" />
