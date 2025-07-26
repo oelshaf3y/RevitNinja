@@ -244,7 +244,7 @@ namespace RevitNinja.Utils
             Document doc = uidoc.Document;
             SketchPlane sp = SketchPlane.Create(doc, plane);
             uidoc.ActiveView.SketchPlane = sp;
-            uidoc.ActiveView.ShowActiveWorkPlane();
+            //uidoc.ActiveView.ShowActiveWorkPlane();
         }
 
         public static void getUri(this UserControl userControl, string baseUri)

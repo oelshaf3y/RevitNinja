@@ -13,6 +13,7 @@ namespace Revit_Ninja.Commands.PointsCoord
         UIDocument uidoc;
         Document doc;
         FamilySymbol symbol;
+        Family fam;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -28,13 +29,14 @@ namespace Revit_Ninja.Commands.PointsCoord
             #region get existing symbol
             try
             {
-
-                symbol = new FilteredElementCollector(doc)
+                var alls = new FilteredElementCollector(doc)
                      .OfCategory(BuiltInCategory.OST_GenericAnnotation)
+                     .OfClass(typeof(FamilySymbol))
                      .Cast<FamilySymbol>()
-                     .Where(x => x.Family.Name == "RevitNinja_Point").FirstOrDefault();
+                     .Where(x => x.Name == "Ninja_Point").First();
+                symbol = alls;
             }
-            catch (Exception ex) { }
+            catch (Exception ex) {  }
             #endregion
 
             #region load symbol if not found
@@ -44,17 +46,18 @@ namespace Revit_Ninja.Commands.PointsCoord
                 {
                     tr.Start();
                     string path = doc.ExtractEmbeddedResource("RevitNinja_Point.rfa");
-                    doc.LoadFamily(path, out Family fam);
+                    doc.LoadFamily(path, out fam);
                     tr.Commit();
                 }
                 try
                 {
-                    symbol = new FilteredElementCollector(doc)
-                         .OfCategory(BuiltInCategory.OST_GenericAnnotation)
-                         .Cast<FamilySymbol>()
-                         .Where(x => x.Family.Name == "RevitNinja_Point").FirstOrDefault();
+                    symbol = doc.GetElement(fam.GetFamilySymbolIds().First()) as FamilySymbol;
+                    //symbol = new FilteredElementCollector(doc)
+                    //     .OfCategory(BuiltInCategory.OST_GenericAnnotation)
+                    //     .Cast<FamilySymbol>()
+                    //     .Where(x => x.Family.Name == "RevitNinja_Point").FirstOrDefault();
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) {  }
             }
             #endregion
 
@@ -68,7 +71,7 @@ namespace Revit_Ninja.Commands.PointsCoord
                  .Where(x => x.Symbol.Family.Name == "RevitNinja_Point")
                  .ToList();
             }
-            catch (Exception ex) {  }
+            catch (Exception ex) { doc.print("get all points \n" + ex.Message); }
             #endregion
 
             #region insert new point
@@ -82,11 +85,21 @@ namespace Revit_Ninja.Commands.PointsCoord
                 if (window.DialogResult == false) return Result.Cancelled;
                 int startNumber = 0;
                 if (int.TryParse(window.numberBox.Text, out int x)) startNumber = x;
+                try
+                {
+                    symbol.Activate();
+                }
+                catch (Exception ex)
+                {
+                    doc.print("Activate symbol \n" + ex.Message);
+                    return Result.Failed;
+                }
                 while (true)
                 {
                     using (Transaction tr = new Transaction(doc, "Create Point"))
                     {
                         tr.Start();
+                        Ninja.SetActiveWorkPlane(uidoc);
                         try
                         {
                             XYZ p = uidoc.Selection.PickPoint("Select a point or press ESC to finish");

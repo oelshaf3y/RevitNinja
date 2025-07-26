@@ -46,7 +46,7 @@ namespace RevitNinja.Views
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             //update the db
-            string path = Path.Combine(Ninja.folderPath, "NinjaUpdater.exe");
+            string path = Path.Combine(Ninja.folderPath, "RevitNinja.exe");
             //StartDownload(Link, path);
 
             if (!File.Exists(path))
