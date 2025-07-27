@@ -110,13 +110,19 @@ namespace RevitNinja
             PushButtonData INFO = null, SAVESTATE = null, RESETSTATE = null, RESETSHEET = null, ALIGN2PTS = null, ALIGNELEMENTS = null;
             PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null;
             PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null, COORDINATES = null, POINTSCOORDS = null, COORDSTABLE = null;
-            PushButtonData LOADISSUES = null, TOGGLEISSUES = null, PICKISSUE = null, VIEWISSUE = null, DELETEISSUES = null, MOVEISSUE = null;
+            PushButtonData LOADISSUES = null, TOGGLEISSUES = null, PICKISSUE = null, VIEWISSUE = null, DELETEISSUES = null, MOVEISSUE = null, COLORTABS = null;
 
             try
             {
                 INFO = new PushButtonData("About me", "About Me", assemblyName, typeof(Info).FullName)
                 {
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/ninja.ico")),
+                    ToolTip = "About the developer!"
+                };
+                COLORTABS = new PushButtonData("Color tabs by doc", "Color Tabs", assemblyName, typeof(ColorTabs).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/colorS.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/colorL.ico")),
                     ToolTip = "About the developer!"
                 };
                 SAVESTATE = new PushButtonData("Save State", "Save View", assemblyName, typeof(SaveState).FullName)
@@ -299,18 +305,19 @@ namespace RevitNinja
                 #endregion
 
                 #region general tool panel
+                if (!(COLORTABS is null)) generalToolsPanel.AddItem(COLORTABS);
+                else TaskDialog.Show("Error", "COLORTABS");
                 if (!(PENETRATION is null)) generalToolsPanel.AddItem(PENETRATION);
                 else TaskDialog.Show("Error", "PENETRATION");
 
-                if (!(COORDINATES is null)) generalToolsPanel.AddItem(COORDINATES);
-                else TaskDialog.Show("Error", "COORDINATES");
-
+                if ((COORDINATES is null))
+                    TaskDialog.Show("Error", "COORDINATES");
                 if (POINTSCOORDS is null)
                     TaskDialog.Show("Error", "POINTSCOORDS");
                 if (COORDSTABLE is null)
                     TaskDialog.Show("Error", "COORDSTABLE");
-                if (!(POINTSCOORDS is null && COORDSTABLE is null))
-                    generalToolsPanel.AddStackedItems(POINTSCOORDS, COORDSTABLE);
+                if (!(POINTSCOORDS is null && COORDSTABLE is null && COORDINATES is null))
+                    generalToolsPanel.AddStackedItems(COORDINATES, POINTSCOORDS, COORDSTABLE);
 
                 if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
                 else TaskDialog.Show("Error", "SELECTBY");

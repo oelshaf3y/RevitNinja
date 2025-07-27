@@ -25,6 +25,8 @@
 		<None Remove="Resources\byParamS.ico" />
 		<None Remove="Resources\capture.ico" />
 		<None Remove="Resources\captures.ico" />
+		<None Remove="Resources\colorL.ico" />
+		<None Remove="Resources\colorS.ico" />
 		<None Remove="Resources\coordL.ico" />
 		<None Remove="Resources\coordS.ico" />
 		<None Remove="Resources\deleteCADL.ico" />
@@ -99,6 +101,8 @@
 		<Resource Include="Resources\byParamS.ico" />
 		<Resource Include="Resources\capture.ico" />
 		<Resource Include="Resources\captures.ico" />
+		<Resource Include="Resources\colorL.ico" />
+		<Resource Include="Resources\colorS.ico" />
 		<Resource Include="Resources\coordL.ico" />
 		<Resource Include="Resources\coordS.ico" />
 		<Resource Include="Resources\deleteCADL.ico" />
@@ -191,6 +195,12 @@
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="System.Net.Http" />
+		<Reference Include="UIFramework">
+		  <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2024\UIFramework.dll</HintPath>
+		</Reference>
+		<Reference Include="Xceed.Wpf.AvalonDock">
+		  <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2024\Xceed.Wpf.AvalonDock.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>

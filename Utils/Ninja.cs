@@ -25,7 +25,7 @@ namespace RevitNinja.Utils
     {
         public static string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Roaming", "Autodesk", "Revit", "Addins", "RevitNinja");
         public static string dbfile = Path.Combine(folderPath, "dbaccess.json");
-        public static string version = "1.1.5"; // this version doesn't update the updater exe 
+        public static string version = "1.1.6"; // this version doesn't update the updater exe 
         public static Guid dataStorageGUID = new Guid("8998EC47-2E53-472B-9663-E1817A64F76F");
         public static double meterToFeet(this double distance) => distance / 0.3048;
         public static double mmToFeet(this double distance) => distance / 304.8;

@@ -301,4 +301,10 @@
   <data name="RevitNinja_CallOut_Head" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RevitNinja_CallOut_Head.rfa;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="colorL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\colorL.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="colorS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\colorS.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
