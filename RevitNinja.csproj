@@ -49,7 +49,6 @@
 		<None Remove="Resources\MoveS.ico" />
 		<None Remove="Resources\ninja-pic.png" />
 		<None Remove="Resources\ninja.ico" />
-		<None Remove="Resources\ninjaDB.exe" />
 		<None Remove="Resources\ninjaIcon.png" />
 		<None Remove="Resources\NOS.ico" />
 		<None Remove="Resources\NOSsmall.ico" />
@@ -129,14 +128,13 @@
 		</Resource>
 		<Resource Include="Resources\ninja-pic.png" />
 		<Resource Include="Resources\ninja.ico" />
-		<EmbeddedResource Include="Resources\ninjaDB.exe" />
 		<EmbeddedResource Include="Resources\RevitNinja_CallOut_Head.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_CIRC_OPENING.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_Point.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_REC_OPENING.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_Revizto_Clash_Ball.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_Section_Head.rfa" />
-		<Resource Include="Resources\ninjaIcon.png" />
+		<EmbeddedResource Include="Resources\ninjaIcon.png" />
 		<Resource Include="Resources\NOS.ico" />
 		<Resource Include="Resources\NOSsmall.ico" />
 		<Resource Include="Resources\pointsL.ico">
