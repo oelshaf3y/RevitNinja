@@ -82,7 +82,7 @@ namespace RevitNinja
                 return Result.Failed;
             }
 
-            string TabName = "RSCC";
+            string TabName = "RevitNinja";
             try
             {
                 application.CreateRibbonTab(TabName);

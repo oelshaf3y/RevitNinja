@@ -33,8 +33,9 @@ namespace Revit_Ninja.Commands
             sections = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSection))
                 .Cast<ViewSection>()
-                .Where(v => !v.IsTemplate && v.ViewType == ViewType.Section)
+                .Where(v => !v.IsTemplate && (v.ViewType == ViewType.Section || v.ViewType == ViewType.Detail))
                 .ToList();
+            if (sections.Count() == 0) doc.print("no sections");
             allViews = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Views).WhereElementIsNotElementType().Cast<View>().ToList();
             sheets = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Sheets).WhereElementIsNotElementType()
                 .Cast<ViewSheet>().ToList();
@@ -47,7 +48,7 @@ namespace Revit_Ninja.Commands
                 if (window.DeleteNOSCB.IsChecked == true) try { NOS(); } catch { sb.AppendLine("Failed to delete unused views!"); }
                 if (window.DelCADCB.IsChecked == true) try { delCad(); } catch { sb.AppendLine("Failed to remove CAD drawings!"); }
                 if (window.RemoveLinksCB.IsChecked == true) try { removeLinks(); } catch { sb.AppendLine("Failed to remove links!"); }
-                if (window.SectionsAndSheetsCB.IsChecked == true) try { populateSections(commandData); } catch { sb.AppendLine("Failed to populate sections!"); }
+                if (window.SectionsAndSheetsCB.IsChecked == true) try { populateSections(commandData); } catch (Exception ex) { sb.AppendLine("Failed to populate sections!"); doc.print(ex.Message); }
                 TG.Assimilate();
             }
             if (sb.Length > 0) doc.print(sb.ToString());
@@ -371,7 +372,7 @@ namespace Revit_Ninja.Commands
                 if (sheets.First().LookupParameter("Sheet Title Line 4") is null)
                     Ninja.assignParameter(commandData, "Ninja-Sheets", "Sheet Title Line 4", BuiltInCategory.OST_Sheets, SpecTypeId.String.Text);
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { doc.print(ex.Message); }
             #endregion
 
             #region get/set sheet meta data
@@ -458,7 +459,7 @@ namespace Revit_Ninja.Commands
                         ElementType calloutTag = doc.GetElement(sectionType.LookupParameter("Callout Tag").AsElementId()) as ElementType;
                         calloutTag.LookupParameter("Callout Head").Set(fco.Id);
                     }
-                    catch (Exception ex){ doc.print(ex.Message); }
+                    catch (Exception ex) { doc.print(ex.Message); }
                 }
                 tr.Commit();
             }

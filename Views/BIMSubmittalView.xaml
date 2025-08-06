@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revit_Ninja.Views"
         mc:Ignorable="d"
-        Title="Submit BIM Model" Height="260" Width="312">
+        Title="Submit BIM Model" Height="260" Width="312" WindowStartupLocation="CenterOwner">
     <Grid>
         <Label Content="What would you like to do?" HorizontalAlignment="Left" Margin="21,22,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="CreateViewsCB" Content="Create Assemble View and ACC/Revizto View" ToolTip="create additional views based on RSG's requirements" HorizontalAlignment="Left" Margin="27,53,0,0" VerticalAlignment="Top"/>
