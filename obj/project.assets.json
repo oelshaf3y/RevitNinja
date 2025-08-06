@@ -670,23 +670,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\oelsh\\.nuget\\packages\\": {},
+    "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\oelsh\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
+      "projectUniqueName": "C:\\Users\\Omar.Elshafey\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
       "projectName": "RevitNinja",
-      "projectPath": "C:\\Users\\oelsh\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
-      "packagesPath": "C:\\Users\\oelsh\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\oelsh\\source\\repos\\oelshaf3y\\RevitNinja\\obj\\",
+      "projectPath": "C:\\Users\\Omar.Elshafey\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
+      "packagesPath": "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Omar.Elshafey\\source\\repos\\oelshaf3y\\RevitNinja\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\oelsh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Omar.Elshafey\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -713,7 +713,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net48": {
@@ -734,7 +734,7 @@
             "version": "[9.0.5, )"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   }
