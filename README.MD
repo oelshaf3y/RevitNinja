@@ -18,9 +18,6 @@ Revit Ninja checks for updates automatically, ensuring you're always using the l
 - **Find RFT**: Locate rebar by entering its partition and bar number.
 - **Toggle Rebar On/Off**: Toggle the visibility of the rebar category in the active view.
 
-### Alignment Tools
-- **Align Elements**: Align elements vertically or horizontally based on a reference element or a single point.
-
 ### General Tools
 - **Select by Parameter**: Select elements based on a specific parameter name and value.
 - **Submit BIM Model**: Clean up the model before submission by:
