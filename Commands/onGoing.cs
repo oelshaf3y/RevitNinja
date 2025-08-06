@@ -9,7 +9,9 @@ namespace Revit_Ninja.Commands
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            throw new NotImplementedException();
+
+
+            return Result.Succeeded;
         }
     }
 

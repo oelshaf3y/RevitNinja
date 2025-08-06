@@ -403,6 +403,16 @@ namespace Revit_Ninja.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] ninjaDB {
+            get {
+                object obj = ResourceManager.GetObject("ninjaDB", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] ninjaIcon {
             get {
                 object obj = ResourceManager.GetObject("ninjaIcon", resourceCulture);
