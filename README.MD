@@ -45,7 +45,7 @@ Revit Ninja checks for updates automatically, ensuring you're always using the l
 ## Installation
 
 1. Download the latest release from the [Releases](https://github.com/oelshaf3y/RevitNinja/releases) page.
-2. Extract the contents to your Revit Addins folder (e.g., `%APPDATA%\Autodesk\Revit\Addins\20XX\`).
+2. Run the exe file.
 3. Launch Revit. The Revit Ninja tab will appear in the ribbon.
 
 ---
