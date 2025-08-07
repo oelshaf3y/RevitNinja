@@ -394,64 +394,121 @@ namespace Revit_Ninja.Commands
 
                                 if (sheet.SheetNumber.Split('-').Length > 2) oldNumber = sheet.SheetNumber.Split('-').Last();
                                 else oldNumber = sheet.SheetNumber;
-                                if (information.LookupParameter("TRSDC_Program Code") != null && information.LookupParameter("TRSDC_Program Code").AsString().Trim().Length > 0)
-                                    sbuilder.Append(information.LookupParameter("TRSDC_Program Code").AsString() + "-");
-                                else if (sheet.LookupParameter("TRSDC_Program Code") != null && sheet.LookupParameter("TRSDC_Program Code").AsString().Trim().Length > 0)
-                                    sbuilder.Append(sheet.LookupParameter("TRSDC_Program Code").AsString() + "-");
 
-                                if (information.LookupParameter("TRSDC_Project Code") != null && information.LookupParameter("TRSDC_Project Code").AsString().Trim().Length > 0)
-                                    sbuilder.Append(information.LookupParameter("TRSDC_Project Code").AsString());
-                                else if (sheet.LookupParameter("TRSDC_Project Code") != null && sheet.LookupParameter("TRSDC_Project Code").AsString().Trim().Length > 0)
-                                    sbuilder.Append(sheet.LookupParameter("TRSDC_Project Code").AsString());
+                                if (information.LookupParameter("TRSDC_Program Code") != null)
+                                {
+                                    if (information.LookupParameter("TRSDC_Program Code").AsString().Trim().Length > 0)
+                                        sbuilder.Append(information.LookupParameter("TRSDC_Program Code").AsString() + "-");
+                                }
+                                else if (sheet.LookupParameter("TRSDC_Program Code") != null)
+                                {
+                                    if (sheet.LookupParameter("TRSDC_Program Code").AsString().Trim().Length > 0)
+                                        sbuilder.Append(sheet.LookupParameter("TRSDC_Program Code").AsString() + "-");
+                                }
+                                else doc.print("TRSDC_Program Code");
 
-                                if (information.LookupParameter("TRSDC_Contract Code") != null && information.LookupParameter("TRSDC_Contract Code").AsString().Trim().Length > 0)
-                                    sbuilder.Append(information.LookupParameter("TRSDC_Contract Code").AsString() + "-");
-                                else if (sheet.LookupParameter("TRSDC_Contract Code") != null && sheet.LookupParameter("TRSDC_Contract Code").AsString().Trim().Length > 0)
-                                    sbuilder.Append(sheet.LookupParameter("TRSDC_Contract Code").AsString() + "-");
+                                if (information.LookupParameter("TRSDC_Project Code") != null)
+                                {
+                                    if (information.LookupParameter("TRSDC_Project Code").AsString().Trim().Length > 0)
+                                        sbuilder.Append(information.LookupParameter("TRSDC_Project Code").AsString());
+                                }
+                                else if (sheet.LookupParameter("TRSDC_Project Code") != null)
+                                {
+                                    if (sheet.LookupParameter("TRSDC_Project Code").AsString().Trim().Length > 0)
+                                        sbuilder.Append(sheet.LookupParameter("TRSDC_Project Code").AsString());
+                                }
+                                else doc.print("TRSDC_Project Code");
 
-                                if (information.LookupParameter("TRSDC_Originator Code") != null && information.LookupParameter("TRSDC_Originator Code").AsString().Trim().Length > 0)
-                                    sbuilder.Append(information.LookupParameter("TRSDC_Originator Code").AsString() + "-");
-                                else if (sheet.LookupParameter("TRSDC_Originator Code") != null && sheet.LookupParameter("TRSDC_Originator Code").AsString().Trim().Length > 0)
-                                    sbuilder.Append(sheet.LookupParameter("TRSDC_Originator Code").AsString() + "-");
+                                if (information.LookupParameter("TRSDC_Contract Code") != null)
+                                {
+                                    if (information.LookupParameter("TRSDC_Contract Code").AsString().Trim().Length > 0)
+                                        sbuilder.Append(information.LookupParameter("TRSDC_Contract Code").AsString() + "-");
+                                }
+                                else if (sheet.LookupParameter("TRSDC_Contract Code") != null)
+                                {
+                                    if (sheet.LookupParameter("TRSDC_Contract Code").AsString().Trim().Length > 0)
+                                        sbuilder.Append(sheet.LookupParameter("TRSDC_Contract Code").AsString() + "-");
+                                }
+                                else doc.print("TRSDC_Contract Code");
 
-                                if (sheet.LookupParameter("TRSDC_Volume/System") != null && sheet.LookupParameter("TRSDC_Volume/System").AsString().Trim().Length > 0)
-                                    sbuilder.Append(sheet.LookupParameter("TRSDC_Volume/System").AsString() + "-");
-                                else if (information.LookupParameter("TRSDC_Volume/System").AsString() != null && information.LookupParameter("TRSDC_Volume/System").AsString().Trim().Length > 0)
-                                    sbuilder.Append(information.LookupParameter("TRSDC_Volume/System").AsString() + "-");
+                                if (information.LookupParameter("TRSDC_Originator Code") != null)
+                                {
+                                    if (information.LookupParameter("TRSDC_Originator Code").AsString().Trim().Length > 0)
+                                        sbuilder.Append(information.LookupParameter("TRSDC_Originator Code").AsString() + "-");
+                                }
+                                else if (sheet.LookupParameter("TRSDC_Originator Code") != null)
+                                {
+                                    if (sheet.LookupParameter("TRSDC_Originator Code").AsString().Trim().Length > 0)
+                                        sbuilder.Append(sheet.LookupParameter("TRSDC_Originator Code").AsString() + "-");
+                                }
+                                else doc.print("TRSDC_Originator Code");
+
+                                if (sheet.LookupParameter("TRSDC_Volume/System") != null)
+                                {
+                                    if (sheet.LookupParameter("TRSDC_Volume/System").AsString().Trim().Length > 0)
+                                        sbuilder.Append(sheet.LookupParameter("TRSDC_Volume/System").AsString() + "-");
+                                }
+                                else if (information.LookupParameter("TRSDC_Volume/System") != null)
+                                {
+                                    if (information.LookupParameter("TRSDC_Volume/System").AsString().Trim().Length > 0)
+                                        sbuilder.Append(information.LookupParameter("TRSDC_Volume/System").AsString() + "-");
+                                }
+                                else doc.print("TRSDC_Volume/System");
 
                                 string BL = sheet.LookupParameter("TRSDC_Building level").AsString();
                                 if (BL.Trim().Length > 0)
-                                    sbuilder.Append(BL + "-");
+                                { sbuilder.Append(BL + "-"); }
                                 else if (sheet.LookupParameter("TRSDC_Building Level").AsString().Trim().Length > 0)
-                                    sbuilder.Append(sheet.LookupParameter("TRSDC_Building Level").AsString() + "-");
+                                { sbuilder.Append(sheet.LookupParameter("TRSDC_Building Level").AsString() + "-"); }
                                 else
                                     sbuilder.Append(information.LookupParameter("TRSDC_Model Level").AsString() + "-");
-                                if (sheet.LookupParameter("TRSDC_Document Type").AsString() != null && sheet.LookupParameter("TRSDC_Document Type").AsString().Trim().Length > 0)
-                                    sbuilder.Append(sheet.LookupParameter("TRSDC_Document Type").AsString() + "-");
-                                else if (information.LookupParameter("TRSDC_Document Type").AsString() != null && information.LookupParameter("TRSDC_Document Type").AsString().Trim().Length > 0)
-                                    sbuilder.Append(information.LookupParameter("TRSDC_Document Type").AsString() + "-");
-
+                                if (sheet.LookupParameter("TRSDC_Document Type") != null)
+                                {
+                                    if (sheet.LookupParameter("TRSDC_Document Type").AsString().Trim().Length > 0)
+                                        sbuilder.Append(sheet.LookupParameter("TRSDC_Document Type").AsString() + "-");
+                                }
+                                else if (information.LookupParameter("TRSDC_Document Type") != null)
+                                {
+                                    if (information.LookupParameter("TRSDC_Document Type").AsString().Trim().Length > 0)
+                                        sbuilder.Append(information.LookupParameter("TRSDC_Document Type").AsString() + "-");
+                                }
                                 if (sheet.SheetNumber.Split('-').Length >= 2)
+                                {
                                     sbuilder.Append(sheet.SheetNumber.Split('-').ElementAt(sheet.SheetNumber.Split('-').Length - 2) + "-");
-                                else if (sheet.LookupParameter("TRSDC_Discipline") != null && sheet.LookupParameter("TRSDC_Discipline").AsString().Trim().Length > 0)
-                                    sbuilder.Append(sheet.LookupParameter("TRSDC_Discipline").AsString() + "-");
+                                }
+                                else if (sheet.LookupParameter("TRSDC_Discipline") != null)
+                                {
+                                    if (sheet.LookupParameter("TRSDC_Discipline").AsString().Trim().Length > 0)
+                                        sbuilder.Append(sheet.LookupParameter("TRSDC_Discipline").AsString() + "-");
+                                }
                                 else sbuilder.Append(information.LookupParameter("TRSDC_Discipline").AsString() + "-");
-                                
+
                                 sbuilder.Append(sheet.LookupParameter("TRSDC_Sheet Number").AsString());
 
                                 sheet.LookupParameter("TRSDC_Sheet Number").Set(oldNumber);
                                 if (sheet.SheetNumber != sbuilder.ToString()) sheet.SheetNumber = sbuilder.ToString();
                                 if (sbuilder.Length > 0) sbuilder.Clear();
-
-                                if (sheet.LookupParameter("Sheet Title Line 1").AsString() != null && sheet.LookupParameter("Sheet Title Line 1").AsString().Trim().Length > 0) sbuilder.Append(sheet.LookupParameter("Sheet Title Line 1").AsString());
-                                if (sheet.LookupParameter("Sheet Title Line 2").AsString() != null && sheet.LookupParameter("Sheet Title Line 2").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 2").AsString());
-                                if (sheet.LookupParameter("Sheet Title Line 3").AsString() != null && sheet.LookupParameter("Sheet Title Line 3").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 3").AsString());
-                                if (sheet.LookupParameter("Sheet Title Line 4").AsString() != null && sheet.LookupParameter("Sheet Title Line 4").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 4").AsString());
                             }
                             catch (Exception ex)
                             {
-                                sb.AppendLine(sheet.SheetNumber + "\n" + ex.Message + "\n some parameters do not exist or empty!");
+                                sb.AppendLine(sheet.SheetNumber + "\n some parameters do not exist or empty!\n");
 
+                            }
+                            try
+                            {
+
+                                if (sheet.LookupParameter("Sheet Title Line 1") != null)
+                                    if (sheet.LookupParameter("Sheet Title Line 1").AsString() != null && sheet.LookupParameter("Sheet Title Line 1").AsString().Trim().Length > 0) sbuilder.Append(sheet.LookupParameter("Sheet Title Line 1").AsString());
+                                if (sheet.LookupParameter("Sheet Title Line 2") != null)
+                                    if (sheet.LookupParameter("Sheet Title Line 2").AsString() != null && sheet.LookupParameter("Sheet Title Line 2").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 2").AsString());
+                                if (sheet.LookupParameter("Sheet Title Line 3") != null)
+                                    if (sheet.LookupParameter("Sheet Title Line 3").AsString() != null && sheet.LookupParameter("Sheet Title Line 3").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 3").AsString());
+                                if (sheet.LookupParameter("Sheet Title Line 4") != null)
+                                    if (sheet.LookupParameter("Sheet Title Line 4").AsString() != null && sheet.LookupParameter("Sheet Title Line 4").AsString().Trim().Length > 0) sbuilder.Append("-" + sheet.LookupParameter("Sheet Title Line 4").AsString());
+                            }
+                            catch
+                            {
+                                sb.AppendLine(sheet.SheetNumber + "\n some sheet title parameters do not exist or empty!\n");
                             }
 
                             sheet.Name = sbuilder.ToString();
