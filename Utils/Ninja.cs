@@ -25,7 +25,7 @@ namespace RevitNinja.Utils
     {
         public static string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Roaming", "Autodesk", "Revit", "Addins", "RevitNinja");
         public static string dbfile = Path.Combine(folderPath, "dbaccess.json");
-        public static string version = "1.1.9"; // this version updates the updater exe 
+        public static string version = "1.2.0"; // this version updates the updater exe 
         public static Guid dataStorageGUID = new Guid("8998EC47-2E53-472B-9663-E1817A64F76F");
         public static double meterToFeet(this double distance) => distance / 0.3048;
         public static double mmToFeet(this double distance) => distance / 304.8;
@@ -348,16 +348,26 @@ namespace RevitNinja.Utils
                 Dictionary<string, object> db = new Dictionary<string, object>();
                 db = JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(dbfile));
                 db.TryGetValue("Date", out object date);
+                //updated today
                 if (date.ToString() == DateTime.Today.Date.ToString("yyyy-MM-dd"))
                 {
                     db.TryGetValue("Access", out object av);
                     if (av.ToString().ToLower() == "true") return true;
                     else
                     {
-                        doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
-                        return false;
+                        File.Delete(dbfile);
+                        if (tryAccess(doc))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
+                            return false;
+                        }
                     }
                 }
+                // not updated today
                 else
                 {
                     File.Delete(dbfile);
