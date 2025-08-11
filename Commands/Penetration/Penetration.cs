@@ -456,7 +456,7 @@ namespace Revit_Ninja.Commands.Penetration
                                 {
 
                                     faceRef = face.Reference.CreateLinkReference(hostElement.rli);//reference
-                                    doc.print(faceRef);
+                                    //doc.print(faceRef);
                                 }
                                 else
                                 {
