@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Revit_Ninja.Views
+namespace Revit_Ninja.Views.BIMSubmittal
 {
     /// <summary>
     /// Interaction logic for BIMSubmittalView.xaml

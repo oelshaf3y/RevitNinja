@@ -109,7 +109,8 @@ namespace RevitNinja
 
             PushButtonData INFO = null, SAVESTATE = null, RESETSTATE = null, RESETSHEET = null, ALIGN2PTS = null, ALIGNELEMENTS = null;
             PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null;
-            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null, COORDINATES = null, POINTSCOORDS = null, COORDSTABLE = null;
+            PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null, COORDINATES = null;
+            PushButtonData POINTSCOORDS = null, COORDSTABLE = null,GETLINKLOCATION=null;
             PushButtonData LOADISSUES = null, TOGGLEISSUES = null, PICKISSUE = null, VIEWISSUE = null, DELETEISSUES = null, MOVEISSUE = null, COLORTABS = null;
 
             try
@@ -282,6 +283,12 @@ namespace RevitNinja
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/TableL.ico")),
                     ToolTip = "Modify, Plot, Import and Export points."
                 };
+                GETLINKLOCATION = new PushButtonData("Getlocation", "Link Location", assemblyName, typeof(GetLinkLocation).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/LocationS.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/LocationL.ico")),
+                    ToolTip = "Get the nearest shared location to a selected point from another rvt file."
+                };
 
             }
             catch { }
@@ -321,6 +328,9 @@ namespace RevitNinja
 
                 if (!(SELECTBY is null)) generalToolsPanel.AddItem(SELECTBY);
                 else TaskDialog.Show("Error", "SELECTBY");
+
+                if (!(GETLINKLOCATION is null)) generalToolsPanel.AddItem(GETLINKLOCATION);
+                else TaskDialog.Show("Error", "GETLINKLOCATION");
 
                 //if (ALIGN2PTS is null)
                 //    TaskDialog.Show("Error", "ALIGN2PTS");

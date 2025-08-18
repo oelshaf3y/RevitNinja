@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Microsoft.Office.Interop.Excel;
 using Revit_Ninja.Views;
+using Revit_Ninja.Views.BIMSubmittal;
 using RevitNinja.Utils;
 using Parameter = Autodesk.Revit.DB.Parameter;
 
@@ -613,6 +614,59 @@ namespace Revit_Ninja.Commands
                 tg.Assimilate();
             }
             #endregion
+        }
+
+
+        public void purgeFilters()
+        {
+            List<ElementId> ids = new List<ElementId>();
+            List<View> views = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Views).Cast<View>().Where(x => !x.IsTemplate).ToList();
+
+            List<ElementId> allFilters = new FilteredElementCollector(doc).OfClass(typeof(ParameterFilterElement)).ToElementIds().ToList();
+            doc.print(allFilters.Count + " filters found in the document.");
+            StringBuilder sb = new StringBuilder();
+            foreach (View view in views)
+            {
+                if (view.GetFilters().Count > 0)
+                {
+                    try
+                    {
+                        view.GetFilters().ToList().ForEach(x =>
+                        {
+                            if (!ids.Contains(x) && view.GetIsFilterEnabled(x))
+                                ids.Add(x);
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine(ex.Message);
+                    }
+                }
+            }
+            allFilters = allFilters.Where(x => !ids.Contains(x)).ToList();
+            int count = 0;
+            using (Transaction tr = new Transaction(doc, "Remove Filters"))
+            {
+                tr.Start();
+                foreach (ElementId id in allFilters)
+                {
+                    try
+                    {
+
+                        if (doc.GetElement(id).GetType() == typeof(ParameterFilterElement))
+                        {
+                            doc.Delete(id);
+                            count++;
+                        }
+                    }
+                    catch
+                    {
+                        doc.print("Failed to delete filter with id: " + id.ToString() + ". It might be used in a view.");
+                    }
+                }
+                tr.Commit();
+            }
+            doc.print("Removed " + count + " filters.");
         }
     }
 

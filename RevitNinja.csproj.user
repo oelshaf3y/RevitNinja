@@ -11,7 +11,10 @@
     <Compile Update="Views\AlignView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\BIMSubmittalView.xaml.cs">
+    <Compile Update="Views\BIMSubmittal\BIMSubmittalView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\BIMSubmittal\publishSet.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\coordinates.xaml.cs">
@@ -69,7 +72,10 @@
     <Page Update="Views\AlignView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\BIMSubmittalView.xaml">
+    <Page Update="Views\BIMSubmittal\BIMSubmittalView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\BIMSubmittal\publishSet.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\coordinates.xaml">

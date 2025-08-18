@@ -43,6 +43,8 @@
 		<None Remove="Resources\linkedin.png" />
 		<None Remove="Resources\loadIssues.ico" />
 		<None Remove="Resources\loadIssuesL.ico" />
+		<None Remove="Resources\LocationL.ico" />
+		<None Remove="Resources\LocationS.ico" />
 		<None Remove="Resources\MidBet2ptsL.ico" />
 		<None Remove="Resources\midBet2ptsS.ico" />
 		<None Remove="Resources\MoveL.ico" />
@@ -119,6 +121,8 @@
 		<Resource Include="Resources\linkedin.png" />
 		<Resource Include="Resources\loadIssues.ico" />
 		<Resource Include="Resources\loadIssuesL.ico" />
+		<Resource Include="Resources\LocationL.ico" />
+		<Resource Include="Resources\LocationS.ico" />
 		<Resource Include="Resources\MidBet2ptsL.ico" />
 		<Resource Include="Resources\midBet2ptsS.ico" />
 		<Resource Include="Resources\MoveL.ico">

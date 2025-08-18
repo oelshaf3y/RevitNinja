@@ -1,0 +1,73 @@
+﻿<Window x:Class="Revit_Ninja.Views.BIMSubmittal.publishSet"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Revit_Ninja.Views.BIMSubmittal"
+        mc:Ignorable="d"
+        Title="publishSet" Height="638" Width="1189">
+    <Grid>
+        <Label Content="New set name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="setName" HorizontalAlignment="Left" Margin="15,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="145" Height="18"/>
+        <Label Content="3D Views" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top"/>
+        <ListView x:Name="list3D" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="15,95,0,114" HorizontalAlignment="Left" Width="351">
+            <ListView.View>
+                <GridView>
+
+
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Label Content="2D Views" HorizontalAlignment="Left" Margin="401,64,0,0" VerticalAlignment="Top"/>
+        <ListView x:Name="list2D" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="406,95,0,114" HorizontalAlignment="Left" Width="351">
+            <ListView.View>
+                <GridView>
+
+
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Label Content="Sheets" HorizontalAlignment="Left" Margin="792,64,0,0" VerticalAlignment="Top"/>
+        <ListView x:Name="listSheets" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="797,95,0,114" HorizontalAlignment="Left" Width="351">
+            <ListView.View>
+                <GridView>
+
+
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button x:Name="all3d" Content="Check all" HorizontalAlignment="Left" Margin="307,59,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFAEC08F" Height="26" Width="59" Click="all3d_Click"/>
+        <Button x:Name="none3d" Content="Check none" HorizontalAlignment="Left" Margin="230,59,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFD49797" Height="26" Width="72" Click="none3d_Click"/>
+        <Button x:Name="all2d" Content="Check all" HorizontalAlignment="Left" Margin="699,59,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFAEC08F" Height="26" Width="59" Click="all2d_Click"/>
+        <Button x:Name="none2d" Content="Check none" HorizontalAlignment="Left" Margin="622,59,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFD49797" Height="26" Width="72" Click="none2d_Click"/>
+        <Button x:Name="allsheets" Content="Check all" HorizontalAlignment="Left" Margin="1088,59,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFAEC08F" Height="26" Width="59" Click="allsheets_Click"/>
+        <Button x:Name="nonesheets" Content="Check none" HorizontalAlignment="Left" Margin="1011,59,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFD49797" Height="26" Width="72" Click="nonesheets_Click"/>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="622,540,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFAEC08F" Height="26" Width="58" Click="Button_Click_1"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="486,540,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFD49797" Height="26" Width="72" Click="Button_Click"/>
+
+    </Grid>
+</Window>
