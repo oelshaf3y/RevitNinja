@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revit_Ninja.Views.BIMSubmittal"
         mc:Ignorable="d"
-        Title="Submit BIM Model" Height="260" Width="312" WindowStartupLocation="CenterOwner">
+        Title="Submit BIM Model" Height="260" Width="710" WindowStartupLocation="CenterOwner">
     <Grid>
         <Label Content="What would you like to do?" HorizontalAlignment="Left" Margin="21,22,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="CreateViewsCB" Content="Create Assemble View and ACC/Revizto View" ToolTip="create additional views based on RSG's requirements" HorizontalAlignment="Left" Margin="27,53,0,0" VerticalAlignment="Top"/>
@@ -13,9 +13,12 @@
         <CheckBox x:Name="DelCADCB" Content="Remove all CAD imports" ToolTip="remove all cad imports and links." HorizontalAlignment="Left" Margin="27,93,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="RemoveLinksCB" Content="Remove all links" ToolTip="remove all rvt links from the model" HorizontalAlignment="Left" Margin="27,113,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="SectionsAndSheetsCB" Content="Populate sections with sheet number" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="27,133,0,0" VerticalAlignment="Top"/>
-        <Button Content="OK" HorizontalAlignment="Left" Margin="27,190,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FF0A90C8" Foreground="White" Width="43" Click="Button_Click"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="235,190,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFF16D6D" Foreground="White" Width="49" Click="Button_Click_1"/>
-        <CheckBox x:Name="purgeFilters" Content="Remove unused filters" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="27,153,0,0" VerticalAlignment="Top"/>
+        <Button Content="OK" HorizontalAlignment="Left" Margin="27,190,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FF0A90C8" Foreground="White" Width="43" Click="Button_Click" IsDefault="True"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="235,190,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFF16D6D" Foreground="White" Width="49" Click="Button_Click_1" IsCancel="True"/>
+        <CheckBox x:Name="purgeFilters" Content="Remove unused filters" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,53,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="purgeSets" Content="Purge sets / Create publish set" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,73,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="purgeBrowser" Content="Reset Browser Organization" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,93,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="purge" Content="Run Purge Unused" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,133,0,0" VerticalAlignment="Top" IsChecked="True"/>
 
     </Grid>
 </Window>
