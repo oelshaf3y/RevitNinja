@@ -1,10 +1,9 @@
 ﻿using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.Attributes;
+using System.IO;
+using System.Windows.Forms;
 using RevitNinja.Utils;
-using System.Text;
-using Revit_Ninja.Views.BIMSubmittal;
-using System.Windows;
 
 namespace Revit_Ninja.Commands
 {
@@ -13,14 +12,13 @@ namespace Revit_Ninja.Commands
     {
         UIDocument uidoc;
         Document doc;
+        UIApplication uiapp;
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
-
+            
             return Result.Succeeded;
         }
     }
-
-
 }

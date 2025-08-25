@@ -14,6 +14,9 @@
     <Compile Update="Views\BIMSubmittal\BIMSubmittalView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\BIMSubmittal\Create3DViews.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\BIMSubmittal\publishSet.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -73,6 +76,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\BIMSubmittal\BIMSubmittalView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\BIMSubmittal\Create3DViews.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\BIMSubmittal\publishSet.xaml">

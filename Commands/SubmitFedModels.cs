@@ -1,23 +1,29 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Forms;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Microsoft.Office.Interop.Excel;
-using Revit_Ninja.Views;
 using Revit_Ninja.Views.BIMSubmittal;
 using RevitNinja.Utils;
 using Parameter = Autodesk.Revit.DB.Parameter;
+using View = Autodesk.Revit.DB.View;
 
 namespace Revit_Ninja.Commands
 {
-    [TransactionAttribute(TransactionMode.Manual)]
-    internal class BIMSubmittal : IExternalCommand
+    [TransactionAttribute (TransactionMode.Manual)]
+    internal class SubmitFedModels : IExternalCommand
     {
-        UIDocument uidoc;
-        Document doc;
+        UIDocument uiDOC;
+        Document DOC;
         View3D new3DView, duplicate;
         UIApplication uiapp;
-
+        ExternalCommandData CommandData;
         List<ElementId> excluded = new List<ElementId>();
         StringBuilder sb = new StringBuilder();
         List<ViewSection> sections = new List<ViewSection>();
@@ -25,14 +31,81 @@ namespace Revit_Ninja.Commands
         List<ViewSheet> sheets = new List<ViewSheet>();
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            uidoc = commandData.Application.ActiveUIDocument;
-            doc = uidoc.Document;
+            CommandData = commandData;
+            uiDOC = commandData.Application.ActiveUIDocument;
+            DOC = uiDOC.Document;
+
+            if (!DOC.getAccess()) return Result.Failed;
+
             uiapp = commandData.Application;
+            var collector = new FilteredElementCollector(DOC).OfClass(typeof(RevitLinkInstance));
+            string folderPath = null;
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Select a folder to save the linked models";
+                dialog.ShowNewFolderButton = true;
 
-            if (!doc.getAccess()) return Result.Failed;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    folderPath = dialog.SelectedPath;
+                }
+            }
 
-            BIMSubmittalView window = new BIMSubmittalView();
-            window.ShowDialog();
+            foreach (RevitLinkInstance linkInstance in collector)
+            {
+                try
+                {
+                    RevitLinkType revitLinkType = DOC.GetElement(linkInstance.GetTypeId()) as RevitLinkType;
+                    Document LINK = linkInstance.GetLinkDocument();
+                    if (LINK == null) continue;
+
+                    //ModelPath modelPath = LINK.GetCloudModelPath();
+                    var region = ModelPathUtils.CloudRegionUS;
+                    ModelPath cmp = LINK.GetCloudModelPath();
+                    Guid projectID = cmp.GetProjectGUID();
+                    Guid modelGUID = cmp.GetModelGUID();
+                    var modelPath = ModelPathUtils.ConvertCloudGUIDsToCloudPath(region, projectID, modelGUID);
+                    //revitLinkType.Unload(null);
+                    if (modelPath.CloudPath == true)
+                    {
+                        // Open detached from cloud
+                        OpenOptions openOpts = new OpenOptions
+                        {
+                            DetachFromCentralOption = DetachFromCentralOption.DetachAndPreserveWorksets,
+                            Audit = false
+                        };
+                        DefaultOpenFromCloudCallback callback = new DefaultOpenFromCloudCallback();
+                        UIDocument linkedUIDoc = uiapp.OpenAndActivateDocument(modelPath, openOpts, false, callback);
+                        Document linkedDoc = linkedUIDoc.Document;
+
+                        //linkedDoc.print("Opened: " + linkedDoc.Title);
+                        // Create local filename
+                        string localPath = System.IO.Path.Combine(folderPath, linkedDoc.Title.Split('_').First() + ".rvt");
+                        //FilePath fp = new FilePath(localPath);
+                        ModelPath fp = ModelPathUtils.ConvertUserVisiblePathToModelPath(localPath);
+                        //// Save as local RVT
+                        //DOC.print("Opening: " + linkInstance.Name);
+                        SaveAsOptions saveOpts = new SaveAsOptions { OverwriteExistingFile = true };
+                        saveOpts.SetWorksharingOptions(new WorksharingSaveAsOptions
+                        {
+                            SaveAsCentral = true,
+
+                        });
+                        submitBimModel(linkedDoc);
+                        linkedDoc.SaveAs(fp, saveOpts);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //DOC.print("Error: " + ex.Message);
+                }
+            }
+            DOC.print("All Done");
+            return Result.Succeeded;
+        }
+
+        private void submitBimModel(Document doc)
+        {
 
             sections = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSection))
@@ -47,34 +120,23 @@ namespace Revit_Ninja.Commands
             using (TransactionGroup TG = new TransactionGroup(doc, "BIM Submittal"))
             {
                 TG.Start();
-                if (window.DialogResult == false) return Result.Cancelled;
-                if (window.CreateViewsCB.IsChecked == true) try { Create3DViews(); } catch { }
-                if (window.DeleteNOSCB.IsChecked == true) try { NOS(); } catch { sb.AppendLine("Failed to delete unused views!"); }
-                if (window.DelCADCB.IsChecked == true) try { delCad(); } catch { sb.AppendLine("Failed to remove CAD drawings!"); }
-                if (window.RemoveLinksCB.IsChecked == true) try { removeLinks(); } catch { sb.AppendLine("Failed to remove links!"); }
-                if (window.SectionsAndSheetsCB.IsChecked == true) try { populateSections(commandData); } catch (Exception ex) { sb.AppendLine("Failed to populate sections!"); }
-                if (window.purgeFilters.IsChecked == true) try { purgeFilters(); } catch { sb.AppendLine("Failed to purge filters"); }
-                if (window.purgeSets.IsChecked == true) try { purgeSets(); } catch { sb.AppendLine("Failed to purge/create publish sets"); }
-                if (window.purgeBrowser.IsChecked == true) try { purgeBrowser(); } catch { sb.AppendLine("Failed to reset browser organization"); }
+                try { Create3DViews(doc); } catch { }
+                try { NOS(doc); } catch { sb.AppendLine("Failed to delete unused views!"); }
+                try { delCad(doc); } catch { sb.AppendLine("Failed to remove CAD drawings!"); }
+                try { removeLinks(doc); } catch { sb.AppendLine("Failed to remove links!"); }
+                //try { populateSections(doc); } catch (Exception ex) { sb.AppendLine("Failed to populate sections!"); }
+                try { purgeFilters(doc); } catch { sb.AppendLine("Failed to purge filters"); }
+                try { purgeSets(doc); } catch { sb.AppendLine("Failed to purge/create publish sets"); }
+                try { purgeBrowser(doc); } catch { sb.AppendLine("Failed to reset browser organization"); }
 
 
-                if (window.purge.IsChecked == true)
-                {
-                    doc.print("Run Purge Unused for about 5 times to insure that all unuesd elements are removed\nPlease hit enter until number of items checked reaches 0");
-                    try
-                    {
-                        uiapp.PostCommand(RevitCommandId.LookupPostableCommandId(PostableCommand.PurgeUnused));
-                    }
-                    catch { sb.AppendLine("Failed to run revit internal purge"); }
-                }
                 TG.Assimilate();
             }
-            if (sb.Length > 0) doc.print(sb.ToString());
+            //if (sb.Length > 0) doc.print(sb.ToString());
 
-            return Result.Succeeded;
         }
 
-        private bool Create3DViews()
+        private bool Create3DViews(Document doc)
         {
             #region create 3D views
             List<string> viewNames = new List<string>() { "ACC/Revizto View", "Assemble View" };
@@ -131,7 +193,7 @@ namespace Revit_Ninja.Commands
                 }
                 catch (Exception ex)
                 {
-                    doc.print("something went wrong, or maybe the views exists.");
+                    //doc.print("something went wrong, or maybe the views exists.");
                     tx.RollBack();
                     return false;
                 }
@@ -166,16 +228,15 @@ namespace Revit_Ninja.Commands
                 duplicate.Name = "Assemble View";
                 tr.Commit();
             }
-            uidoc.ActiveView = new3DView;
             excluded.Add(new3DView.Id);
             excluded.Add(duplicate.Id);
-            doc.print("Additional views have been created successfully!");
+            //doc.print("Additional views have been created successfully!");
             return true;
             #endregion
             #endregion
         }
 
-        public bool NOS()
+        public bool NOS(Document doc)
         {
             int count = 0;
             List<View> views = new FilteredElementCollector(doc)
@@ -231,7 +292,7 @@ namespace Revit_Ninja.Commands
                                         }
                                         catch (Exception ex)
                                         {
-                                            doc.print(ex.StackTrace);
+                                            //doc.print(ex.StackTrace);
                                         }
 
                                     }
@@ -247,16 +308,16 @@ namespace Revit_Ninja.Commands
             if (count > 0)
             {
 
-                doc.print("Total of: " + count + " views have been deleted.");
+                //doc.print("Total of: " + count + " views have been deleted.");
             }
             else
             {
-                doc.print("No views to delete.");
+                //doc.print("No views to delete.");
             }
             return true;
         }
 
-        public bool delCad()
+        public bool delCad(Document doc)
         {
 
             List<CADLinkType> DWGs = new FilteredElementCollector(doc).OfClass(typeof(CADLinkType)).Cast<CADLinkType>().ToList();
@@ -312,7 +373,7 @@ namespace Revit_Ninja.Commands
         }
 
 
-        public bool removeLinks()
+        public bool removeLinks(Document doc)
         {
 
             #region remove links
@@ -339,15 +400,15 @@ namespace Revit_Ninja.Commands
                 tr.Commit();
                 tr.Dispose();
             }
-            doc.print($"Total of {count} linked models have been removed");
+            //doc.print($"Total of {count} linked models have been removed");
             #endregion
             return true;
         }
 
 
-        public void populateSections(ExternalCommandData commandData)
+        public void populateSections(Document doc)
         {
-
+            ExternalCommandData commandData = CommandData;
             string seactionHeadPath = doc.ExtractEmbeddedResource("RevitNinja_Section_Head.rfa");
             string calloutPath = doc.ExtractEmbeddedResource("RevitNinja_CallOut_Head.rfa");
 
@@ -628,19 +689,19 @@ namespace Revit_Ninja.Commands
                 }
                 if (sb.Length > 0)
                     doc.print(sb);
-                else doc.print("Mission Accomplished!");
+                //else doc.print("Mission Accomplished!");
                 tg.Assimilate();
             }
             #endregion
         }
 
-        public void purgeFilters()
+        public void purgeFilters(Document doc)
         {
             List<ElementId> ids = new List<ElementId>();
             List<View> views = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Views).Cast<View>().Where(x => !x.IsTemplate).ToList();
 
             List<ElementId> allFilters = new FilteredElementCollector(doc).OfClass(typeof(ParameterFilterElement)).ToElementIds().ToList();
-            doc.print(allFilters.Count + " filters found in the document.");
+            //doc.print(allFilters.Count + " filters found in the document.");
             StringBuilder sb = new StringBuilder();
             foreach (View view in views)
             {
@@ -678,15 +739,15 @@ namespace Revit_Ninja.Commands
                     }
                     catch
                     {
-                        doc.print("Failed to delete filter with id: " + id.ToString() + ". It might be used in a view.");
+                        //doc.print("Failed to delete filter with id: " + id.ToString() + ". It might be used in a view.");
                     }
                 }
                 tr.Commit();
             }
-            doc.print("Removed " + count + " filters.");
+            //doc.print("Removed " + count + " filters.");
         }
 
-        public void purgeSets()
+        public void purgeSets(Document doc)
         {
             List<Element> sets = new FilteredElementCollector(doc).OfClass(typeof(ViewSheetSet)).ToList();
             List<View> allviews = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Views)
@@ -782,7 +843,7 @@ namespace Revit_Ninja.Commands
                     }
                     catch (Exception ex)
                     {
-                        doc.print($"Error deleting set {s.Name}: {ex.Message}");
+                        //doc.print($"Error deleting set {s.Name}: {ex.Message}");
                     }
                 }
 
@@ -791,7 +852,7 @@ namespace Revit_Ninja.Commands
 
         }
 
-        public void purgeBrowser()
+        public void purgeBrowser(Document doc)
         {
             var browser = new FilteredElementCollector(doc).OfClass(typeof(BrowserOrganization)).ToList();
             using (Transaction tr = new Transaction(doc, "Purge view organization"))
@@ -807,27 +868,13 @@ namespace Revit_Ninja.Commands
                     }
                     catch (Exception ex)
                     {
-                        doc.print("Error: " + ex.Message);
+                        //doc.print("Error: " + ex.Message);
                     }
                 }
                 tr.Commit();
             }
 
         }
+
     }
-
-
-    class viewforset
-    {
-        public string Name { get; set; }
-        public bool IsChecked { get; set; }
-        public ElementId Id { get; set; }
-        public viewforset(string name, bool isChecked, ElementId id)
-        {
-            Name = name;
-            IsChecked = isChecked;
-            Id = id;
-        }
-    }
-
 }

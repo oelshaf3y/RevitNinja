@@ -199,6 +199,7 @@
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Windows.Forms" />
 		<Reference Include="UIFramework">
 		  <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2024\UIFramework.dll</HintPath>
 		</Reference>
