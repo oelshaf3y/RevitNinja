@@ -18,7 +18,7 @@
         <CheckBox x:Name="purgeFilters" Content="Remove unused filters" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,53,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="purgeSets" Content="Purge sets / Create publish set" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,73,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="purgeBrowser" Content="Reset Browser Organization" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,93,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="purge" Content="Run Purge Unused" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,133,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <CheckBox x:Name="purge" Content="Run Purge Unused" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,133,0,0" VerticalAlignment="Top" />
 
     </Grid>
 </Window>

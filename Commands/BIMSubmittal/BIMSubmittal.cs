@@ -8,9 +8,9 @@ using Revit_Ninja.Views.BIMSubmittal;
 using RevitNinja.Utils;
 using Parameter = Autodesk.Revit.DB.Parameter;
 
-namespace Revit_Ninja.Commands
+namespace Revit_Ninja.Commands.BIMSubmittal
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     internal class BIMSubmittal : IExternalCommand
     {
         UIDocument uidoc;
@@ -813,20 +813,6 @@ namespace Revit_Ninja.Commands
                 tr.Commit();
             }
 
-        }
-    }
-
-
-    class viewforset
-    {
-        public string Name { get; set; }
-        public bool IsChecked { get; set; }
-        public ElementId Id { get; set; }
-        public viewforset(string name, bool isChecked, ElementId id)
-        {
-            Name = name;
-            IsChecked = isChecked;
-            Id = id;
         }
     }
 
