@@ -18,6 +18,9 @@ using Autodesk.Revit.DB.ExtensibleStorage;
 using Microsoft.Office.Interop.Excel;
 using Line = Autodesk.Revit.DB.Line;
 using Icon = System.Drawing.Icon;
+using UIFramework;
+using Xceed.Wpf.AvalonDock.Controls;
+using Color = System.Windows.Media.Color;
 
 namespace RevitNinja.Utils
 {
@@ -27,6 +30,60 @@ namespace RevitNinja.Utils
         public static string dbfile = Path.Combine(folderPath, "dbaccess.json");
         public static string version = "1.2.0"; // this version updates the updater exe 
         public static Guid dataStorageGUID = new Guid("8998EC47-2E53-472B-9663-E1817A64F76F");
+
+        public static List<List<Color>> colors = new List<List<Color>>()
+        {
+
+            new List<Color>()
+            {
+                Color.FromRgb(244,244,248),Color.FromRgb(0,0,0)
+            },
+
+            new List<Color>()
+            {
+                Color.FromRgb(111,111,133),Color.FromRgb(255,255,255)
+            },
+
+            new List<Color>()
+            {
+                Color.FromRgb(134,115,70),Color.FromRgb(0,0,0)
+            },
+
+            new List<Color>()
+            {
+                Color.FromRgb(254,215,102),Color.FromRgb(0, 0, 0)
+            },
+
+            new List<Color>()
+            {
+                Color.FromRgb(84,160,91),Color.FromRgb(0,0,0)
+            },
+
+            new List<Color>()
+            {
+                Color.FromRgb(42,183,202),Color.FromRgb(0,0,0)
+            },
+
+            new List<Color>()
+            {
+                Color.FromRgb(53,101,110),Color.FromRgb(255,255,255)
+            },
+
+            new List<Color>()
+            {
+                Color.FromRgb(99,84,91),Color.FromRgb(255,255,255)
+            },
+
+            new List<Color>()
+            {
+                Color.FromRgb(156,68,71),Color.FromRgb(255,255,255)
+            },
+
+            new List<Color>()
+            {
+                Color.FromRgb(254,74,73),Color.FromRgb(0,0,0)
+            },
+        };
         public static double meterToFeet(this double distance) => distance / 0.3048;
         public static double mmToFeet(this double distance) => distance / 304.8;
         public static double feetToMeter(this double distance) => distance * 0.3048;
@@ -307,6 +364,9 @@ namespace RevitNinja.Utils
                     db = JsonSerializer.Deserialize<Dictionary<string, object>>(outputContent);
                     db.TryGetValue("Access", out object accessValue);
                     db.Add("Date", DateTime.Today.Date.ToString("yyyy-MM-dd"));
+                    db.Add("foreground", "#FF000000");
+                    db.Add("background", "#FFF4F4F8");
+                    db.Add("color", true);
                     File.WriteAllText(dbfile, JsonSerializer.Serialize(db));
                     if (accessValue.ToString().ToLower() == "true")
                     {
@@ -545,5 +605,64 @@ namespace RevitNinja.Utils
             return "";
         }
 
+        public static void ColorTabs()
+        {
+            List<string> docs = new List<string>();
+            string outputContent = File.ReadAllText(Ninja.dbfile);
+            Dictionary<string, object> db = JsonSerializer.Deserialize<Dictionary<string, object>>(outputContent);
+            db.TryGetValue("color", out object color);
+            db.TryGetValue("foreground", out object foreground);
+            db.TryGetValue("background", out object background);
+            System.Windows.Media.BrushConverter converter = new System.Windows.Media.BrushConverter();
+            System.Windows.Media.Brush fore = (System.Windows.Media.Brush)converter.ConvertFromString(foreground.ToString());
+            System.Windows.Media.Brush back = (System.Windows.Media.Brush)converter.ConvertFromString(background.ToString());
+            bool colorize;
+            if (color.ToString().ToLower() == "true") colorize = true;
+            else colorize = false;
+            var docPanes = FindVisualChildren<LayoutDocumentPaneControl>(MainWindow.getMainWnd());
+            foreach (var pane in docPanes)
+            {
+                var tabs = FindVisualChildren<TabItem>(pane);
+                docs = tabs.Select(x => x.ToolTip.ToString().Split('.').First()).ToList();
+                foreach (var tab in tabs)
+                {
+                    string tabName = tab.ToolTip.ToString();
+                    int docind = docs.IndexOf(tabName.Split('.').First());
+                    if (docind > 9) docind = docind - 9;
+                    if (colorize)
+                    {
+                        tab.Background = new SolidColorBrush(colors[docind][0]);
+                        tab.Foreground = new SolidColorBrush(colors[docind][1]);
+                        //TaskDialog.Show("Color Tabs", $"Automatic Tab Coloring is On");
+                    }
+                    else
+                    {
+                        tab.Background = back;
+                        tab.Foreground = fore;
+                        //TaskDialog.Show("Color Tabs", $"Automatic Tab Coloring is Off");
+                    }
+                    //tab.BorderBrush
+                }
+            }
+        }
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
+        }
     }
 }

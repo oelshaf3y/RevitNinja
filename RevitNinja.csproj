@@ -26,6 +26,8 @@
 		<None Remove="Resources\capture.ico" />
 		<None Remove="Resources\captures.ico" />
 		<None Remove="Resources\colorL.ico" />
+		<None Remove="Resources\colorless.ico" />
+		<None Remove="Resources\colorlessL.ico" />
 		<None Remove="Resources\colorS.ico" />
 		<None Remove="Resources\coordL.ico" />
 		<None Remove="Resources\coordS.ico" />
@@ -104,6 +106,8 @@
 		<Resource Include="Resources\capture.ico" />
 		<Resource Include="Resources\captures.ico" />
 		<Resource Include="Resources\colorL.ico" />
+		<Resource Include="Resources\colorless.ico" />
+		<Resource Include="Resources\colorlessL.ico" />
 		<Resource Include="Resources\colorS.ico" />
 		<Resource Include="Resources\coordL.ico" />
 		<Resource Include="Resources\coordS.ico" />

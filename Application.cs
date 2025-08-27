@@ -16,14 +16,31 @@ using RevitNinja.Views;
 using System.Windows.Shapes;
 using Revit_Ninja.Commands.PointsCoord;
 using Revit_Ninja.Commands.BIMSubmittal;
+using Autodesk.Revit.UI.Events;
+using Autodesk.Revit.DB;
+using App = Autodesk.Revit.ApplicationServices.Application;
+using System.Windows.Media;
+using UIFramework;
+using Xceed.Wpf.AvalonDock.Controls;
+using Color = System.Windows.Media.Color;
+using TabItem = System.Windows.Controls.TabItem;
 
 namespace RevitNinja
 {
     internal class Application : IExternalApplication
     {
         string assemblyName, asPath, Link;
+        internal static Application _app = null;
+        public RibbonPanel submittalPanel, colortabspanel;
+        RibbonItem _button;
+
+        public static Application Instance
+        {
+            get { return _app; }
+        }
         public Result OnShutdown(UIControlledApplication application)
         {
+            application.Idling -= OnIdling;
             try
             {
                 string dllPath = "";
@@ -54,6 +71,8 @@ namespace RevitNinja
 
         public Result OnStartup(UIControlledApplication application)
         {
+            _app = this;
+            application.Idling += OnIdling;
             if (!Directory.Exists(Ninja.folderPath))
             {
                 Directory.CreateDirectory(Ninja.folderPath);
@@ -93,26 +112,33 @@ namespace RevitNinja
                 MessageBox.Show(ex.Message);
                 return Result.Cancelled;
             }
+
             RibbonPanel infoPanel;
             infoPanel = application.CreateRibbonPanel(TabName, "About The Developer");
 
             RibbonPanel viewsPanel;
             viewsPanel = application.CreateRibbonPanel(TabName, "Views");
+            submittalPanel = application.CreateRibbonPanel(TabName, "Submit BIM Model");
+
 
             RibbonPanel generalToolsPanel;
             generalToolsPanel = application.CreateRibbonPanel(TabName, "General Tools");
-
             RibbonPanel rebarPanel;
             rebarPanel = application.CreateRibbonPanel(TabName, "Rebar");
 
-            RibbonPanel reviztoPanel;
-            reviztoPanel = application.CreateRibbonPanel(TabName, "Revizto Tools");
+            //RibbonPanel reviztoPanel;
+            //reviztoPanel = application.CreateRibbonPanel(TabName, "Revizto Tools");
+
+
+            colortabspanel = application.CreateRibbonPanel(TabName, "Color Tabs");
 
             PushButtonData INFO = null, SAVESTATE = null, RESETSTATE = null, RESETSHEET = null, ALIGN2PTS = null, ALIGNELEMENTS = null;
             PushButtonData ALIGNTAGS = null, DELETECAD = null, HIDEUNHOSTED = null, NOS = null, REBARHOST = null, ROTATELOCALLY = null;
             PushButtonData SELECTBY = null, FINDREBAR = null, TOGGLEREBAR = null, BIMSUB = null, PENETRATION = null, COORDINATES = null;
-            PushButtonData POINTSCOORDS = null, COORDSTABLE = null,GETLINKLOCATION=null;
-            PushButtonData LOADISSUES = null, TOGGLEISSUES = null, PICKISSUE = null, VIEWISSUE = null, DELETEISSUES = null, MOVEISSUE = null, COLORTABS = null;
+            PushButtonData POINTSCOORDS = null, COORDSTABLE = null, GETLINKLOCATION = null;
+            PushButtonData LOADISSUES = null, COLORTABSON = null, TOGGLEISSUES = null, PICKISSUE = null, VIEWISSUE = null, DELETEISSUES = null, MOVEISSUE = null;
+            PushButtonData SUBMITFED = null;
+            SplitButtonData BIMSUBSPLIT = null;
 
             try
             {
@@ -121,12 +147,14 @@ namespace RevitNinja
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/ninja.ico")),
                     ToolTip = "About the developer!"
                 };
-                COLORTABS = new PushButtonData("Color tabs by doc", "Color Tabs", assemblyName, typeof(ColorTabs).FullName)
+
+                COLORTABSON = new PushButtonData("colorTabs", "On", assemblyName, typeof(ColorTabs).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/colorS.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/colorL.ico")),
-                    ToolTip = "About the developer!"
+                    ToolTip = "Toggle color tabs on"
                 };
+
                 SAVESTATE = new PushButtonData("Save State", "Save View", assemblyName, typeof(SaveState).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/captures.ico")),
@@ -182,7 +210,7 @@ namespace RevitNinja
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOS.ico")),
                     ToolTip = "Delete views that are not currently placed on any sheets."
                 };
-                BIMSUB = new PushButtonData("BIM Submittion", "Submit BIM Model", assemblyName, typeof(BIMSubmittal).FullName)
+                BIMSUB = new PushButtonData("BIM Submittion", "Single Model", assemblyName, typeof(BIMSubmittal).FullName)
                 {
                     Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOSsmall.ico")),
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOS.ico")),
@@ -290,6 +318,13 @@ namespace RevitNinja
                     LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/LocationL.ico")),
                     ToolTip = "Get the nearest shared location to a selected point from another rvt file."
                 };
+                SUBMITFED = new PushButtonData("Submit Federated Model", "Submit Federated Model", assemblyName, typeof(SubmitFedModels).FullName)
+                {
+                    Image = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOSsmall.ico")),
+                    LargeImage = new BitmapImage(new Uri("pack://application:,,,/RevitNinja;component/Resources/NOS.ico")),
+                    ToolTip = "Open all linked models and run the BIM Submittal."
+                };
+                BIMSUBSPLIT = new SplitButtonData("BIMSplit", "Submit Models");
 
             }
             catch { }
@@ -307,14 +342,26 @@ namespace RevitNinja
                 if (!(RESETSTATE is null && RESETSHEET is null)) viewsPanel.AddStackedItems(RESETSTATE, RESETSHEET);
 
                 if (BIMSUB is null) TaskDialog.Show("Error", "BIMSUB");
-                if (DELETECAD is null) TaskDialog.Show("Error", "DELETECAD");
-                if (!(DELETECAD is null && BIMSUB is null))
-                    viewsPanel.AddStackedItems(BIMSUB, DELETECAD);
+                if (SUBMITFED is null) TaskDialog.Show("Error", "SUBMITFED");
+                if (!(SUBMITFED is null && BIMSUB is null))
+                {
+                    try
+                    {
+
+                        SplitButton sb = submittalPanel.AddItem(BIMSUBSPLIT) as SplitButton;
+                        sb.AddPushButton(BIMSUB);
+                        sb.AddPushButton(SUBMITFED);
+                        sb.CurrentButton = sb.GetItems()[0] as PushButton;
+                    }
+                    catch { TaskDialog.Show("Error", "BIMSUB"); }
+                }
+                //if (DELETECAD is null) TaskDialog.Show("Error", "DELETECAD");
+                //if (!(DELETECAD is null && BIMSUB is null))
+                //    viewsPanel.AddStackedItems(BIMSUB, DELETECAD);
+
                 #endregion
 
                 #region general tool panel
-                if (!(COLORTABS is null)) generalToolsPanel.AddItem(COLORTABS);
-                else TaskDialog.Show("Error", "COLORTABS");
                 if (!(PENETRATION is null)) generalToolsPanel.AddItem(PENETRATION);
                 else TaskDialog.Show("Error", "PENETRATION");
 
@@ -359,18 +406,33 @@ namespace RevitNinja
                 else TaskDialog.Show("Error", "REBARHOST");
                 #endregion
 
-                #region revizto panel
-                if (!(LOADISSUES is null)) reviztoPanel.AddItem(LOADISSUES);
-                else TaskDialog.Show("Error", "LOADISSUES");
+                //#region revizto panel
+                //if (!(LOADISSUES is null)) reviztoPanel.AddItem(LOADISSUES);
+                //else TaskDialog.Show("Error", "LOADISSUES");
 
-                if (VIEWISSUE is null) TaskDialog.Show("Error", "VIEWISSUE");
-                if (MOVEISSUE is null) TaskDialog.Show("Error", "MOVEISSUE");
-                if (!(VIEWISSUE is null && MOVEISSUE is null))
-                    reviztoPanel.AddStackedItems(VIEWISSUE, MOVEISSUE);
+                //if (VIEWISSUE is null) TaskDialog.Show("Error", "VIEWISSUE");
+                //if (MOVEISSUE is null) TaskDialog.Show("Error", "MOVEISSUE");
+                //if (!(VIEWISSUE is null && MOVEISSUE is null))
+                //    reviztoPanel.AddStackedItems(VIEWISSUE, MOVEISSUE);
 
-                if (!(PICKISSUE is null || TOGGLEISSUES is null || DELETEISSUES is null)) reviztoPanel.AddStackedItems(PICKISSUE, TOGGLEISSUES, DELETEISSUES);
-                else TaskDialog.Show("Error", "PICKISSUE,TOGGLEISSUES, DELETEISSUES");
-                #endregion
+                //if (!(PICKISSUE is null || TOGGLEISSUES is null || DELETEISSUES is null)) reviztoPanel.AddStackedItems(PICKISSUE, TOGGLEISSUES, DELETEISSUES);
+                //else TaskDialog.Show("Error", "PICKISSUE,TOGGLEISSUES, DELETEISSUES");
+                //#endregion
+
+
+                if (!(COLORTABSON is null))
+                {
+                    try
+                    {
+                        _button = colortabspanel.AddItem(COLORTABSON);
+                    }
+                    catch (Exception ex)
+                    {
+                        TaskDialog.Show("ERR", $"Color tabs\n{ex.Message}");
+                    }
+                }
+                else TaskDialog.Show("Error", "COLORTABSON is null");
+
             }
             catch (System.Exception ex)
             {
@@ -379,5 +441,19 @@ namespace RevitNinja
 
             return Result.Succeeded;
         }
+
+
+        private void OnIdling(object sender, IdlingEventArgs e)
+        {
+
+            Ninja.ColorTabs();
+        }
+
+        public void ToggleColor(bool colored)
+        {
+
+            _button.ItemText = colored ? "On" : "Off";
+        }
+
     }
 }

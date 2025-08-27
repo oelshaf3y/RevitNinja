@@ -9,6 +9,9 @@ using Autodesk.Revit.Attributes;
 using Grid = System.Windows.Controls.Grid;
 using Color = System.Windows.Media.Color;
 using Application = Autodesk.Revit.ApplicationServices.Application;
+using RevitNinja.Utils;
+using System.Text.Json;
+using System.IO;
 
 namespace Revit_Ninja.Commands
 {
@@ -73,48 +76,21 @@ namespace Revit_Ninja.Commands
         };
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            uidoc = commandData.Application.ActiveUIDocument;
-            doc = uidoc.Document;
-            Application app = commandData.Application.Application;
-            var appTheme = UIFramework.ApplicationTheme.CurrentTheme;
-            appTheme.ActiveTabBackgroundColor = Colors.Coral;
-            List<string> docs = new List<string>();
-            var docPanes = FindVisualChildren<LayoutDocumentPaneControl>(MainWindow.getMainWnd());
-            foreach (var pane in docPanes)
+            string outputContent = File.ReadAllText(Ninja.dbfile);
+            Dictionary<string, object> db = JsonSerializer.Deserialize<Dictionary<string, object>>(outputContent);
+            db.TryGetValue("color", out object colorize);
+            bool isColored = true;
+            if (colorize.ToString().ToLower() == "true")
             {
-                var tabs = FindVisualChildren<TabItem>(pane);
-                docs = tabs.Select(x => x.ToolTip.ToString().Split('.').First()).ToList();
-                foreach (var tab in tabs)
-                {
-                    string tabName = tab.ToolTip.ToString();
-                    int docind = docs.IndexOf(tabName.Split('.').First());
-                    if (docind > 9) docind = docind - 9;
-                    tab.Background = new SolidColorBrush(colors[docind][0]);
-                    tab.Foreground = new SolidColorBrush(colors[docind][1]);
-                    //tab.BorderBrush
-                }
+                db["color"] = false;
+                isColored = false;
             }
+            else db["color"] = true;
+            File.WriteAllText(Ninja.dbfile, JsonSerializer.Serialize(db));
+            Ninja.ColorTabs();
+            RevitNinja.Application.Instance.ToggleColor(isColored);
             return Result.Succeeded;
         }
 
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
-        }
     }
 }

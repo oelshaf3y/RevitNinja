@@ -106,7 +106,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                     log.AppendLine(ex.Message);
                 }
             }
-            DOC.print($"Finished\n{log.ToString()}");
+            //DOC.print($"Finished\n{log.ToString()}");
             return Result.Succeeded;
         }
 
