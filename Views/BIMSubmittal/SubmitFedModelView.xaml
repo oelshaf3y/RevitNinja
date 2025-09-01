@@ -4,95 +4,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revit_Ninja.Views.BIMSubmittal"
+xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Submit Federated Model" Height="458" Width="1147">
+        Title="Submit Federated Model" WindowStartupLocation="CenterOwner" Width="{x:Static SystemParameters.PrimaryScreenWidth}" Height="617">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="Navy" SecondaryColor="Orange" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignSwitchToggleButton}"/>
+            <Style TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignFilterChipPrimaryCheckBox}"/>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <Label Content="Select Models To submit:" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top"/>
-        <ListView x:Name="list3D" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,56,0,0" HorizontalAlignment="Left" Width="1127" Height="287" VerticalAlignment="Top">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Link Name" DisplayMemberBinding="{Binding Name}"/>
-                    <GridViewColumn>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Create Views">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding create3D, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Delete WIP Views">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding deleteWIP, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Remove CAD">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding removeCad, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Remove Links">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding removeLinks, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Populate Sections">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding populateSections, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Purge Filters">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding purgeFilters, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Purge sets">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding purgeSets, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Reset Browser Org">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding resetBrowser, Mode=TwoWay}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Check All">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Click="checkAll" Content="Check All" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Check All">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Click="unCheckAll" Content="Uncheck All" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Button Content="OK" HorizontalAlignment="Left" Margin="586,375,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFAEC08F" Height="26" Width="58" Click="ok_click" IsDefault="True"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="450,375,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFD49797" Height="26" Width="72" Click="cancel_click" IsCancel="True"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,56,0,166">
+
+            <StackPanel x:Name="stack" />
+        </ScrollViewer>
+        <WrapPanel Margin="0,504,0,0" Width="200" Height="61" VerticalAlignment="Top" HorizontalAlignment="Center">
+            <Button x:Name="okBut" Content="OK" Margin="10" BorderBrush="{x:Null}" Background="#FFAEC08F" Click="ok_click" IsDefault="True" HorizontalAlignment="Left" Width="77" Height="40" VerticalAlignment="Bottom"/>
+            <Button x:Name="cancelBut" Content="Cancel" Margin="10" BorderBrush="{x:Null}" Background="#FFD49797" Click="cancel_click" IsCancel="True" HorizontalAlignment="Left" Width="77" Height="40" VerticalAlignment="Bottom"/>
+        </WrapPanel>
     </Grid>
 </Window>

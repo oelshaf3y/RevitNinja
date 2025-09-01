@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="Revit_Ninja.Views.BIMSubmittal.LinkedModelForSubmit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Revit_Ninja.Views.BIMSubmittal"
+             mc:Ignorable="d">
+
+    <Grid>
+        <WrapPanel Margin="5" VerticalAlignment="Center">
+
+            <ToggleButton x:Name="isChecked" Checked="checkAll" Unchecked="uncheckAll" HorizontalAlignment="Left" Width="48"></ToggleButton>
+            <Label x:Name="modelName" Content="L01-H02C02-RSC-56-01-MOD-CS-05561"  HorizontalAlignment="Left" Width="217" Height="32" VerticalAlignment="Top"/>
+            <CheckBox x:Name="create3D" Content="Create Views" IsChecked="{Binding create3D,Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="deleteWIP" Content="Delete Views" IsChecked="{Binding deleteWIP, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="removeCad" Content="Remove CAD" IsChecked="{Binding removeCad, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="removeLinks" Content="Remove Links" IsChecked="{Binding removeLinks, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="populateSections" Content="Populate Sections" IsChecked="{Binding populateSections, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="purgeFilters" Content="Purge Filters" IsChecked="{Binding purgeFilters, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="purgeSets" Content="Purge Sets" IsChecked="{Binding purgeSets, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="resetBrowser" Content="Reset Browser Org." IsChecked="{Binding resetBrowser, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="exportNwc"  Content="Export NWC" IsChecked="{Binding exportNwc, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="exportIFC"  Content="Export IFC" IsChecked="{Binding exportIFC, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="exportDWFx"  Content="Export DWFx" IsChecked="{Binding exportDWFx, Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="saveLocal"  Content="Save Locally" IsChecked="{Binding saveLocal, Mode=TwoWay}" Margin="2"/>
+
+        </WrapPanel>
+
+    </Grid>
+</UserControl>

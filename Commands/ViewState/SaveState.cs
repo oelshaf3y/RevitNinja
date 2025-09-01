@@ -4,6 +4,11 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitNinja.Utils;
 using System.Text.Json;
+using System.Windows.Media.Animation;
+using System.Windows;
+using System.Windows.Media;
+using UIFramework;
+using System.Media;
 
 namespace RevitNinja.Commands.ViewState
 {
@@ -91,8 +96,58 @@ namespace RevitNinja.Commands.ViewState
                 tg.Assimilate();
                 tg.Dispose();
             }
+            ShowScreenFlash(0,0.7);
+
+
             return Result.Succeeded;
         }
+
+        public void ShowScreenFlash(double from, double to)
+        {
+            var overlay = new Window
+            {
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true,
+                Background = Brushes.White,
+                Opacity = 0,
+                ShowInTaskbar = false,
+                Topmost = true,
+                WindowState = WindowState.Maximized,
+            };
+
+            overlay.Show();
+
+            var anim1 = new DoubleAnimation
+            {
+                From = from,
+                To = to / 3,
+                AutoReverse = true,
+                Duration = TimeSpan.FromMilliseconds(100)
+            };
+
+            var anim2 = new DoubleAnimation
+            {
+                From = to / 3,
+                To = to,
+                AutoReverse = true,
+                Duration = TimeSpan.FromMilliseconds(100)
+            };
+
+            anim1.Completed += (s, e) =>
+            {
+                // Run second animation
+                overlay.BeginAnimation(Window.OpacityProperty, anim2);
+            };
+
+            anim2.Completed += (s, e) =>
+            {
+                overlay.Close();
+            };
+
+            // Start first animation
+            overlay.BeginAnimation(Window.OpacityProperty, anim1);
+        }
+
     }
 
 }

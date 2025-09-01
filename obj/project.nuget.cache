@@ -1,12 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "8xMDzLRh8iI=",
+  "dgSpecHash": "LRfXgGll+uY=",
   "success": true,
   "projectFilePath": "C:\\Users\\Omar.Elshafey\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\costura.fody\\6.0.0\\costura.fody.6.0.0.nupkg.sha512",
     "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\fody\\6.8.2\\fody.6.8.2.nupkg.sha512",
+    "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\materialdesigncolors\\5.2.1\\materialdesigncolors.5.2.1.nupkg.sha512",
+    "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\materialdesignthemes\\5.2.1\\materialdesignthemes.5.2.1.nupkg.sha512",
     "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\9.0.5\\microsoft.bcl.asyncinterfaces.9.0.5.nupkg.sha512",
+    "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.39\\microsoft.xaml.behaviors.wpf.1.1.39.nupkg.sha512",
     "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\nice3point.revit.api.uiframework\\2024.2.0\\nice3point.revit.api.uiframework.2024.2.0.nupkg.sha512",
     "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
     "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\system.io.pipelines\\9.0.5\\system.io.pipelines.9.0.5.nupkg.sha512",

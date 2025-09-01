@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.IO;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Microsoft.Office.Interop.Excel;
+using Microsoft.Win32;
 using Revit_Ninja.Views.BIMSubmittal;
 using RevitNinja.Utils;
 using Parameter = Autodesk.Revit.DB.Parameter;
@@ -29,6 +26,8 @@ namespace Revit_Ninja.Commands.BIMSubmittal
         List<ViewSection> sections = new List<ViewSection>();
         List<View> allViews = new List<View>();
         List<ViewSheet> sheets = new List<ViewSheet>();
+        string folderPath = null;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             CommandData = commandData;
@@ -39,7 +38,6 @@ namespace Revit_Ninja.Commands.BIMSubmittal
 
             uiapp = commandData.Application;
             var collector = new FilteredElementCollector(DOC).OfClass(typeof(RevitLinkInstance));
-            string folderPath = null;
             List<linkforset> linksForSet = new List<linkforset>();
             foreach (RevitLinkInstance instance in collector)
             {
@@ -49,21 +47,27 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             SubmitFedModelView submittalWindow = new SubmitFedModelView(linksForSet);
             submittalWindow.ShowDialog();
             if (submittalWindow.DialogResult == false) return Result.Cancelled;
-            using (var dialog = new FolderBrowserDialog())
-            {
-                dialog.Description = "Select a folder to save the linked models";
-                dialog.ShowNewFolderButton = true;
 
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    folderPath = dialog.SelectedPath;
-                }
-                else return Result.Cancelled;
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "NWC,RVT Files|*.nwc,*.rvt|All Files|*.*";
+            saveDialog.Title = "Save Excel File";
+            saveDialog.FileName = linksForSet.First().Name.Split('.').First();
+            if (saveDialog.ShowDialog() == true)
+            {
+                string filePath = saveDialog.FileName;
+                folderPath = Directory.GetParent(filePath).FullName;
             }
+            else return Result.Cancelled;
             foreach (linkforset link in submittalWindow.RLIS)
             {
                 RevitLinkInstance linkInstance = link.RLI;
-                if (link.IsChecked = false) continue;
+                bool anyTrue = link.GetType()
+                          .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                          .Where(f => f.PropertyType == typeof(bool))
+                          .Select(f => (bool)f.GetValue(link))
+                          .Any(v => v);
+                DOC.print(anyTrue);
+                if (!anyTrue) continue;
                 try
                 {
                     RevitLinkType revitLinkType = DOC.GetElement(linkInstance.GetTypeId()) as RevitLinkType;
@@ -82,9 +86,12 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                         // Open detached from cloud
                         OpenOptions openOpts = new OpenOptions
                         {
-                            DetachFromCentralOption = DetachFromCentralOption.DetachAndPreserveWorksets,
                             Audit = false
                         };
+
+                        if (link.saveLocal) openOpts.DetachFromCentralOption = DetachFromCentralOption.DetachAndPreserveWorksets;
+                        else openOpts.DetachFromCentralOption = DetachFromCentralOption.DoNotDetach;
+
                         DefaultOpenFromCloudCallback callback = new DefaultOpenFromCloudCallback();
                         UIDocument linkedUIDoc = uiapp.OpenAndActivateDocument(modelPath, openOpts, false, callback);
                         Document linkedDoc = linkedUIDoc.Document;
@@ -98,7 +105,8 @@ namespace Revit_Ninja.Commands.BIMSubmittal
 
                         });
                         submitBimModel(linkedDoc, link);
-                        linkedDoc.SaveAs(stringModelPath, saveOpts);
+                        if (link.saveLocal) linkedDoc.SaveAs(stringModelPath, saveOpts);
+
                     }
                 }
                 catch (Exception ex)
@@ -112,7 +120,6 @@ namespace Revit_Ninja.Commands.BIMSubmittal
 
         private void submitBimModel(Document doc, linkforset link)
         {
-
             sections = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSection))
                 .Cast<ViewSection>()
@@ -123,10 +130,11 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             sheets = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Sheets).WhereElementIsNotElementType()
                 .Cast<ViewSheet>().ToList();
 
+            ElementId AccViewId = ElementId.InvalidElementId;
             using (TransactionGroup TG = new TransactionGroup(doc, "BIM Submittal"))
             {
                 TG.Start();
-                if (link.create3D) try { Create3DViews(doc); } catch { log.AppendLine("Failed to create 3D Views"); }
+                if (link.create3D) try { AccViewId = Create3DViews(doc); } catch { log.AppendLine("Failed to create 3D Views"); }
                 if (link.deleteWIP) try { NOS(doc); } catch { log.AppendLine("Failed to delete unused views!"); }
                 if (link.removeCad) try { delCad(doc); } catch { log.AppendLine("Failed to remove CAD drawings!"); }
                 if (link.removeLinks) try { removeLinks(doc); } catch { log.AppendLine("Failed to remove links!"); }
@@ -134,16 +142,96 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                 if (link.purgeFilters) try { purgeFilters(doc); } catch { log.AppendLine("Failed to purge filters"); }
                 if (link.purgeSets) try { purgeSets(doc); } catch { log.AppendLine("Failed to purge/create publish sets"); }
                 if (link.resetBrowser) try { purgeBrowser(doc); } catch { log.AppendLine("Failed to reset browser organization"); }
-
-
+                if (link.exportNwc) try { ExportNavis(doc, AccViewId); } catch (Exception ex) { doc.print(ex.Message); }
+                if (link.exportIFC) try { ExportIFC(doc, AccViewId); } catch (Exception ex) { doc.print(ex.Message); }
+                if (link.exportDWFx) try { ExportDWFx(doc, AccViewId); } catch (Exception ex) { doc.print(ex.Message); }
                 TG.Assimilate();
             }
             //if (sb.Length > 0) doc.print(sb.ToString());
-
         }
 
-        private bool Create3DViews(Document doc)
+        private void ExportDWFx(Document doc, ElementId accViewId)
         {
+            using (Transaction tr = new Transaction(doc, "Export DWFx"))
+            {
+                tr.Start();
+                ElementId AccViewId = accViewId;
+                if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                {
+                    List<View> views = new FilteredElementCollector(doc)
+                       .OfCategory(BuiltInCategory.OST_Views)
+                       .WhereElementIsViewIndependent()
+                       .Cast<View>().Where(x => x is View3D)
+                       .ToList();
+
+                    foreach (View view in views)
+                    {
+                        if (view.Name.ToLower().Contains("acc") || view.Name.ToLower().Contains("revizto"))
+                        {
+                            AccViewId = view.Id;
+                            break;
+                        }
+                    }
+                    if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                    {
+                        doc.print("No ACC/Revizto view found. Please create one and try again.");
+                        return;
+                    }
+                }
+                ViewSet set = new ViewSet();
+                set.Insert(doc.GetElement(AccViewId) as View);
+                DWFXExportOptions opts = new DWFXExportOptions()
+                {
+                    CropBoxVisible = false,
+                    ExportingAreas = false,
+                    ExportTexture = true,
+                    ExportOnlyViewId = AccViewId,
+                };
+                doc.Export(folderPath, doc.Title.Split('_').First(), set, opts);
+                tr.Commit();
+            }
+        }
+
+        private void ExportIFC(Document doc, ElementId accViewId)
+        {
+            using (Transaction tr = new Transaction(doc, "Export IFC"))
+            {
+                tr.Start();
+                ElementId AccViewId = accViewId;
+                if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                {
+                    List<View> views = new FilteredElementCollector(doc)
+                       .OfCategory(BuiltInCategory.OST_Views)
+                       .WhereElementIsViewIndependent()
+                       .Cast<View>().Where(x => x is View3D)
+                       .ToList();
+
+                    foreach (View view in views)
+                    {
+                        if (view.Name.ToLower().Contains("acc") || view.Name.ToLower().Contains("revizto"))
+                        {
+                            AccViewId = view.Id;
+                            break;
+                        }
+                    }
+                    if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                    {
+                        doc.print("No ACC/Revizto view found. Please create one and try again.");
+                        return;
+                    }
+                }
+                IFCExportOptions ifcOpts = new IFCExportOptions()
+                {
+                    FileVersion = IFCVersion.IFC2x3,
+                };
+                doc.Export(folderPath, doc.Title.Split('_').First(), ifcOpts);
+                tr.Commit();
+            }
+        }
+
+        private ElementId Create3DViews(Document doc)
+        {
+            ElementId AccViewId = ElementId.InvalidElementId;
             #region create 3D views
             List<string> viewNames = new List<string>() { "ACC/Revizto View", "Assemble View" };
             using (Transaction tx = new Transaction(doc, "Create 3D View and Hide Categories"))
@@ -163,6 +251,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                     {
                         view.Name = viewNames[0];
                         excluded.Add(view.Id);
+                        AccViewId = view.Id;
                     }
                     else if (view.Name.ToLower().Contains("assemble"))
                     {
@@ -173,7 +262,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                 if (views.Any(x => x.Name == "ACC/Revizto View") && views.Any(x => x.Name == "Assemble View"))
                 {
                     tx.Commit();
-                    return true;
+                    return AccViewId;
                 }
                 #endregion
 
@@ -187,7 +276,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                 if (viewFamilyType == null)
                 {
                     log.AppendLine("Create 3D View Failed: No 3D View Family Type found.");
-                    return false;
+                    return ElementId.InvalidElementId;
                 }
 
                 // Create the 3D view
@@ -196,12 +285,13 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                 {
 
                     new3DView.Name = "ACC/Revizto View";
+                    AccViewId = new3DView.Id;
                 }
                 catch (Exception ex)
                 {
                     log.AppendLine("Create 3D View Failed: " + ex.Message + "\nMaybe the views exist!");
                     tx.RollBack();
-                    return false;
+                    return ElementId.InvalidElementId;
                 }
 
                 tx.Commit();
@@ -238,7 +328,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             excluded.Add(new3DView.Id);
             excluded.Add(duplicate.Id);
             //doc.print("Additional views have been created successfully!");
-            return true;
+            return AccViewId;
             #endregion
             #endregion
         }
@@ -330,7 +420,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             List<CADLinkType> DWGs = new FilteredElementCollector(doc).OfClass(typeof(CADLinkType)).Cast<CADLinkType>().ToList();
             int count = 0;
             if (DWGs.Count() == 0) { log.AppendLine($"No DWG Imports In The Project{doc.Title}"); return true; }
-            
+
             using (TransactionGroup tg = new TransactionGroup(doc, "Delete Cads"))
             {
                 tg.Start();
@@ -878,6 +968,42 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                 tr.Commit();
             }
 
+        }
+        public void ExportNavis(Document doc, ElementId accViewId = null)
+        {
+            ElementId AccViewId = accViewId;
+            if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+            {
+                List<View> views = new FilteredElementCollector(doc)
+                   .OfCategory(BuiltInCategory.OST_Views)
+                   .WhereElementIsViewIndependent()
+                   .Cast<View>().Where(x => x is View3D)
+                   .ToList();
+
+                foreach (View view in views)
+                {
+                    if (view.Name.ToLower().Contains("acc") || view.Name.ToLower().Contains("revizto"))
+                    {
+                        AccViewId = view.Id;
+                        break;
+                    }
+                }
+                if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                {
+                    doc.print("No ACC/Revizto view found. Please create one and try again.");
+                    return;
+                }
+            }
+            NavisworksExportOptions navisOpts = new NavisworksExportOptions()
+            {
+                ConvertLinkedCADFormats = true,
+                ExportElementIds = true,
+                Coordinates = NavisworksCoordinates.Shared,
+                Parameters = NavisworksParameters.All,
+                ExportScope = NavisworksExportScope.View,
+                ViewId = AccViewId
+            };
+            doc.Export(folderPath, doc.Title.Split('_').First(), navisOpts);
         }
 
     }

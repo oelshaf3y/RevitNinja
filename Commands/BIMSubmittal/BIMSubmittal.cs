@@ -1,12 +1,14 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
+//using System.Windows.Forms;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Microsoft.Office.Interop.Excel;
-using Revit_Ninja.Views;
+using Microsoft.Win32;
 using Revit_Ninja.Views.BIMSubmittal;
 using RevitNinja.Utils;
 using Parameter = Autodesk.Revit.DB.Parameter;
+using View = Autodesk.Revit.DB.View;
 
 namespace Revit_Ninja.Commands.BIMSubmittal
 {
@@ -17,12 +19,16 @@ namespace Revit_Ninja.Commands.BIMSubmittal
         Document doc;
         View3D new3DView, duplicate;
         UIApplication uiapp;
+        ElementId AccViewId = ElementId.InvalidElementId;
 
         List<ElementId> excluded = new List<ElementId>();
         StringBuilder sb = new StringBuilder();
         List<ViewSection> sections = new List<ViewSection>();
         List<View> allViews = new List<View>();
         List<ViewSheet> sheets = new List<ViewSheet>();
+        List<string> viewNames = new List<string>() { "ACC/Revizto View", "Assemble View" };
+        string folderPath = "";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             uidoc = commandData.Application.ActiveUIDocument;
@@ -56,6 +62,9 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                 if (window.purgeFilters.IsChecked == true) try { purgeFilters(); } catch { sb.AppendLine("Failed to purge filters"); }
                 if (window.purgeSets.IsChecked == true) try { purgeSets(); } catch { sb.AppendLine("Failed to purge/create publish sets"); }
                 if (window.purgeBrowser.IsChecked == true) try { purgeBrowser(); } catch { sb.AppendLine("Failed to reset browser organization"); }
+                if (window.navisExport.IsChecked == true) try { ExportNavis(); } catch (Exception ex) { sb.AppendLine($"Failed to Export Navis\n{ex.Message}"); }
+                if (window.IFCExport.IsChecked == true) try { ExportIFC(); } catch (Exception ex) { sb.AppendLine($"Failed to Export IFC\n{ex.Message}"); }
+                if (window.DWFXExport.IsChecked == true) try { ExportDWFx(); } catch (Exception ex) { sb.AppendLine($"Failed to Export DWFx\n{ex.Message}"); }
 
 
                 if (window.purge.IsChecked == true)
@@ -74,10 +83,11 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             return Result.Succeeded;
         }
 
-        private bool Create3DViews()
+
+
+        private ElementId Create3DViews()
         {
             #region create 3D views
-            List<string> viewNames = new List<string>() { "ACC/Revizto View", "Assemble View" };
             using (Transaction tx = new Transaction(doc, "Create 3D View and Hide Categories"))
             {
                 tx.Start();
@@ -95,6 +105,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                     {
                         view.Name = viewNames[0];
                         excluded.Add(view.Id);
+                        AccViewId = view.Id;
                     }
                     else if (view.Name.ToLower().Contains("assemble"))
                     {
@@ -105,7 +116,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                 if (views.Any(x => x.Name == "ACC/Revizto View") && views.Any(x => x.Name == "Assemble View"))
                 {
                     tx.Commit();
-                    return true;
+                    return AccViewId;
                 }
                 #endregion
 
@@ -119,7 +130,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                 if (viewFamilyType == null)
                 {
                     TaskDialog.Show("Error", "No 3D view family type found.");
-                    return false;
+                    return ElementId.InvalidElementId;
                 }
 
                 // Create the 3D view
@@ -128,12 +139,13 @@ namespace Revit_Ninja.Commands.BIMSubmittal
                 {
 
                     new3DView.Name = "ACC/Revizto View";
+                    AccViewId = new3DView.Id;
                 }
                 catch (Exception ex)
                 {
                     doc.print("something went wrong, or maybe the views exists.");
                     tx.RollBack();
-                    return false;
+                    return ElementId.InvalidElementId;
                 }
 
                 tx.Commit();
@@ -170,7 +182,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             excluded.Add(new3DView.Id);
             excluded.Add(duplicate.Id);
             doc.print("Additional views have been created successfully!");
-            return true;
+            return AccViewId;
             #endregion
             #endregion
         }
@@ -814,6 +826,131 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             }
 
         }
+
+
+        public void ExportNavis()
+        {
+            if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+            {
+                List<View> views = new FilteredElementCollector(doc)
+                   .OfCategory(BuiltInCategory.OST_Views)
+                   .WhereElementIsViewIndependent()
+                   .Cast<View>().Where(x => x is View3D)
+                   .ToList();
+
+                foreach (View view in views)
+                {
+                    if (view.Name.ToLower().Contains("acc") || view.Name.ToLower().Contains("revizto"))
+                    {
+                        AccViewId = view.Id;
+                        break;
+                    }
+                }
+                if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                {
+                    doc.print("No ACC/Revizto view found. Please create one and try again.");
+                    return;
+                }
+            }
+            NavisworksExportOptions navisOpts = new NavisworksExportOptions()
+            {
+                ConvertLinkedCADFormats = true,
+                ExportElementIds = true,
+                Coordinates = NavisworksCoordinates.Shared,
+                Parameters = NavisworksParameters.All,
+                ExportScope = NavisworksExportScope.View,
+                ViewId = AccViewId
+            };
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "NWC Files|*.nwc|All Files|*.*";
+            saveDialog.Title = "Save Excel File";
+            saveDialog.FileName = doc.Title + ".nwc";
+            if (saveDialog.ShowDialog() == true)
+            {
+                string filePath = saveDialog.FileName;
+                folderPath = Directory.GetParent(filePath).FullName;
+            }
+            doc.Export(folderPath, doc.Title, navisOpts);
+        }
+
+
+        private void ExportDWFx()
+        {
+            using (Transaction tr = new Transaction(doc, "Export DWFx"))
+            {
+                tr.Start();
+                if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                {
+                    List<View> views = new FilteredElementCollector(doc)
+                       .OfCategory(BuiltInCategory.OST_Views)
+                       .WhereElementIsViewIndependent()
+                       .Cast<View>().Where(x => x is View3D)
+                       .ToList();
+
+                    foreach (View view in views)
+                    {
+                        if (view.Name.ToLower().Contains("acc") || view.Name.ToLower().Contains("revizto"))
+                        {
+                            AccViewId = view.Id;
+                            break;
+                        }
+                    }
+                    if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                    {
+                        doc.print("No ACC/Revizto view found. Please create one and try again.");
+                        return;
+                    }
+                }
+                ViewSet set = new ViewSet();
+                set.Insert(doc.GetElement(AccViewId) as View);
+                DWFXExportOptions opts = new DWFXExportOptions()
+                {
+                    CropBoxVisible = false,
+                    ExportingAreas = false,
+                    ExportTexture = true,
+                    ExportOnlyViewId = AccViewId,
+                };
+                doc.Export(folderPath, doc.Title.Split('_').First(), set, opts);
+                tr.Commit();
+            }
+        }
+
+        private void ExportIFC()
+        {
+            using (Transaction tr = new Transaction(doc, "Export IFC"))
+            {
+                tr.Start();
+                if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                {
+                    List<View> views = new FilteredElementCollector(doc)
+                       .OfCategory(BuiltInCategory.OST_Views)
+                       .WhereElementIsViewIndependent()
+                       .Cast<View>().Where(x => x is View3D)
+                       .ToList();
+
+                    foreach (View view in views)
+                    {
+                        if (view.Name.ToLower().Contains("acc") || view.Name.ToLower().Contains("revizto"))
+                        {
+                            AccViewId = view.Id;
+                            break;
+                        }
+                    }
+                    if (AccViewId == null || AccViewId == ElementId.InvalidElementId)
+                    {
+                        doc.print("No ACC/Revizto view found. Please create one and try again.");
+                        return;
+                    }
+                }
+                IFCExportOptions ifcOpts = new IFCExportOptions()
+                {
+                    FileVersion = IFCVersion.IFC2x3,
+                };
+                doc.Export(folderPath, doc.Title.Split('_').First(), ifcOpts);
+                tr.Commit();
+            }
+        }
+
     }
 
 }

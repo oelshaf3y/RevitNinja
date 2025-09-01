@@ -183,6 +183,10 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 
+		<PackageReference Include="MaterialDesignColors" Version="5.2.1" />
+
+		<PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+
 		<PackageReference Include="Nice3point.Revit.Api.UIFramework" Version="2024.2.0" />
 
 		<PackageReference Include="System.Text.Json" Version="9.0.5" />

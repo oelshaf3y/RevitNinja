@@ -21,6 +21,7 @@ using Icon = System.Drawing.Icon;
 using UIFramework;
 using Xceed.Wpf.AvalonDock.Controls;
 using Color = System.Windows.Media.Color;
+using System.Windows.Media.Animation;
 
 namespace RevitNinja.Utils
 {
@@ -464,11 +465,11 @@ namespace RevitNinja.Utils
                 Directory.CreateDirectory(tempDir);
                 if (!Directory.Exists(tempDir))
                 {
-                    return null;
+                    return "";
                 }
             }
 
-            string tempExePath = Path.Combine(tempDir, resourceName);
+            string tempResPath = Path.Combine(tempDir, resourceName);
 
             var assembly = Assembly.GetExecutingAssembly();
             var resourcePath = assembly.GetManifestResourceNames()
@@ -476,27 +477,27 @@ namespace RevitNinja.Utils
 
             if (string.IsNullOrEmpty(resourcePath))
             {
-                return null;
+                return "";
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
             {
                 if (stream == null)
                 {
-                    return null;
+                    return "";
                 }
 
-                using (FileStream fileStream = new FileStream(tempExePath, FileMode.Create))
+                using (FileStream fileStream = new FileStream(tempResPath, FileMode.Create))
                 {
                     stream.CopyTo(fileStream);
                 }
             }
 
-            if (!File.Exists(tempExePath))
+            if (!File.Exists(tempResPath))
             {
-                return null;
+                return "";
             }
-            return tempExePath;
+            return tempResPath;
         }
 
         public static Schema getSchema()
@@ -664,5 +665,7 @@ namespace RevitNinja.Utils
                 }
             }
         }
+
+        
     }
 }

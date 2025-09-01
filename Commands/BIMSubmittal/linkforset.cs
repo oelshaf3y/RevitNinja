@@ -15,6 +15,11 @@ namespace Revit_Ninja.Commands.BIMSubmittal
         public bool purgeFilters { get; set; }
         public bool purgeSets { get; set; }
         public bool resetBrowser { get; set; }
+        public bool exportNwc { get; set; }
+        public bool exportIFC { get; set; }
+        public bool exportDWFx { get; set; }
+        public bool saveLocal { get; set; }
+        
 
         public linkforset(RevitLinkInstance rli)
         {
@@ -28,6 +33,11 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             purgeFilters = false;
             purgeSets = false;
             resetBrowser = false;
+            exportNwc = false;
+            exportIFC = false;
+            exportDWFx = false;
+            saveLocal = false;
+
         }
 
     }

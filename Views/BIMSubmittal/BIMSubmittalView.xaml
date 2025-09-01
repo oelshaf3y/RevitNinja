@@ -4,21 +4,54 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revit_Ninja.Views.BIMSubmittal"
-        mc:Ignorable="d"
-        Title="Submit BIM Model" Height="260" Width="710" WindowStartupLocation="CenterOwner">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        
+    mc:Ignorable="d"
+        Title="Submit BIM Model" Height="286" Width="701" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Use a supported MaterialDesign color name -->
+                <materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="Navy" SecondaryColor="Orange" />
+
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Proper style reference -->
+            <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignSwitchToggleButton}"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
     <Grid>
         <Label Content="What would you like to do?" HorizontalAlignment="Left" Margin="21,22,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="CreateViewsCB" Content="Create Assemble View and ACC/Revizto View" ToolTip="create additional views based on RSG's requirements" HorizontalAlignment="Left" Margin="27,53,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="DeleteNOSCB" Content="Delete all WIP Views" ToolTip="remove all views which are not populated in sheets." HorizontalAlignment="Left" Margin="27,73,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="DelCADCB" Content="Remove all CAD imports" ToolTip="remove all cad imports and links." HorizontalAlignment="Left" Margin="27,93,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="RemoveLinksCB" Content="Remove all links" ToolTip="remove all rvt links from the model" HorizontalAlignment="Left" Margin="27,113,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="SectionsAndSheetsCB" Content="Populate sections with sheet number" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="27,133,0,0" VerticalAlignment="Top"/>
-        <Button Content="OK" HorizontalAlignment="Left" Margin="27,190,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FF0A90C8" Foreground="White" Width="43" Click="Button_Click" IsDefault="True"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="235,190,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFF16D6D" Foreground="White" Width="49" Click="Button_Click_1" IsCancel="True"/>
-        <CheckBox x:Name="purgeFilters" Content="Remove unused filters" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,53,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="purgeSets" Content="Purge sets / Create publish set" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,73,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="purgeBrowser" Content="Reset Browser Organization" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,93,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="purge" Content="Run Purge Unused" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="355,133,0,0" VerticalAlignment="Top" />
+        <ToggleButton x:Name="CreateViewsCB"  HorizontalAlignment="Left" Margin="27,53,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
+        <ToggleButton x:Name="DeleteNOSCB"  HorizontalAlignment="Left" Margin="27,78,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
+        <ToggleButton x:Name="DelCADCB"  HorizontalAlignment="Left" Margin="27,103,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
+        <ToggleButton x:Name="RemoveLinksCB" HorizontalAlignment="Left" Margin="27,128,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
+        <ToggleButton x:Name="SectionsAndSheetsCB" HorizontalAlignment="Left" Margin="27,153,0,0" VerticalAlignment="Top" IsChecked="False" Height="20" Width="44"/>
+        <ToggleButton x:Name="purgeFilters" HorizontalAlignment="Left" Margin="355,53,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <ToggleButton x:Name="purgeSets" HorizontalAlignment="Left" Margin="355,78,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <ToggleButton x:Name="purgeBrowser"  HorizontalAlignment="Left" Margin="355,103,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <ToggleButton x:Name="navisExport"   HorizontalAlignment="Left" Margin="355,128,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <ToggleButton x:Name="IFCExport"   HorizontalAlignment="Left" Margin="484,128,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <ToggleButton x:Name="DWFXExport"   HorizontalAlignment="Left" Margin="580,128,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <ToggleButton x:Name="purge"  HorizontalAlignment="Left" Margin="355,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.506,2.321" Height="20" Width="41" />
+
+        <Label Content="Create Assemble View and ACC/Revizto View" ToolTip="create additional views based on RSG's requirements" HorizontalAlignment="Left" Margin="76,48,0,0" VerticalAlignment="Top"/>
+        <Label Content="Delete all WIP Views" ToolTip="remove all views which are not populated in sheets." HorizontalAlignment="Left" Margin="76,75,0,0" VerticalAlignment="Top"/>
+        <Label Content="Remove all CAD imports" ToolTip="remove all cad imports and links." HorizontalAlignment="Left" Margin="76,100,0,0" VerticalAlignment="Top"/>
+        <Label Content="Remove all links" ToolTip="remove all rvt links from the model"  HorizontalAlignment="Left" Margin="76,125,0,0" VerticalAlignment="Top"/>
+        <Label Content="Populate sections with sheet number" ToolTip="Get the sheet sequential number and assign it to the section head."  HorizontalAlignment="Left" Margin="76,147,0,0" VerticalAlignment="Top"/>
+        <Label Content="Remove unused filters" ToolTip="Get the sheet sequential number and assign it to the section head."  HorizontalAlignment="Left" Margin="401,50,0,0" VerticalAlignment="Top"/>
+        <Label Content="Purge sets / Create publish set" ToolTip="Get the sheet sequential number and assign it to the section head."  HorizontalAlignment="Left" Margin="401,72,0,0" VerticalAlignment="Top"/>
+        <Label Content="Reset Browser Organization" ToolTip="Get the sheet sequential number and assign it to the section head." HorizontalAlignment="Left" Margin="401,100,0,0" VerticalAlignment="Top"/>
+        <Label Content="Export Navis" ToolTip="Export the desired view to Navisworks Manage" HorizontalAlignment="Left" Margin="401,122,0,0" VerticalAlignment="Top"/>
+        <Label Content="Run Purge Unused" ToolTip="Run Purge Unused after everything is done." HorizontalAlignment="Left" Margin="401,150,0,0" VerticalAlignment="Top"/>
+        <Label Content="IFC" ToolTip="Export the model to IFC format" HorizontalAlignment="Left" Margin="530,122,0,0" VerticalAlignment="Top"/>
+        <Label Content="DWFx" ToolTip="Export the model to DWFx" HorizontalAlignment="Left" Margin="626,122,0,0" VerticalAlignment="Top"/>
+
+        <Button Content="OK" HorizontalAlignment="Left" Margin="220,206,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FF0A90C8" Foreground="White" Width="64" Click="Button_Click" IsDefault="True" Height="34"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="428,206,0,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="#FFF16D6D" Foreground="White" Width="78" Click="Button_Click_1" IsCancel="True" Height="34"/>
 
     </Grid>
 </Window>
