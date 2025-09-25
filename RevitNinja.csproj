@@ -65,6 +65,7 @@
 		<None Remove="Resources\ResetSheetsS.ico" />
 		<None Remove="Resources\ResetView.ico" />
 		<None Remove="Resources\resetViewS.ico" />
+		<None Remove="Resources\Revit-Ninja-sharedParameters.txt" />
 		<None Remove="Resources\revitninjatext.png" />
 		<None Remove="Resources\RevitNinja_CallOut_Head.rfa" />
 		<None Remove="Resources\RevitNinja_CIRC_OPENING.rfa" />
@@ -138,6 +139,7 @@
 		<Resource Include="Resources\ninja-pic.png" />
 		<Resource Include="Resources\ninja.ico" />
 		<EmbeddedResource Include="Resources\ninjaDB.exe" />
+		<EmbeddedResource Include="Resources\Revit-Ninja-sharedParameters.txt" />
 		<EmbeddedResource Include="Resources\RevitNinja_CallOut_Head.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_CIRC_OPENING.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_Point.rfa" />

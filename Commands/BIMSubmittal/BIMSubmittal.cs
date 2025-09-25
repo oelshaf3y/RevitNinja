@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Text;
+using Autodesk.Revit.ApplicationServices;
+
 //using System.Windows.Forms;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
@@ -34,6 +36,8 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
             uiapp = commandData.Application;
+            Application app = uiapp.Application;
+            //app.
 
             if (!doc.getAccess()) return Result.Failed;
 
@@ -559,6 +563,7 @@ namespace Revit_Ninja.Commands.BIMSubmittal
             using (Transaction tr = new Transaction(doc, "Load family"))
             {
                 tr.Start();
+
                 doc.LoadFamily(seactionHeadPath);
                 doc.LoadFamily(calloutPath);
 

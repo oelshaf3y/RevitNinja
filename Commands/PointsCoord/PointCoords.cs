@@ -19,6 +19,8 @@ namespace Revit_Ninja.Commands.PointsCoord
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess()) return Result.Failed;
+
             ProjectLocation projectLocation = doc.ActiveProjectLocation;
             List<FamilyInstance> allPoints = new List<FamilyInstance>();
             if (doc.ActiveView is View3D || doc.ActiveView.ViewType == ViewType.Schedule)

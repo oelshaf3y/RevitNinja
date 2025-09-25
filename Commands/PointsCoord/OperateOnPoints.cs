@@ -28,6 +28,8 @@ namespace Revit_Ninja.Commands.PointsCoord
         {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
+            if (!doc.getAccess()) return Result.Failed;
+
             if (doc.ActiveView is View3D || doc.ActiveView.ViewType == ViewType.Schedule)
             {
                 doc.print("Please select a 2D view to import points.");
@@ -272,6 +274,11 @@ namespace Revit_Ninja.Commands.PointsCoord
             {
                 tg.Start();
                 XYZ p = XYZ.Zero;
+                try
+                {
+                    symbol.Activate();
+                }
+                catch { }
                 try
                 {
                     p = uidoc.Selection.PickPoint("Select a point or press ESC to finish");

@@ -563,6 +563,16 @@ namespace Revit_Ninja.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] Revit_Ninja_sharedParameters {
+            get {
+                object obj = ResourceManager.GetObject("Revit-Ninja-sharedParameters", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] RevitNinja_CallOut_Head {
             get {
                 object obj = ResourceManager.GetObject("RevitNinja_CallOut_Head", resourceCulture);

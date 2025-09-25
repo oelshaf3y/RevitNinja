@@ -319,4 +319,7 @@
   <data name="colorless" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\colorless.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Revit-Ninja-sharedParameters" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Revit-Ninja-sharedParameters.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

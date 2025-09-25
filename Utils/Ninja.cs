@@ -22,6 +22,7 @@ using UIFramework;
 using Xceed.Wpf.AvalonDock.Controls;
 using Color = System.Windows.Media.Color;
 using System.Windows.Media.Animation;
+using System.Text;
 
 namespace RevitNinja.Utils
 {
@@ -227,8 +228,11 @@ namespace RevitNinja.Utils
 
         public static bool assignParameter(ExternalCommandData commandData, string Group, string ParamName, BuiltInCategory category, ForgeTypeId paramType)
         {
+            if (!Directory.Exists(Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "RevitNinja"))) Directory.CreateDirectory(Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "RevitNinja"));
             string sharedParametersFile = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "RevitNinja",
                 "Revit-Ninja-sharedParameters.txt");
             UIDocument uidoc;
             Document doc;
@@ -241,10 +245,12 @@ namespace RevitNinja.Utils
             doc = uidoc.Document;
             if (!File.Exists(sharedParametersFile))
             {
-                File.Create(sharedParametersFile).Dispose();
+                ExtractEmbeddedResource(null, "Revit-Ninja-sharedParameters.txt", sharedParametersFile);
+                //File.Create(sharedParametersFile).Dispose();
             }
+            
             Autodesk.Revit.ApplicationServices.Application App = commandData.Application.Application;
-            if (App.SharedParametersFilename == null) App.SharedParametersFilename = sharedParametersFile;
+            App.SharedParametersFilename = sharedParametersFile;
             defFile = App.OpenSharedParameterFile();
             if (defFile == null) return false;
             if (defFile.Groups.Where(x => x.Name.ToLower() == Group.ToLower()).Any())
@@ -457,7 +463,7 @@ namespace RevitNinja.Utils
             }
         }
 
-        public static string ExtractEmbeddedResource(this Document doc, string resourceName)
+        public static string ExtractEmbeddedResource(this Document doc, string resourceName, string copyto = null)
         {
             string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             if (!Directory.Exists(tempDir))
@@ -496,6 +502,11 @@ namespace RevitNinja.Utils
             if (!File.Exists(tempResPath))
             {
                 return "";
+            }
+            if (copyto != null)
+            {
+                File.Copy(tempResPath, copyto, true);
+                return copyto;
             }
             return tempResPath;
         }
@@ -666,6 +677,6 @@ namespace RevitNinja.Utils
             }
         }
 
-        
+
     }
 }
