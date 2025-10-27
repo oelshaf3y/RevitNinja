@@ -1,0 +1,22 @@
+﻿<Window x:Class="Revit_Ninja.Views.feedback"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Revit_Ninja.Views"
+        mc:Ignorable="d"
+        Title="Give Feedback" Height="280" Width="426" Background="#FF1B1F23" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" WindowStyle="None" Icon="/RevitNinja;component/Resources/ninja.ico">
+    <Grid>
+        <Button Content="OK" HorizontalAlignment="Left" Margin="370,226,0,0" VerticalAlignment="Top" Width="39" Background="#FF009AFF" BorderBrush="{x:Null}" Foreground="White" IsDefault="True" Click="Button_Click_1"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="296,226,0,0" VerticalAlignment="Top" Width="49" BorderBrush="{x:Null}" Background="#FFCE4E4E" Foreground="White" Click="Button_Click" IsCancel="True"/>
+        <TextBox x:Name="nameBox" HorizontalAlignment="Left" Margin="10,29,0,0" TextWrapping="Wrap" Text="Omar Elshafey" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="phoneBox" HorizontalAlignment="Left" Margin="10,71,0,0" TextWrapping="Wrap" Text="Whatsapp/email" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Name" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" Foreground="White"/>
+        <Label Content="Contact?" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" Foreground="White"/>
+        <Label Content="Message *" HorizontalAlignment="Left" Margin="10,94,0,0" VerticalAlignment="Top" Foreground="White"/>
+        <Label Content="Please give as clear info as possible." HorizontalAlignment="Left" Margin="12,212,0,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="White"/>
+        <Label Content="if you find any bugs/errors please let us know." HorizontalAlignment="Left" Margin="12,233,0,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="White"/>
+        <TextBox x:Name="messageBox" HorizontalAlignment="Left" Margin="10,120,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="397" Height="87"/>
+
+    </Grid>
+</Window>

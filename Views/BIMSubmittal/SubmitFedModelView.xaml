@@ -7,16 +7,7 @@
 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Submit Federated Model" WindowStartupLocation="CenterOwner" Width="{x:Static SystemParameters.PrimaryScreenWidth}" Height="617">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="Navy" SecondaryColor="Orange" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignSwitchToggleButton}"/>
-            <Style TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignFilterChipPrimaryCheckBox}"/>
-        </ResourceDictionary>
-    </Window.Resources>
+    
     <Grid>
         <Label Content="Select Models To submit:" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,56,0,166">

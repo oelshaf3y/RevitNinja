@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Revit_Ninja.Views;
 using RevitNinja.Utils;
 
 namespace RevitNinja.Views
@@ -37,6 +38,13 @@ namespace RevitNinja.Views
         private void gitHub(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/oelshaf3y/RevitNinja");
+        }
+
+        private void giveFeedback(object sender, RoutedEventArgs e)
+        {
+            feedback feedbackWindow = new feedback();
+            feedbackWindow.Show();
+
         }
     }
 }

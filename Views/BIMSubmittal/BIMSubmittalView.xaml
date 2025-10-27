@@ -8,34 +8,22 @@
         
     mc:Ignorable="d"
         Title="Submit BIM Model" Height="286" Width="701" WindowStartupLocation="CenterOwner">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!-- Use a supported MaterialDesign color name -->
-                <materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="Navy" SecondaryColor="Orange" />
-
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-
-            <!-- Proper style reference -->
-            <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignSwitchToggleButton}"/>
-        </ResourceDictionary>
-    </Window.Resources>
+    
 
     <Grid>
         <Label Content="What would you like to do?" HorizontalAlignment="Left" Margin="21,22,0,0" VerticalAlignment="Top"/>
-        <ToggleButton x:Name="CreateViewsCB"  HorizontalAlignment="Left" Margin="27,53,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
-        <ToggleButton x:Name="DeleteNOSCB"  HorizontalAlignment="Left" Margin="27,78,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
-        <ToggleButton x:Name="DelCADCB"  HorizontalAlignment="Left" Margin="27,103,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
-        <ToggleButton x:Name="RemoveLinksCB" HorizontalAlignment="Left" Margin="27,128,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
-        <ToggleButton x:Name="SectionsAndSheetsCB" HorizontalAlignment="Left" Margin="27,153,0,0" VerticalAlignment="Top" IsChecked="False" Height="20" Width="44"/>
-        <ToggleButton x:Name="purgeFilters" HorizontalAlignment="Left" Margin="355,53,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
-        <ToggleButton x:Name="purgeSets" HorizontalAlignment="Left" Margin="355,78,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
-        <ToggleButton x:Name="purgeBrowser"  HorizontalAlignment="Left" Margin="355,103,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
-        <ToggleButton x:Name="navisExport"   HorizontalAlignment="Left" Margin="355,128,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
-        <ToggleButton x:Name="IFCExport"   HorizontalAlignment="Left" Margin="484,128,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
-        <ToggleButton x:Name="DWFXExport"   HorizontalAlignment="Left" Margin="580,128,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
-        <ToggleButton x:Name="purge"  HorizontalAlignment="Left" Margin="355,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.506,2.321" Height="20" Width="41" />
+        <CheckBox x:Name="CreateViewsCB"  HorizontalAlignment="Left" Margin="27,53,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
+        <CheckBox x:Name="DeleteNOSCB"  HorizontalAlignment="Left" Margin="27,78,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
+        <CheckBox x:Name="DelCADCB"  HorizontalAlignment="Left" Margin="27,103,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
+        <CheckBox x:Name="RemoveLinksCB" HorizontalAlignment="Left" Margin="27,128,0,0" VerticalAlignment="Top" Height="20" Width="44"/>
+        <CheckBox x:Name="SectionsAndSheetsCB" HorizontalAlignment="Left" Margin="27,153,0,0" VerticalAlignment="Top" IsChecked="False" Height="20" Width="44"/>
+        <CheckBox x:Name="purgeFilters" HorizontalAlignment="Left" Margin="355,53,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <CheckBox x:Name="purgeSets" HorizontalAlignment="Left" Margin="355,78,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <CheckBox x:Name="purgeBrowser"  HorizontalAlignment="Left" Margin="355,103,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <CheckBox x:Name="navisExport"   HorizontalAlignment="Left" Margin="355,128,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <CheckBox x:Name="IFCExport"   HorizontalAlignment="Left" Margin="484,128,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <CheckBox x:Name="DWFXExport"   HorizontalAlignment="Left" Margin="580,128,0,0" VerticalAlignment="Top" Height="20" Width="41"/>
+        <CheckBox x:Name="purge"  HorizontalAlignment="Left" Margin="355,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.506,2.321" Height="20" Width="41" />
 
         <Label Content="Create Assemble View and ACC/Revizto View" ToolTip="create additional views based on RSG's requirements" HorizontalAlignment="Left" Margin="76,48,0,0" VerticalAlignment="Top"/>
         <Label Content="Delete all WIP Views" ToolTip="remove all views which are not populated in sheets." HorizontalAlignment="Left" Margin="76,75,0,0" VerticalAlignment="Top"/>

@@ -21,7 +21,7 @@ namespace RevitNinja.Commands.ViewState
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //if (!doc.getAccess()) return Result.Failed;
+            if (!doc.getAccess()) return Result.Failed;
 
             View activeView = doc.ActiveView;
             if (activeView is ViewSheet || activeView is ViewSchedule)

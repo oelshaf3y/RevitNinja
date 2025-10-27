@@ -29,8 +29,8 @@ namespace RevitNinja.Utils
     public static class Ninja
     {
         public static string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Roaming", "Autodesk", "Revit", "Addins", "RevitNinja");
-        public static string dbfile = Path.Combine(folderPath, "dbaccess.json");
-        public static string version = "1.2.0"; // this version updates the updater exe 
+        public static string dbfile = Path.Combine(folderPath, "ninjadb.json");
+        public static string version = "1.2.1"; // this version updates the updater exe 
         public static Guid dataStorageGUID = new Guid("8998EC47-2E53-472B-9663-E1817A64F76F");
 
         public static List<List<Color>> colors = new List<List<Color>>()
@@ -248,7 +248,7 @@ namespace RevitNinja.Utils
                 ExtractEmbeddedResource(null, "Revit-Ninja-sharedParameters.txt", sharedParametersFile);
                 //File.Create(sharedParametersFile).Dispose();
             }
-            
+
             Autodesk.Revit.ApplicationServices.Application App = commandData.Application.Application;
             App.SharedParametersFilename = sharedParametersFile;
             defFile = App.OpenSharedParameterFile();
@@ -332,18 +332,95 @@ namespace RevitNinja.Utils
             }
         }
 
+        public static void createDBFile()
+        {
+            Dictionary<string, object> defaultDb = new Dictionary<string, object>();
+
+            Dictionary<string, object> revitNinja = new Dictionary<string, object>();
+            Dictionary<string, object> accessList = new Dictionary<string, object>();
+            Dictionary<string, object> user = new Dictionary<string, object>();
+
+            user.Add("username", "default");
+            user.Add("machineId", "default");
+            user.Add("access", false);
+            user.Add("date", DateTime.Today.Date.ToString("yyyy-MM-dd"));
+            user.Add("daysleft", 30);
+            user.Add("version", Ninja.version);
+            accessList.Add("default", user);
+            revitNinja.Add("Access", false);
+            revitNinja.Add("AccessList", accessList);
+            revitNinja.Add("UpdaterLink", "https://github.com/oelshaf3y/RevitNinja/releases/download/Publish/RevitNinja.exe");
+            revitNinja.Add("Version", Ninja.version);
+            revitNinja.Add("foreground", "#FF000000");
+            revitNinja.Add("background", "#FFF4F4F8");
+            revitNinja.Add("color", true);
+            defaultDb.Add("RevitNinja", revitNinja);
+            System.IO.File.WriteAllText(Ninja.dbfile, JsonSerializer.Serialize(defaultDb));
+        }
+
+        public static bool checkUserAccess()
+        {
+            if (File.Exists(dbfile))
+            {
+                try
+                {
+                    Dictionary<string, object> db = new Dictionary<string, object>();
+                    string outputContent = File.ReadAllText(dbfile);
+                    db = JsonSerializer.Deserialize<Dictionary<string, object>>(outputContent);
+                    Dictionary<string, object> revitninja = new Dictionary<string, object>();
+                    object accessValue = null, mess = null;
+                    db.TryGetValue("RevitNinja", out object rn);
+
+                    if (rn is JsonElement rn2)
+                    {
+                        revitninja = JsonSerializer.Deserialize<Dictionary<string, object>>(rn2.GetRawText());
+                        revitninja.TryGetValue("Access", out accessValue);
+                        revitninja.TryGetValue("Message", out mess);
+                    }
+
+
+                    if (accessValue.ToString().ToLower() == "true")
+                    {
+                        if (mess != null && mess.ToString().Length > 0)
+                        {
+                            TaskDialog.Show("Revit Ninja", mess.ToString());
+                        }
+                        return true;
+                    }
+                    else // no access
+                    {
+                        if (mess != null && mess.ToString().Length > 0)
+                        {
+                            TaskDialog.Show("Revit Ninja", mess.ToString());
+                        }
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TaskDialog.Show("Error", $"An error occurred while checking access in check user access:\n {ex.Message}");
+                    return false;
+                }
+            }
+            else // output file not found
+            {
+                TaskDialog.Show("Error", "You don't have access to this addin. contact the developer using the info tab.");
+                return false;
+            }
+        }
 
         public static bool tryAccess(Document doc)
         {
-            Dictionary<string, object> db = new Dictionary<string, object>();
             string tempDir = null;
-            try
+            if (!File.Exists(dbfile)) createDBFile();
+
+            try // extract and run ninjaDB.exe from embedded resources
             {
                 string tempExePath = ExtractEmbeddedResource(doc, "ninjaDB.exe");
                 tempDir = Path.GetDirectoryName(tempExePath);
-                string expectedOutputPath = Path.Combine(tempDir, "ninjadb.json");
 
-                if (tempExePath == null) return false;
+                if (tempExePath == null) return checkUserAccess();
+
                 // Run process
                 var process = new Process
                 {
@@ -363,32 +440,12 @@ namespace RevitNinja.Utils
                 string processError = process.StandardError.ReadToEnd();
                 process.WaitForExit();
 
+                return checkUserAccess();
 
-                // Check for output file
-                if (File.Exists(expectedOutputPath))
-                {
-                    string outputContent = File.ReadAllText(expectedOutputPath);
-                    db = JsonSerializer.Deserialize<Dictionary<string, object>>(outputContent);
-                    db.TryGetValue("Access", out object accessValue);
-                    db.Add("Date", DateTime.Today.Date.ToString("yyyy-MM-dd"));
-                    db.Add("foreground", "#FF000000");
-                    db.Add("background", "#FFF4F4F8");
-                    db.Add("color", true);
-                    File.WriteAllText(dbfile, JsonSerializer.Serialize(db));
-                    if (accessValue.ToString().ToLower() == "true")
-                    {
-                        return true;
-                    }
-                    else return false;
-                }
-                else
-                {
-                    return false;
-                }
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Error", $"An error occurred: {ex.Message}");
+                TaskDialog.Show("Error", $"An error occurred while try access:\n {ex.Message}");
                 return false;
             }
             finally
@@ -407,59 +464,72 @@ namespace RevitNinja.Utils
 
         }
 
+
         public static bool getAccess(this Document doc)
         {
-            //CreateAdmin();
-            if (File.Exists(dbfile))
+            try
             {
-                Dictionary<string, object> db = new Dictionary<string, object>();
-                db = JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(dbfile));
-                db.TryGetValue("Date", out object date);
-                //updated today
-                if (date.ToString() == DateTime.Today.Date.ToString("yyyy-MM-dd"))
+                if (File.Exists(dbfile))
                 {
-                    db.TryGetValue("Access", out object av);
-                    if (av.ToString().ToLower() == "true") return true;
-                    else
+                    Dictionary<string, object> db = new Dictionary<string, object>();
+                    Dictionary<string, object> revitninja = new Dictionary<string, object>();
+                    Dictionary<string, object> accessList = new Dictionary<string, object>();
+                    Dictionary<string, object> User = new Dictionary<string, object>();
+
+
+                    db = JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(dbfile));
+                    db.TryGetValue("RevitNinja", out object rn);
+                    if (rn is JsonElement rn2)
                     {
-                        File.Delete(dbfile);
-                        if (tryAccess(doc))
-                        {
-                            return true;
-                        }
+                        revitninja = JsonSerializer.Deserialize<Dictionary<string, object>>(rn2.GetRawText());
+                    }
+                    revitninja.TryGetValue("AccessList", out object AccessListObj);
+                    if (AccessListObj is JsonElement alo)
+                    {
+                        accessList = JsonSerializer.Deserialize<Dictionary<string, object>>(alo.GetRawText());
+                    }
+                    var user = accessList.First().Value;
+                    if (user is JsonElement us)
+                    {
+                        User = JsonSerializer.Deserialize<Dictionary<string, object>>(us.GetRawText());
+                    }
+                    User.TryGetValue("date", out object date);
+                    //updated today
+                    if (date.ToString() == DateTime.Today.Date.ToString("yyyy-MM-dd"))
+                    {
+                        revitninja.TryGetValue("Access", out object av);
+                        if (av.ToString().ToLower() == "true") return true;
                         else
                         {
-                            doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
-                            return false;
+                            revitninja.TryGetValue("Message", out object mess);
+
+                            if (tryAccess(doc))
+                            {
+                                return true;
+                            }
+                            else
+                            {
+
+                                doc.print(mess.ToString());
+                                return false;
+                            }
                         }
                     }
-                }
-                // not updated today
-                else
-                {
-                    File.Delete(dbfile);
-                    if (tryAccess(doc))
-                    {
-                        return true;
-                    }
+                    // not updated today
                     else
                     {
-                        doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
-                        return false;
+                        return tryAccess(doc);
                     }
-                }
-            }
-            else
-            {
-                if (!tryAccess(doc))
-                {
-                    doc.print("You don't have access to this revit addin\n please contact the developer using the info tab");
-                    return false;
                 }
                 else
                 {
-                    return true;
+                    return tryAccess(doc);
                 }
+            }
+            catch (Exception ex)
+            {
+                doc.print("An error occurred while checking access: \n" + ex.Message +"\n"+ex.StackTrace);
+                return false;
             }
         }
 
@@ -622,9 +692,15 @@ namespace RevitNinja.Utils
             List<string> docs = new List<string>();
             string outputContent = File.ReadAllText(Ninja.dbfile);
             Dictionary<string, object> db = JsonSerializer.Deserialize<Dictionary<string, object>>(outputContent);
-            db.TryGetValue("color", out object color);
-            db.TryGetValue("foreground", out object foreground);
-            db.TryGetValue("background", out object background);
+            Dictionary<string, object> revitninja = new Dictionary<string, object>();
+            db.TryGetValue("RevitNinja", out object rn3);
+            if (rn3 is JsonElement rn4)
+            {
+                revitninja = JsonSerializer.Deserialize<Dictionary<string, object>>(rn4.GetRawText());
+            }
+            revitninja.TryGetValue("color", out object color);
+            revitninja.TryGetValue("foreground", out object foreground);
+            revitninja.TryGetValue("background", out object background);
             System.Windows.Media.BrushConverter converter = new System.Windows.Media.BrushConverter();
             System.Windows.Media.Brush fore = (System.Windows.Media.Brush)converter.ConvertFromString(foreground.ToString());
             System.Windows.Media.Brush back = (System.Windows.Media.Brush)converter.ConvertFromString(background.ToString());

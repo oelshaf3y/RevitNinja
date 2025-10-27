@@ -78,14 +78,25 @@ namespace Revit_Ninja.Commands
         {
             string outputContent = File.ReadAllText(Ninja.dbfile);
             Dictionary<string, object> db = JsonSerializer.Deserialize<Dictionary<string, object>>(outputContent);
-            db.TryGetValue("color", out object colorize);
+            db.TryGetValue("RevitNinja", out object rn);
+            Dictionary<string, object> revitninja = new Dictionary<string, object>();
+            if (rn is JsonElement rn2)
+            {
+                revitninja = JsonSerializer.Deserialize<Dictionary<string, object>>(rn2.GetRawText());
+            }
+            revitninja.TryGetValue("color", out object colorize);
             bool isColored = true;
             if (colorize.ToString().ToLower() == "true")
             {
-                db["color"] = false;
+                revitninja["color"] = false;
+                db["RevitNinja"] = revitninja;
                 isColored = false;
             }
-            else db["color"] = true;
+            else
+            {
+                revitninja["color"] = true;
+                db["RevitNinja"] = revitninja;
+            }
             File.WriteAllText(Ninja.dbfile, JsonSerializer.Serialize(db));
             Ninja.ColorTabs();
             RevitNinja.Application.Instance.ToggleColor(isColored);

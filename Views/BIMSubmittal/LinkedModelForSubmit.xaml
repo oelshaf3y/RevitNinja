@@ -8,10 +8,9 @@
 
     <Grid>
         <WrapPanel Margin="5" VerticalAlignment="Center">
-
-            <ToggleButton x:Name="isChecked" Checked="checkAll" Unchecked="uncheckAll" HorizontalAlignment="Left" Width="48"></ToggleButton>
+            <CheckBox x:Name="isChecked" Checked="checkAll" Unchecked="uncheckAll" HorizontalAlignment="Center" Width="48" VerticalAlignment="Center"/>
             <Label x:Name="modelName" Content="L01-H02C02-RSC-56-01-MOD-CS-05561"  HorizontalAlignment="Left" Width="217" Height="32" VerticalAlignment="Top"/>
-            <CheckBox x:Name="create3D" Content="Create Views" IsChecked="{Binding create3D,Mode=TwoWay}" Margin="2"/>
+            <CheckBox x:Name="create3D" Content="Create Views" IsChecked="{Binding create3D, Mode=TwoWay}" Margin="2"/>
             <CheckBox x:Name="deleteWIP" Content="Delete Views" IsChecked="{Binding deleteWIP, Mode=TwoWay}" Margin="2"/>
             <CheckBox x:Name="removeCad" Content="Remove CAD" IsChecked="{Binding removeCad, Mode=TwoWay}" Margin="2"/>
             <CheckBox x:Name="removeLinks" Content="Remove Links" IsChecked="{Binding removeLinks, Mode=TwoWay}" Margin="2"/>

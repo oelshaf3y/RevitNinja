@@ -15,13 +15,13 @@
 />
 
         <!-- GitHub Image -->
-        <Button Click="gitHub" Margin="68,124,0,0" HorizontalAlignment="Left" Width="63" Height="49" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}">
+        <Button Click="gitHub" Margin="46,123,0,0" HorizontalAlignment="Left" Width="63" Height="49" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}">
             <Image  HorizontalAlignment="Left" Width="46" Height="41" VerticalAlignment="Center"
         Source="pack://application:,,,/RevitNinja;component/Resources/github.png" Stretch="Uniform"
         />
         </Button>
         <!-- LinkedIn Image -->
-        <Button Click="linkedin" Margin ="142,124,0,0"  HorizontalAlignment="Left" Width="59" Height="49" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}">
+        <Button Click="linkedin" Margin ="120,123,0,0"  HorizontalAlignment="Left" Width="59" Height="49" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}">
             <Image   HorizontalAlignment="Left" Width="51" Height="41" VerticalAlignment="Center"
 Source="pack://application:,,,/RevitNinja;component/Resources/linkedin.png" Stretch="Uniform"
                />
@@ -34,7 +34,7 @@ Source="pack://application:,,,/RevitNinja;component/Resources/linkedin.png" Stre
 
 
         <!-- Info Image -->
-        <Image Margin="80,0,0,4"  Height="56" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="119"
+        <Image Margin="91,0,0,10"  Height="56" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="119"
                Source="pack://application:,,,/RevitNinja;component/Resources/info.png"/>
 
         <!-- Close Image -->
@@ -43,6 +43,9 @@ Source="pack://application:,,,/RevitNinja;component/Resources/linkedin.png" Stre
        Source="pack://application:,,,/RevitNinja;component/Resources/icons8-swords-67.png"/>
         </Button>
         <Label x:Name="VersionLabel" Content="Version:" HorizontalAlignment="Left" Margin="260,232,0,0" VerticalAlignment="Top" Foreground="White"/>
-
+        <Label Content="Give FeedBack" Margin="193,150,426,86" Foreground="White" FontSize="8"/>
+        <Button Height="51" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="48" Background="{x:Null}" BorderBrush="{x:Null}" Margin="0,0,432,98" Click="giveFeedback">
+            <Image ToolTip="Give feedback!" Source="/RevitNinja;component/Resources/feedback.png" Stretch="Uniform" Height="25" Width="25"/>
+        </Button>
     </Grid>
 </Window>

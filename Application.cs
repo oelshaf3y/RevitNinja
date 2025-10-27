@@ -1,27 +1,29 @@
-﻿using Autodesk.Revit.UI;
+﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Events;
 using Revit_Ninja.Commands;
+using Revit_Ninja.Commands.BIMSubmittal;
 using Revit_Ninja.Commands.Penetration;
+using Revit_Ninja.Commands.PointsCoord;
 using Revit_Ninja.Commands.ReviztoIssues;
 using RevitNinja.Commands;
 using RevitNinja.Commands.ViewState;
 using RevitNinja.Utils;
-using System.IO;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Media.Imaging;
-using System.Text.Json;
-using System.Diagnostics;
-using System.Net;
 using RevitNinja.Views;
-using System.Windows.Shapes;
-using Revit_Ninja.Commands.PointsCoord;
-using Revit_Ninja.Commands.BIMSubmittal;
-using Autodesk.Revit.UI.Events;
-using Autodesk.Revit.DB;
-using App = Autodesk.Revit.ApplicationServices.Application;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Reflection;
+using System.Text.Json;
+using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using UIFramework;
 using Xceed.Wpf.AvalonDock.Controls;
+using static System.Net.WebRequestMethods;
+using App = Autodesk.Revit.ApplicationServices.Application;
 using Color = System.Windows.Media.Color;
 using TabItem = System.Windows.Controls.TabItem;
 
@@ -44,14 +46,20 @@ namespace RevitNinja
             try
             {
                 string dllPath = "";
-                if (File.Exists(Ninja.dbfile))
+                if (System.IO.File.Exists(Ninja.dbfile))
                 {
                     Dictionary<string, object> db = new Dictionary<string, object>();
-                    db = JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(Ninja.dbfile));
-                    bool update = db.TryGetValue("UpdateOnClose", out object updateOnClose);
+                    Dictionary<string, object> revitninja = new Dictionary<string, object>();
+                    db = JsonSerializer.Deserialize<Dictionary<string, object>>(System.IO.File.ReadAllText(Ninja.dbfile));
+                    db.TryGetValue("RevitNinja", out object rn);
+                    if (rn is JsonElement rn2)
+                    {
+                        revitninja = JsonSerializer.Deserialize<Dictionary<string, object>>(rn2.GetRawText());
+                    }
+                    bool update = revitninja.TryGetValue("UpdateOnClose", out object updateOnClose);
                     if (update && updateOnClose.ToString().ToLower() == "true")
                     {
-                        db.TryGetValue("UpdaterPath", out object path);
+                        revitninja.TryGetValue("UpdaterPath", out object path);
                         dllPath = path.ToString();
                         // 2. Launch the updater with a user-friendly message
                         System.Diagnostics.Process.Start(new ProcessStartInfo
@@ -79,29 +87,54 @@ namespace RevitNinja
             }
             assemblyName = Assembly.GetExecutingAssembly().Location;
             asPath = System.IO.Path.GetDirectoryName(assemblyName);
-            Ninja.tryAccess(null);
-            if (File.Exists(Ninja.dbfile))
+            try
             {
 
-                string jsonString = File.ReadAllText(Ninja.dbfile);
-                Dictionary<string, object> db = new Dictionary<string, object>();
-                db = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
-                db.TryGetValue("Version", out object Version);
-                db.TryGetValue("UpdaterLink", out object updateLink);
-                Link = updateLink.ToString();
-                Version = Version.ToString();
-                if (!Version.Equals(Ninja.version))
+                if (!System.IO.File.Exists(Ninja.dbfile))
                 {
-                    UpdaterView updater = new UpdaterView(Version.ToString(), Link);
-                    updater.ShowDialog();
+                    Ninja.createDBFile();
+                }
+                else
+                {
+                    Ninja.tryAccess(null);
+                    if (System.IO.File.Exists(Ninja.dbfile))
+                    {
+
+                        string jsonString = System.IO.File.ReadAllText(Ninja.dbfile);
+                        Dictionary<string, object> db = new Dictionary<string, object>();
+                        db = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
+
+                        db.TryGetValue("RevitNinja", out object rn);
+                        Dictionary<string, object> revitninja = new Dictionary<string, object>();
+                        if (rn is JsonElement rn2)
+                        {
+                            revitninja = JsonSerializer.Deserialize<Dictionary<string, object>>(rn2.GetRawText());
+                        }
+                        revitninja.TryGetValue("Version", out object Version);
+                        revitninja.TryGetValue("UpdaterLink", out object updateLink);
+                        string curVer = null, onlineVer = null;
+                        foreach (string ver in Version.ToString().Split('.'))
+                        {
+                            onlineVer += ver;
+                        }
+                        foreach(string ver in Ninja.version.Split('.'))
+                        {
+                            curVer += ver;
+                        }
+                        int currentVersion = int.Parse(curVer);
+                        int onlineVersion = int.Parse(onlineVer);
+                        if (onlineVersion > currentVersion)
+                        {
+                            UpdaterView updater = new UpdaterView(Version.ToString(), Link);
+                            updater.ShowDialog();
+                        }
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                TaskDialog.Show("Error", "Please make sure you are connected to the internet!");
-                return Result.Failed;
+                MessageBox.Show("application on startup\n" + ex.Message);
             }
-
             string TabName = "RevitNinja";
             try
             {

@@ -28,39 +28,6 @@
           "build/Fody.targets": {}
         }
       },
-      "MaterialDesignColors/5.2.1": {
-        "type": "package",
-        "compile": {
-          "lib/net462/MaterialDesignColors.dll": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net462/MaterialDesignColors.dll": {
-            "related": ".pdb"
-          }
-        }
-      },
-      "MaterialDesignThemes/5.2.1": {
-        "type": "package",
-        "dependencies": {
-          "MaterialDesignColors": "5.2.1",
-          "Microsoft.Xaml.Behaviors.Wpf": "1.1.39"
-        },
-        "compile": {
-          "lib/net462/MaterialDesignThemes.Wpf.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/net462/MaterialDesignThemes.Wpf.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "build": {
-          "build/MaterialDesignThemes.targets": {}
-        }
-      },
       "Microsoft.Bcl.AsyncInterfaces/9.0.5": {
         "type": "package",
         "dependencies": {
@@ -78,28 +45,6 @@
         },
         "build": {
           "buildTransitive/net462/_._": {}
-        }
-      },
-      "Microsoft.Xaml.Behaviors.Wpf/1.1.39": {
-        "type": "package",
-        "frameworkAssemblies": [
-          "PresentationCore",
-          "PresentationFramework",
-          "System",
-          "System.Core",
-          "System.XML",
-          "System.Xaml",
-          "WindowsBase"
-        ],
-        "compile": {
-          "lib/net45/Microsoft.Xaml.Behaviors.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Xaml.Behaviors.dll": {
-            "related": ".pdb;.xml"
-          }
         }
       },
       "Nice3point.Revit.Api.UIFramework/2024.2.0": {
@@ -338,68 +283,6 @@
         "readme.md"
       ]
     },
-    "MaterialDesignColors/5.2.1": {
-      "sha512": "D0HW6E2/kzsnEWCh1KDG/K09Fpkvs9mR3n91Y8YSOsEAoQmGZbVAj58ssyAxGTiIPj2zB4ZVnwxkizwO35/v8A==",
-      "type": "package",
-      "path": "materialdesigncolors/5.2.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "docs/README.md",
-        "images/MaterialDesignColors.Icon.png",
-        "lib/net462/MaterialDesignColors.dll",
-        "lib/net462/MaterialDesignColors.pdb",
-        "lib/net6.0/MaterialDesignColors.dll",
-        "lib/net6.0/MaterialDesignColors.pdb",
-        "lib/net8.0/MaterialDesignColors.dll",
-        "lib/net8.0/MaterialDesignColors.pdb",
-        "materialdesigncolors.5.2.1.nupkg.sha512",
-        "materialdesigncolors.nuspec"
-      ]
-    },
-    "MaterialDesignThemes/5.2.1": {
-      "sha512": "x8JDqNHJcTLLxIoVts3w7AbSq5Zo0FXTw89XqPN7+n0EKqLXFwWsywiUn08HDyTGAmZVJqbQsWKxKWCI8qfWsQ==",
-      "type": "package",
-      "path": "materialdesignthemes/5.2.1",
-      "hasTools": true,
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "build/MaterialDesignThemes.targets",
-        "build/Resources/Roboto/Roboto-Black.ttf",
-        "build/Resources/Roboto/Roboto-BlackItalic.ttf",
-        "build/Resources/Roboto/Roboto-Bold.ttf",
-        "build/Resources/Roboto/Roboto-BoldItalic.ttf",
-        "build/Resources/Roboto/Roboto-Italic.ttf",
-        "build/Resources/Roboto/Roboto-Light.ttf",
-        "build/Resources/Roboto/Roboto-LightItalic.ttf",
-        "build/Resources/Roboto/Roboto-Medium.ttf",
-        "build/Resources/Roboto/Roboto-MediumItalic.ttf",
-        "build/Resources/Roboto/Roboto-Regular.ttf",
-        "build/Resources/Roboto/Roboto-Thin.ttf",
-        "build/Resources/Roboto/Roboto-ThinItalic.ttf",
-        "build/Resources/Roboto/RobotoCondensed-Bold.ttf",
-        "build/Resources/Roboto/RobotoCondensed-BoldItalic.ttf",
-        "build/Resources/Roboto/RobotoCondensed-Italic.ttf",
-        "build/Resources/Roboto/RobotoCondensed-Light.ttf",
-        "build/Resources/Roboto/RobotoCondensed-LightItalic.ttf",
-        "build/Resources/Roboto/RobotoCondensed-Regular.ttf",
-        "docs/README.md",
-        "images/MaterialDesignThemes.Icon.png",
-        "lib/net462/MaterialDesignThemes.Wpf.dll",
-        "lib/net462/MaterialDesignThemes.Wpf.pdb",
-        "lib/net462/MaterialDesignThemes.Wpf.xml",
-        "lib/net6.0/MaterialDesignThemes.Wpf.dll",
-        "lib/net6.0/MaterialDesignThemes.Wpf.pdb",
-        "lib/net6.0/MaterialDesignThemes.Wpf.xml",
-        "lib/net8.0/MaterialDesignThemes.Wpf.dll",
-        "lib/net8.0/MaterialDesignThemes.Wpf.pdb",
-        "lib/net8.0/MaterialDesignThemes.Wpf.xml",
-        "materialdesignthemes.5.2.1.nupkg.sha512",
-        "materialdesignthemes.nuspec",
-        "tools/VisualStudioToolsManifest.xml"
-      ]
-    },
     "Microsoft.Bcl.AsyncInterfaces/9.0.5": {
       "sha512": "eNQDjbtFj8kOLxbckCbn2JXTsnzK8+xkA4jg7NULO9jhIvlOSngC9BFzmiqVPpw1INQaP1pQ3YteY2XhfWNjtQ==",
       "type": "package",
@@ -424,31 +307,6 @@
         "microsoft.bcl.asyncinterfaces.9.0.5.nupkg.sha512",
         "microsoft.bcl.asyncinterfaces.nuspec",
         "useSharedDesignerContext.txt"
-      ]
-    },
-    "Microsoft.Xaml.Behaviors.Wpf/1.1.39": {
-      "sha512": "8PZKqw9QOcu42xk8puY4P1+EXHL9YGOR9b7qhaYx5cILHul456H073tj99vyPcCt0W0781T9RwHqkx507ZyUpQ==",
-      "type": "package",
-      "path": "microsoft.xaml.behaviors.wpf/1.1.39",
-      "hasTools": true,
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net45/Design/Microsoft.Xaml.Behaviors.Design.dll",
-        "lib/net45/Microsoft.Xaml.Behaviors.dll",
-        "lib/net45/Microsoft.Xaml.Behaviors.pdb",
-        "lib/net45/Microsoft.Xaml.Behaviors.xml",
-        "lib/net5.0-windows7.0/Design/Microsoft.Xaml.Behaviors.DesignTools.dll",
-        "lib/net5.0-windows7.0/Microsoft.Xaml.Behaviors.dll",
-        "lib/net5.0-windows7.0/Microsoft.Xaml.Behaviors.pdb",
-        "lib/net5.0-windows7.0/Microsoft.Xaml.Behaviors.xml",
-        "lib/netcoreapp3.1/Design/Microsoft.Xaml.Behaviors.DesignTools.dll",
-        "lib/netcoreapp3.1/Microsoft.Xaml.Behaviors.dll",
-        "lib/netcoreapp3.1/Microsoft.Xaml.Behaviors.pdb",
-        "lib/netcoreapp3.1/Microsoft.Xaml.Behaviors.xml",
-        "microsoft.xaml.behaviors.wpf.1.1.39.nupkg.sha512",
-        "microsoft.xaml.behaviors.wpf.nuspec",
-        "tools/Install.ps1"
       ]
     },
     "Nice3point.Revit.Api.UIFramework/2024.2.0": {
@@ -807,31 +665,24 @@
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.8": [
       "Costura.Fody >= 6.0.0",
-      "MaterialDesignColors >= 5.2.1",
-      "MaterialDesignThemes >= 5.2.1",
       "Nice3point.Revit.Api.UIFramework >= 2024.2.0",
       "System.Text.Json >= 9.0.5"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\lenovo\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Omar.Elshafey\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
+      "projectUniqueName": "C:\\Users\\lenovo\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
       "projectName": "RevitNinja",
-      "projectPath": "C:\\Users\\Omar.Elshafey\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
-      "packagesPath": "C:\\Users\\Omar.Elshafey\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Omar.Elshafey\\source\\repos\\oelshaf3y\\RevitNinja\\obj\\",
+      "projectPath": "C:\\Users\\lenovo\\source\\repos\\oelshaf3y\\RevitNinja\\RevitNinja.csproj",
+      "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\lenovo\\source\\repos\\oelshaf3y\\RevitNinja\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Omar.Elshafey\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -857,7 +708,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net48": {
@@ -869,14 +720,6 @@
             "target": "Package",
             "version": "[6.0.0, )"
           },
-          "MaterialDesignColors": {
-            "target": "Package",
-            "version": "[5.2.1, )"
-          },
-          "MaterialDesignThemes": {
-            "target": "Package",
-            "version": "[5.2.1, )"
-          },
           "Nice3point.Revit.Api.UIFramework": {
             "target": "Package",
             "version": "[2024.2.0, )"
@@ -886,7 +729,7 @@
             "version": "[9.0.5, )"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305\\RuntimeIdentifierGraph.json"
       }
     }
   }

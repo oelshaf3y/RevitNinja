@@ -55,8 +55,14 @@ namespace RevitNinja.Views
             {
                 Dictionary<string, object> db = new Dictionary<string, object>();
                 db = JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(Ninja.dbfile));
-                db.Add("UpdateOnClose", true);
-                db.Add("UpdaterPath", path);
+                Dictionary<string, object> revitninja = new Dictionary<string, object>();
+                db.TryGetValue("RevitNinja", out object rn);
+                if (rn is JsonElement rn2)
+                {
+                    revitninja = JsonSerializer.Deserialize<Dictionary<string, object>>(rn2.GetRawText());
+                }
+                revitninja.Add("UpdateOnClose", true);
+                revitninja.Add("UpdaterPath", path);
                 File.WriteAllText(Ninja.dbfile, JsonSerializer.Serialize(db));
             }
 
