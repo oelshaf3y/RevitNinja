@@ -40,7 +40,7 @@ Revit Ninja checks for updates automatically, ensuring you're always using the l
 ### UI Enhancement
 - **Color Tabs**: Assign a unique tab color for each project to visually distinguish between open projects.
 
-##Future Ideas
+## Future Ideas
 - **Room Sections**: Automatically generate section views for each wall within a selected room.
 - **MEP System Supports**: Place predefined support families along pipes, ducts, and cable trays based on spacing rules.
 - **Elements Grid**: Arrange selected elements in an array or grid pattern for quick layout creation.
