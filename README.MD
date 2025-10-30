@@ -40,6 +40,16 @@ Revit Ninja checks for updates automatically, ensuring you're always using the l
 ### UI Enhancement
 - **Color Tabs**: Assign a unique tab color for each project to visually distinguish between open projects.
 
+## Future Ideas
+- **Room Sections**: Automatically generate section views for each wall within a selected room.
+- **MEP System Supports**: Place predefined support families along pipes, ducts, and cable trays based on spacing rules.
+- **Elements Grid**: Arrange selected elements in an array or grid pattern for quick layout creation.
+- **Capitalize Each Word**: Convert all text notes and parameter values to uppercase for documentation consistency.
+- **Cable Arrangement**: Optimize cable routing paths to minimize clashes and overlap between cable runs.
+- **Convert Lines to Line-Based Elements**: Transform drawn detail or model lines into line-based families (e.g., beams, pipes, conduits).
+- **Batch Reload Links**: Reload or repath all Revit links from a single interface.
+- **Parameter Completeness Checker**: Validate that required parameters are filled for selected categories or elements.
+
 ---
 
 ## Installation
