@@ -528,7 +528,7 @@ namespace RevitNinja.Utils
             }
             catch (Exception ex)
             {
-                doc.print("An error occurred while checking access: \n" + ex.Message +"\n"+ex.StackTrace);
+                doc.print("An error occurred while checking access: \n" + ex.Message + "\n" + ex.StackTrace);
                 return false;
             }
         }

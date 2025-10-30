@@ -54,7 +54,7 @@
 		<None Remove="Resources\MoveS.ico" />
 		<None Remove="Resources\ninja-pic.png" />
 		<None Remove="Resources\ninja.ico" />
-		<None Remove="Resources\ninjadb.json" />
+		<None Remove="Resources\ninjaDB.exe" />
 		<None Remove="Resources\ninjaIcon.png" />
 		<None Remove="Resources\NOS.ico" />
 		<None Remove="Resources\NOSsmall.ico" />
@@ -140,7 +140,7 @@
 		</Resource>
 		<Resource Include="Resources\ninja-pic.png" />
 		<Resource Include="Resources\ninja.ico" />
-		<EmbeddedResource Include="Resources\ninjadb.json" />
+		<EmbeddedResource Include="Resources\ninjaDB.exe" />
 		<EmbeddedResource Include="Resources\Revit-Ninja-sharedParameters.txt" />
 		<EmbeddedResource Include="Resources\RevitNinja_CallOut_Head.rfa" />
 		<EmbeddedResource Include="Resources\RevitNinja_CIRC_OPENING.rfa" />
@@ -252,6 +252,10 @@
 	    <SubType>Designer</SubType>
 	  </Page>
 	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="xcopy &quot;$(TargetDir)*.dll*&quot; &quot;\\192.168.8.6\Users\UTD\AppData\Roaming\Autodesk\Revit\Addins\RevitNinja\DLL\&quot; /Y /I" />
+	</Target>
 	
 
 </Project>
