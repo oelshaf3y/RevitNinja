@@ -1,0 +1,442 @@
+﻿using Autodesk.Revit.DB;
+using RevitNinja.Utils;
+
+namespace Revit_Ninja.Commands.Cable_Management
+{
+    static class PathFinder
+    {
+        // Implement A* pathfinding algorithm here
+        static Apoint start { get; set; }
+        static Apoint end { get; set; }
+        static Transform tf { get; set; }
+        static Document doc { get; set; }
+        static List<List<Apoint>> grid = new List<List<Apoint>>();
+        static List<Apoint> openSet = new List<Apoint>();
+        static List<Apoint> closedSet = new List<Apoint>();
+        static List<ElementId> negligibleElements = new List<ElementId>();
+        public static List<Element> visibleElements = new List<Element>();
+
+        public static List<Curve> FindPath(Document Doc, XYZ a, XYZ b, List<ElementId> negligible)
+        {
+            doc = Doc;
+            negligibleElements = negligible;
+            visibleElements = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                .WhereElementIsNotElementType().ToList();
+            // clear previous state
+            grid.Clear();
+            openSet.Clear();
+            closedSet.Clear();
+            start = new Apoint(a, 0, 0);
+            createGrid();
+            drawValidGrid();
+
+            start = GetNearest(a);
+            end = GetNearest(b);
+
+            // validate start / end
+            if (start == null || end == null)
+            {
+                doc.print("start or end is null");
+                return null;
+            }
+            if (!start.walkable || !end.walkable)
+            {
+                doc.print("start or end is not walkable");
+                return null;
+            }
+
+            // init start costs
+            start.gCost = 0;
+            start.hCost = start.point.DistanceTo(end.point);
+            start.parent = null;
+
+            openSet.Add(start);
+            while (openSet.Count > 0)
+            {
+                Apoint current = openSet.OrderBy(x => x.fCost).First();
+                if (current.Equals(end))
+                {
+                    // Path found - reconstruct using parent references
+                    List<Apoint> path = new List<Apoint>();
+                    Apoint temp = current;
+                    while (temp != null)
+                    {
+                        path.Add(temp);
+                        if (temp.Equals(start))
+                            break;
+                        temp = temp.parent;
+                    }
+                    path.Reverse();
+                    return SmoothPathToCurves(path.Select(x => x.point).ToList());
+                }
+                openSet.Remove(current);
+                closedSet.Add(current);
+
+                List<Apoint> neighbors = getNeighbors(current.i, current.j);
+                foreach (Apoint neighbor in neighbors)
+                {
+                    if (!neighbor.walkable)
+                        continue;
+                    if (closedSet.Contains(neighbor))
+                        continue;
+
+                    Line line = Line.CreateBound(current.point, neighbor.point);
+                    if (IsLineBlocked(line))
+                    {
+                        continue;
+                    }
+
+                    double tentativeGCost = current.gCost + current.point.DistanceTo(neighbor.point);
+
+                    if (!openSet.Contains(neighbor))
+                    {
+                        neighbor.gCost = tentativeGCost;
+                        neighbor.hCost = neighbor.point.DistanceTo(end.point);
+                        neighbor.parent = current;
+                        openSet.Add(neighbor);
+                    }
+                    else if (tentativeGCost < neighbor.gCost)
+                    {
+                        neighbor.gCost = tentativeGCost;
+                        neighbor.parent = current;
+                    }
+                }
+            }
+            return null;
+        }
+        private static void drawValidGrid()
+        {
+            List<Line> lines = new List<Line>();
+
+            if (grid == null || grid.Count == 0) return;
+
+            for (int i = 0; i < grid.Count; i++)
+            {
+                for (int j = 0; j < grid[i].Count; j++)
+                {
+                    try
+                    {
+                        if (grid[i][j].walkable)
+                        {
+                            if (i + 1 < grid.Count && grid[i + 1][j].walkable)
+                                lines.Add(Line.CreateBound(grid[i][j].point, grid[i + 1][j].point));
+                            if (j + 1 < grid[i].Count && grid[i][j + 1].walkable)
+                                lines.Add(Line.CreateBound(grid[i][j].point, grid[i][j + 1].point));
+                        }
+                    }
+                    catch { }
+                }
+            }
+
+            if (lines.Count == 0) return;
+
+            using (Transaction tr = new Transaction(doc, "Draw Grid"))
+            {
+                tr.Start();
+                DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Lines)).SetShape(lines.Cast<GeometryObject>().ToList());
+                tr.Commit();
+            }
+        }
+        static void createGrid()
+        {
+            if (doc?.ActiveView == null) throw new InvalidOperationException("ActiveView is null");
+            BoundingBoxXYZ bbx = doc.ActiveView.CropBox;
+            if (bbx == null) throw new InvalidOperationException("CropBox is null");
+
+            // transform from bounding-box local coords -> model coords
+            tf = bbx.Transform;
+
+            XYZ localMin = bbx.Min;
+            XYZ localMax = bbx.Max;
+
+            // normalize
+            double minX = Math.Min(localMin.X, localMax.X);
+            double maxX = Math.Max(localMin.X, localMax.X);
+            double minY = Math.Min(localMin.Y, localMax.Y);
+            double maxY = Math.Max(localMin.Y, localMax.Y);
+            double z = 0;
+
+            // grid cell size in feet (adjust to taste)
+            double cellSize = Ninja.mmToFeet(10);
+
+            int width = Math.Max(1, (int)Math.Floor((maxX - minX) / cellSize));
+            int height = Math.Max(1, (int)Math.Floor((maxY - minY) / cellSize));
+
+            grid.Clear();
+
+            for (int i = 0; i < width; i++)
+            {
+                var row = new List<Apoint>();
+                for (int j = 0; j < height; j++)
+                {
+                    XYZ localPoint = new XYZ(minX + (i) * cellSize, minY + (j) * cellSize, z);
+                    XYZ modelPoint = tf.OfPoint(localPoint);
+                    var ap = new Apoint(modelPoint, i, j);
+                    ap.walkable = !IsPointBlocked(modelPoint);
+                    row.Add(ap);
+                }
+                grid.Add(row);
+            }
+        }
+
+        static bool IsPointBlocked(XYZ point)
+        {
+            if (doc == null || point == null) return true;
+
+            Line vertical = Line.CreateBound(point.Add(-50 * XYZ.BasisZ), point.Add(50 * XYZ.BasisZ));
+            return IsLineBlocked(vertical);
+        }
+
+        static bool IsLineBlocked(Line line)
+        {
+
+
+            foreach (Element el in visibleElements)
+            {
+                if (negligibleElements != null && negligibleElements.Contains(el.Id))
+                    continue;
+
+                Solid solid = null;
+                try { solid = doc.getSolid(el); } catch { solid = null; }
+                if (solid == null) continue;
+
+                SolidCurveIntersectionOptions intersectionOptions = new SolidCurveIntersectionOptions();
+                intersectionOptions.ResultType = SolidCurveIntersectionMode.CurveSegmentsInside;
+                SolidCurveIntersection SCI = solid.IntersectWithCurve(line, intersectionOptions);
+                if (SCI.SegmentCount > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        static List<Apoint> getNeighbors(int x, int y)
+        {
+            // Placeholder for neighbor finding logic
+            List<Apoint> neighbors = new List<Apoint>();
+            int maxCount = 0;
+            foreach (var row in grid)
+            {
+                if (row.Count > maxCount) maxCount = row.Count;
+            }
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    // Implement neighbor logic based on grid indices
+                    if (x + i >= 0 && x + i < grid.Count && y + j >= 0 && y + j < maxCount & !(i == 0 && j == 0))
+                    {
+                        var candidate = grid[x + i][y + j];
+                        if (candidate.walkable) // skip non-walkable immediately
+                            neighbors.Add(candidate);
+                    }
+                }
+            }
+            return neighbors;
+        }
+
+        static Apoint GetNearest(XYZ point)
+        {
+            if (point == null) return null;
+            if (grid == null || grid.Count == 0 || grid[0].Count == 0) return null;
+
+            Apoint best = null;
+            double bestDist2 = double.MaxValue;
+
+            for (int i = 0; i < grid.Count; i++)
+            {
+                for (int j = 0; j < grid[i].Count; j++)
+                {
+                    var ap = grid[i][j];
+                    double dx = ap.point.X - point.X;
+                    double dy = ap.point.Y - point.Y;
+                    double d2 = dx * dx + dy * dy;
+                    if (d2 < bestDist2)
+                    {
+                        bestDist2 = d2;
+                        best = ap;
+                    }
+                }
+            }
+
+            double maxSearch = 2.0; // feet threshold
+            return (best != null && Math.Sqrt(bestDist2) <= maxSearch) ? best : null;
+        }
+
+        public static List<Curve> SmoothPathToCurves(List<XYZ> pts,
+                    double tolerance = 1,      // DP smoothing tolerance (feet)
+                    double filletRadius = 0.01)   // Fillet radius (feet)
+        {
+            if (pts.Count < 2) return new List<Curve>();
+
+            // Step 1: Douglas-Peucker simplify
+            List<XYZ> simplified = DouglasPeucker(pts, tolerance);
+
+            // Step 2: Create filleted curve segments
+            List<Curve> curves = CreateStraightPath(simplified);
+
+            return curves;
+        }
+        private static List<XYZ> DouglasPeucker(List<XYZ> pts, double tol)
+        {
+            if (pts.Count < 3) return pts;
+
+            int index = -1;
+            double maxDist = 0;
+
+            for (int i = 1; i < pts.Count - 1; i++)
+            {
+                double dist = PointLineDistance(pts[i], pts[0], pts[pts.Count - 1]);
+                if (dist > maxDist)
+                {
+                    maxDist = dist;
+                    index = i;
+                }
+            }
+
+            if (maxDist > tol)
+            {
+                var left = DouglasPeucker(pts.GetRange(0, index + 1), tol);
+                var right = DouglasPeucker(pts.GetRange(index, pts.Count - index), tol);
+
+                left.RemoveAt(left.Count - 1);
+                left.AddRange(right);
+                return left;
+            }
+
+            return new List<XYZ> { pts[0], pts[pts.Count - 1] };
+        }
+        private static double PointLineDistance(XYZ p, XYZ a, XYZ b)
+        {
+            XYZ ap = p - a;
+            XYZ ab = b - a;
+            double t = (ap.DotProduct(ab)) / ab.DotProduct(ab);
+            t = Math.Max(0, Math.Min(1, t));
+            XYZ closest = a + t * ab;
+            return p.DistanceTo(closest);
+        }
+
+
+        public static List<Curve> CreateStraightPath(List<XYZ> points)
+        {
+            List<Curve> curves = new List<Curve>();
+
+            if (points == null || points.Count < 2)
+                return curves;
+
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                XYZ p1 = points[i];
+                XYZ p2 = points[i + 1];
+
+                // skip zero-length segments
+                if (p1.IsAlmostEqualTo(p2))
+                    continue;
+
+                Curve line = Line.CreateBound(p1, p2);
+                curves.Add(line);
+            }
+
+            return curves;
+        }
+
+
+        //needs some modifications
+        public static List<Curve> FilletPolyline(List<XYZ> pts, double radius)
+        {
+            List<Curve> curves = new List<Curve>();
+
+            if (pts.Count < 3)
+                return pts.Zip(pts.Skip(1), (a, b) => (Curve)Line.CreateBound(a, b)).ToList();
+
+            for (int i = 1; i < pts.Count - 1; i++)
+            {
+                XYZ prev = pts[i - 1];
+                XYZ curr = pts[i];
+                XYZ next = pts[i + 1];
+
+                // Unit vectors
+                XYZ v1 = (curr - prev).Normalize();
+                XYZ v2 = (next - curr).Normalize();
+
+                double angle = v1.AngleTo(v2);
+                double half = angle / 2.0;
+
+                if (angle < 0.01) // almost straight line
+                    continue;
+
+                // distance from corner to tangent points
+                double offset = radius / Math.Tan(half);
+
+                XYZ filletStart = curr - v1 * offset;
+                XYZ filletEnd = curr + v2 * offset;
+
+                // Find perpendicular side for the arc center
+                XYZ bisector = (v1 + v2).Normalize();
+                XYZ perp = v1.CrossProduct(v2).Normalize(); // direction out of plane
+
+                // arc center distance from midpoint
+                double centerDistance = radius / Math.Sin(half);
+
+                XYZ center = curr + bisector * centerDistance;
+
+                // Replace segment before with trimmed line
+                curves.Add(Line.CreateBound(prev, filletStart));
+
+                // Arc
+                Arc arc = Arc.Create(filletStart, filletEnd, center);
+                curves.Add(arc);
+
+                // Continue next segment from fillet end
+                pts[i] = filletEnd; // for next iteration continuity
+            }
+
+            // Add final line
+            curves.Add(Line.CreateBound(pts[pts.Count - 2], pts[pts.Count - 1]));
+
+            return curves;
+        }
+
+        
+
+
+
+    }
+
+    public class Apoint
+    {
+        public XYZ point { get; set; }
+        public double gCost { get; set; }
+        public double hCost { get; set; }
+        public double fCost { get { return gCost + hCost; } }
+        public int i { get; set; }
+        public int j { get; set; }
+
+        public Apoint parent { get; set; }
+        public bool walkable { get; set; }
+
+        public Apoint(XYZ point, int i, int j)
+        {
+            this.point = point;
+            // initialize gCost to a large value so comparisons work properly
+            gCost = double.MaxValue;
+            hCost = 0;
+            this.i = i;
+            this.j = j;
+            parent = null;
+            walkable = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Apoint other)
+            {
+                return point.IsAlmostEqualTo(other.point);
+            }
+            return false;
+        }
+
+    }
+
+}

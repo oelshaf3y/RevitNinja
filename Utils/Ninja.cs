@@ -1,6 +1,5 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using System.Drawing;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
@@ -15,14 +14,11 @@ using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Text.Json;
 using Autodesk.Revit.DB.ExtensibleStorage;
-using Microsoft.Office.Interop.Excel;
 using Line = Autodesk.Revit.DB.Line;
 using Icon = System.Drawing.Icon;
 using UIFramework;
 using Xceed.Wpf.AvalonDock.Controls;
 using Color = System.Windows.Media.Color;
-using System.Windows.Media.Animation;
-using System.Text;
 
 namespace RevitNinja.Utils
 {
